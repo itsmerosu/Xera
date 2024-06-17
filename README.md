@@ -2,9 +2,10 @@
     <img src="assets/default/img/xera.png">
 </div>
 
-> **Note**  
+> **Note:**  
 > **This development of this build is live again.**  
 > Pull requests are welcome and will still be accepted. If you want to see a feature, feel free to contribute it.
+> Thanks to @greenreader9 for answering people's questions and solving their issues while i was gone.
 
 ## 👀 What is Xera ?
 Xera is a hosting account and support management system especially designed to work with MOFH (MyOwnFreeHost). Xera currently has a limited number of features which are listed below:
