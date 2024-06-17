@@ -92,9 +92,9 @@ defined('EXIT__AUTO_MAX')      or define('EXIT__AUTO_MAX', 125); // highest auto
 | These constants define the build information of Xera
 |
 */
-defined('XERA_VERSION')        or define('XERA_VERSION', '1.2.8'); // build version
-defined('XERA_TAG')            or define('XERA_TAG', 'Hollow'); // build tag
-defined('XERA_DATE')        or define('XERA_DATE', '23-08-2022'); // build date
+defined('XERA_VERSION')        or define('XERA_VERSION', '1.2.9'); // build version
+defined('XERA_TAG')            or define('XERA_TAG', 'Caramel'); // build tag
+defined('XERA_DATE')        or define('XERA_DATE', '17-06-2024'); // build date
 defined('XERA_AFFL')        or define('XERA_AFFL', 123456); // iFastNet affiliate id
 
 /*
