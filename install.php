@@ -98,7 +98,7 @@ if (isset($_GET['step']) and $_GET['step'] == 1) {
 						<h2 class="card-title text-center mb-3">Welcome to Xera!</h2>
 						<p class="text-muted mb-3">Xera has been installed successfully! Once you click on the button below, you will be redirected to the admin registration page and the install.php file will be deleted automatically.</p>
 						<div class="form-footer mt-1">
-							<a href="<?= $base_url ?>a/register" class="btn btn-primary w-100">Redirect</a>
+							<a href="<?= $base_url ?>admin/register" class="btn btn-primary w-100">Redirect</a>
 						</div>
 					</div>
 				<?php else : ?>
