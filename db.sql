@@ -476,7 +476,8 @@ CREATE TABLE `is_ssl` (
 	`ssl_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	`ssl_pid` varchar(250) NOT NULL,
 	`ssl_key` varchar(20) NOT NULL,
-	`ssl_for` varchar(20) NOT NULL
+	`ssl_for` varchar(20) NOT NULL,
+	`ssl_private` varchar(5000) NOT NULL
 );
 
 -- Create new table `is_oauth`

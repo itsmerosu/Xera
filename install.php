@@ -297,7 +297,7 @@ if (isset($_GET['step']) and $_GET['step'] == 1 and isset($_POST['submit'])) {
 
 		$sql = mysqli_query($mysqli, "DROP TABLE IF EXISTS `is_ssl`;");
 
-		$sql = mysqli_query($mysqli, "CREATE TABLE `is_ssl` (`ssl_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,`ssl_pid` varchar(250) NOT NULL,`ssl_key` varchar(20) NOT NULL,`ssl_for` varchar(20) NOT NULL
+		$sql = mysqli_query($mysqli, "CREATE TABLE `is_ssl` (`ssl_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,`ssl_pid` varchar(250) NOT NULL,`ssl_key` varchar(20) NOT NULL,`ssl_for` varchar(20) NOT NULL,`ssl_private` varchar(5000) NOT NULL
 		);");
 
 		$sql = mysqli_query($mysqli, "CREATE TABLE `is_oauth` (`oauth_id` varchar(20) NOT NULL, `oauth_client` varchar(100) NOT NULL, `oauth_secret` varchar(100) NOT NULL, `oauth_endpoint` varchar(100) NOT NULL, `oauth_status` varchar(8) NOT NULL);");
