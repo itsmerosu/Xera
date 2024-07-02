@@ -15,6 +15,7 @@ $lang['domain'] = 'ΤΟΜΕΑΣ';
 $lang['theme'] = 'Θέμα';
 $lang['label'] = 'Ετικέτα';
 $lang['csr_code'] = 'Κώδικας CSR';
+$lang['private_key'] = 'Ιδιωτικό κλειδί';
 $lang['crt_code'] = 'Κώδικας CRT';
 $lang['ca_code'] = 'Κώδικας CA';
 $lang['reason'] = 'Αιτία (Προαιρετικά)';

@@ -7,11 +7,19 @@ class Mailer extends CI_Model
 		parent::__construct();
 		$this->load->model('smtp');
 		$this->load->library('email');
+ 	    $this->load->model('base');
+        $crypto = $this->smtp->get_encryption();
+        if ($crypto === 'none') {
+            $crypto = '';
+        }
 
 		$email['smtp_host'] = $this->smtp->get_hostname();
 		$email['smtp_user'] = $this->smtp->get_username();
 		$email['smtp_pass'] = $this->smtp->get_password();
 		$email['smtp_port'] = $this->smtp->get_port();
+        $email['smtp_crypto'] = $crypto;
+        $email['mailtype'] = 'html';
+        $email['newline'] = '\r\n';
 
 		$this->email->initialize($email);
 	}

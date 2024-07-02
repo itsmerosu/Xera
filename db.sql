@@ -70,7 +70,8 @@ CREATE TABLE `is_smtp` (
 	`smtp_port` varchar(8) NOT NULL,
 	`smtp_from` varchar(100) NOT NULL,
 	`smtp_status` varchar(8) NOT NULL,
-	`smtp_name` varchar(50) NOT NULL
+	`smtp_name` varchar(50) NOT NULL,
+	`smtp_encryption` varchar(5) NOT NULL
 );
 
 -- Insert default record for `is_smtp`
@@ -475,7 +476,8 @@ CREATE TABLE `is_ssl` (
 	`ssl_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	`ssl_pid` varchar(250) NOT NULL,
 	`ssl_key` varchar(20) NOT NULL,
-	`ssl_for` varchar(20) NOT NULL
+	`ssl_for` varchar(20) NOT NULL,
+	`ssl_private` varchar(5000) NOT NULL
 );
 
 -- Create new table `is_oauth`

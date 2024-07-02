@@ -15,6 +15,7 @@ $lang['domain'] = '网域';
 $lang['theme'] = '主题';
 $lang['label'] = '标签';
 $lang['csr_code'] = 'CSR 代码';
+$lang['private_key'] = '私钥';
 $lang['crt_code'] = 'CRT 代码';
 $lang['ca_code'] = 'CA 代码';
 $lang['reason'] = '原因';

@@ -9,12 +9,37 @@ class Gogetssl extends CI_Model
 		$this->s = new GoGetSSLApi();
 		$this->s->auth($this->get_username(), $this->get_password());
 	}
+ 
+    function create_csr($domain) {
+        $data = array(
+            'csr_commonname' => $domain,
+            'csr_organization' => $this->base->get_hostname(),
+            'csr_department' => 'IT',
+            'csr_city' => 'North Meaghanton',
+            'csr_state' => 'New Hampshire',
+            'csr_country' => 'US',
+            'csr_email' => $this->user->get_email()
+        );
+        $res = $this->s->generateCSR($data);
+        if (array_key_exists('success', $res)) {
+            $return = array(
+                'csr_code' => $res['csr_code'],
+                'private_key' => $res['csr_key']
+            );
+            return $return;
+        }
+        return false;
+    }
 
 	function create_ssl($csr)
 	{
+        $csr = $this->create_csr($csr);
+        if ($csr == false) {
+           return false;
+        }
 		$data = array(
 			'product_id'       => 65,
-			'csr' 			   => $csr,
+			'csr' 			   => $csr['csr_code'],
 		    'server_count'     => "-1",
 		    'period'           => 3,
 		    'approver_email'   => $this->get_username(),
@@ -46,7 +71,8 @@ class Gogetssl extends CI_Model
 			$data = [
 				'ssl_pid' => $res['order_id'],
 				'ssl_key' => $key,
-				'ssl_for' => $this->user->get_key()
+				'ssl_for' => $this->user->get_key(),
+ 			    'ssl_private' => $csr['private_key']
 			];
 			$res = $this->db->insert('is_ssl', $data);
 			if($res !== false)
@@ -72,6 +98,7 @@ class Gogetssl extends CI_Model
 		if($res !== [])
 		{
 			$data = $this->s->getOrderStatus($res[0]['ssl_pid']);
+ 		    $data['private_key'] = $res[0]['ssl_private'];
 			if(count($data) > 4)
 			{
 				return $data;

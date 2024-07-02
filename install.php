@@ -184,11 +184,11 @@ if (isset($_GET['step']) and $_GET['step'] == 1 and isset($_POST['submit'])) {
 
 		$sql = mysqli_query($mysqli, "DROP TABLE IF EXISTS `is_smtp`;");
 
-		$sql = mysqli_query($mysqli, "CREATE TABLE `is_smtp` (`smtp_id` varchar(9) NOT NULL DEFAULT 'xera_smtp',`smtp_hostname` varchar(100) NOT NULL,`smtp_username` varchar(100) NOT NULL,`smtp_password` varchar(100) NOT NULL,`smtp_port` varchar(8) NOT NULL,`smtp_from` varchar(100) NOT NULL,`smtp_status` varchar(8) NOT NULL,`smtp_name` varchar(50) NOT NULL
+		$sql = mysqli_query($mysqli, "CREATE TABLE `is_smtp` (`smtp_id` varchar(9) NOT NULL DEFAULT 'xera_smtp',`smtp_hostname` varchar(100) NOT NULL,`smtp_username` varchar(100) NOT NULL,`smtp_password` varchar(100) NOT NULL,`smtp_port` varchar(8) NOT NULL,`smtp_from` varchar(100) NOT NULL,`smtp_status` varchar(8) NOT NULL,`smtp_name` varchar(50) NOT NULL, `smtp_encryption` varchar(5) NOT NULL
 		);");
 
-		$sql = mysqli_query($mysqli, "INSERT INTO `is_smtp` (`smtp_id`,`smtp_hostname`,`smtp_username`,`smtp_password`,`smtp_port`,`smtp_from`,`smtp_status`,`smtp_name`
-		) VALUES ('xera_smtp','smtp.example.com','username','password','587','jhon@example.com','inactive','Web Host'
+		$sql = mysqli_query($mysqli, "INSERT INTO `is_smtp` (`smtp_id`,`smtp_hostname`,`smtp_username`,`smtp_password`,`smtp_port`,`smtp_from`,`smtp_status`,`smtp_name`,`smtp_encryption`
+		) VALUES ('xera_smtp','smtp.example.com','username','password','587','jhon@example.com','inactive','Web Host','none'
 		);");
 
 		$sql = mysqli_query($mysqli, "DROP TABLE IF EXISTS `is_mofh`;");
@@ -297,7 +297,7 @@ if (isset($_GET['step']) and $_GET['step'] == 1 and isset($_POST['submit'])) {
 
 		$sql = mysqli_query($mysqli, "DROP TABLE IF EXISTS `is_ssl`;");
 
-		$sql = mysqli_query($mysqli, "CREATE TABLE `is_ssl` (`ssl_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,`ssl_pid` varchar(250) NOT NULL,`ssl_key` varchar(20) NOT NULL,`ssl_for` varchar(20) NOT NULL
+		$sql = mysqli_query($mysqli, "CREATE TABLE `is_ssl` (`ssl_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,`ssl_pid` varchar(250) NOT NULL,`ssl_key` varchar(20) NOT NULL,`ssl_for` varchar(20) NOT NULL,`ssl_private` varchar(5000) NOT NULL
 		);");
 
 		$sql = mysqli_query($mysqli, "CREATE TABLE `is_oauth` (`oauth_id` varchar(20) NOT NULL, `oauth_client` varchar(100) NOT NULL, `oauth_secret` varchar(100) NOT NULL, `oauth_endpoint` varchar(100) NOT NULL, `oauth_status` varchar(8) NOT NULL);");

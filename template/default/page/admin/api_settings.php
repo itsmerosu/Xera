@@ -179,6 +179,34 @@
 						<label class="form-label">SMTP Port</label>
 						<input type="number" name="port" class="form-control mb-2" value="<?= $this->smtp->get_port() ?>">
 					</div>
+                    <div class="col-sm-6">
+						<label class="form-label">SMTP Encryption</label>
+						<select class="form-control mb-2" name="encryption">
+							<?php
+							if ($this->smtp->get_encryption() === 'ssl') {
+							?>
+								<option value="ssl" selected="true">SSL</option>
+								<option value="tls">TLS</option>
+ 							    <option value="none">None</option>
+							<?php
+                            }
+							elseif ($this->smtp->get_encryption() === 'tls') {
+							?>
+								<option value="ssl">SSL</option>
+								<option value="tls" selected="true">TLS</option>
+ 							    <option value="none">None</option>
+  						    <?php
+                            }
+							elseif ($this->smtp->get_encryption() === 'none') {
+							?>
+								<option value="ssl">SSL</option>
+								<option value="tls">TLS</option>
+ 							    <option value="none" selected="true">None</option>
+							<?php
+							}
+							?>
+						</select>
+					</div>
 					<div class="col-sm-6">
 						<label class="form-label">SMTP Status</label>
 						<select class="form-control mb-2" name="status">

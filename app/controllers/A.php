@@ -582,6 +582,7 @@ class A extends CI_Controller
 				$this->fv->set_rules('password', 'Password', ['trim', 'required']);
 				$this->fv->set_rules('port', 'Port', ['trim', 'required']);
 				$this->fv->set_rules('status', 'Status', ['trim', 'required']);
+				$this->fv->set_rules('encryption', 'SMTP Encryption', ['trim', 'required']);
 				if($this->fv->run() === true)
 				{
 					$hostname = $this->input->post('hostname');
@@ -590,6 +591,7 @@ class A extends CI_Controller
 					$username = $this->input->post('username');
 					$port = $this->input->post('port');
 					$status = $this->input->post('status');
+					$encryption = $this->input->post('encryption');
 					$password = $this->input->post('password');
 					$res = $this->smtp->set_hostname($hostname);
 					$res = $this->smtp->set_username($username);
@@ -598,6 +600,7 @@ class A extends CI_Controller
 					$res = $this->smtp->set_from($from);
 					$res = $this->smtp->set_name($name);
 					$res = $this->smtp->set_port($port);
+					$res = $this->smtp->set_encryption($encryption);
 					if($res !== false)
 					{
 						$this->session->set_flashdata('msg', json_encode([1, 'SMTP settings updated successfully.']));

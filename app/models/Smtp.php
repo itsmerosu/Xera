@@ -126,6 +126,16 @@ class Smtp extends CI_Model
 		return false;
 	}
 
+    function get_encryption()
+	{
+		$res = $this->fetch();
+		if($res !== false)
+		{
+			return $res['smtp_encryption'];
+		}
+		return false;
+	}
+
 	function set_status(bool $status)
 	{
 		if($status === true)
@@ -140,6 +150,19 @@ class Smtp extends CI_Model
 		if($res)
 		{
 			return true;
+		}
+		return false;
+	}
+ 
+    function set_encryption(string $encryption)
+	{
+		if($encryption === 'tls' || $encryption === 'ssl' || $encryption === 'none')
+		{ 
+			$res = $this->update('encryption', $encryption);
+		    if($res)
+		    {
+		    	return true;
+		    }
 		}
 		return false;
 	}
