@@ -15,6 +15,7 @@ $lang['domain'] = 'Domene';
 $lang['theme'] = 'Tema';
 $lang['label'] = 'label';
 $lang['csr_code'] = 'CSR-kode';
+$lang['private_key'] = 'Privat nøkkel';
 $lang['crt_code'] = 'CRT-kode';
 $lang['ca_code'] = 'CA-kode';
 $lang['reason'] = 'Årsaken';

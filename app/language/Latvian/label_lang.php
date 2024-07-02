@@ -15,6 +15,7 @@ $lang['domain'] = 'Domēns';
 $lang['theme'] = 'Tēma';
 $lang['label'] = 'Marķējums';
 $lang['csr_code'] = 'CSR kods';
+$lang['private_key'] = 'Privātā atslēga';
 $lang['crt_code'] = 'CRT kods';
 $lang['ca_code'] = 'CA kods';
 $lang['reason'] = 'Iemesls';

@@ -15,6 +15,7 @@ $lang['domain'] = '網域';
 $lang['theme'] = '主題';
 $lang['label'] = '標籤';
 $lang['csr_code'] = 'CSR 代碼';
+$lang['private_key'] = '私鑰';
 $lang['crt_code'] = 'CRT 代碼';
 $lang['ca_code'] = 'CA 代碼';
 $lang['reason'] = '原因';

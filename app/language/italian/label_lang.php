@@ -15,6 +15,7 @@ $lang['domain'] = 'Dominio';
 $lang['theme'] = 'Tema';
 $lang['label'] = 'Ettichetta';
 $lang['csr_code'] = 'Codice CSR';
+$lang['private_key'] = 'Chiave privata';
 $lang['crt_code'] = 'Codice CRT';
 $lang['ca_code'] = 'Codice CA';
 $lang['reason'] = 'Motivazione';
