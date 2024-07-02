@@ -1501,8 +1501,8 @@ class U extends CI_Controller
 				{
 					if($this->fv->run() === true)
 					{
-						$csr = $this->input->post('csr');
-						$res = $this->ssl->create_ssl($csr);
+						$domain = $this->input->post('domain');
+						$res = $this->ssl->create_ssl($domain);
 						if(!is_bool($res))
 						{
 							$this->session->set_flashdata('msg', json_encode([0, $res]));
