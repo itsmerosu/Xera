@@ -88,6 +88,10 @@
 					<label class="form-label"><?= $this->base->text('csr_code', 'label') ?></label>
 					<textarea class="form-control" style="min-height: 200px;" readonly="true"><?= $data['csr_code'] ?></textarea>
 				</div>
+ 			    <div class="mb-3">
+					<label class="form-label"><?= $this->base->text('private_key', 'label') ?></label>
+					<textarea class="form-control" style="min-height: 200px;" readonly="true"><?= $data['private_key'] ?></textarea>
+				</div>
 				<div class="mb-3">
 					<label class="form-label"><?= $this->base->text('crt_code', 'label') ?></label>
 					<textarea class="form-control" style="min-height: 200px;" readonly="true"><?= $data['crt_code'] ?></textarea>
