@@ -70,7 +70,8 @@ CREATE TABLE `is_smtp` (
 	`smtp_port` varchar(8) NOT NULL,
 	`smtp_from` varchar(100) NOT NULL,
 	`smtp_status` varchar(8) NOT NULL,
-	`smtp_name` varchar(50) NOT NULL
+	`smtp_name` varchar(50) NOT NULL,
+	`smtp_encryption` varchar(5) NOT NULL
 );
 
 -- Insert default record for `is_smtp`
