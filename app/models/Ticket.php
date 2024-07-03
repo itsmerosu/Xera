@@ -47,11 +47,7 @@ class Ticket extends CI_Model
 		$this->db->from('is_ticket');
 		$res = $this->db->get()->result_array();
 		$list = [];
-		if($count == 0)
-		{
-			$count = 0;
-		}
-		else
+		if($count != 0)
 		{
 			$count = $count * $this->base->rpp();
 		}
@@ -179,11 +175,7 @@ class Ticket extends CI_Model
 		$res = $this->fetch('is_reply', ['for' => $id], 'reply_');
         if($res !== false) {
             $list = [];
-			if($count == 0)
-			{
-				$count = 0;
-			}
-			else
+			if($count != 0)
 			{
 				$count = $count * $this->base->rpp();
 			}
