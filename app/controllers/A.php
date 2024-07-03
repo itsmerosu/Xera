@@ -53,9 +53,13 @@ class A extends CI_Controller
 					{
 						$this->fv->set_rules('CRLT-captcha-token', 'Recaptcha', ['trim', 'required']);
 					}
-					else
+					elseif($this->grc->get_type() == "human")
 					{
 						$this->fv->set_rules('h-captcha-response', 'Recaptcha', ['trim', 'required']);
+					}
+					elseif($this->grc->get_type() == "turnstile")
+					{
+						$this->fv->set_rules('cf-turnstile-response', $this->base->text('recaptcha', 'label'), ['trim', 'required']);
 					}
 					if($this->fv->run() === true)
 					{
@@ -191,9 +195,13 @@ class A extends CI_Controller
 					{
 						$this->fv->set_rules('CRLT-captcha-token', 'Recaptcha', ['trim', 'required']);
 					}
-					else
+					elseif($this->grc->get_type() == "human")
 					{
 						$this->fv->set_rules('h-captcha-response', 'Recaptcha', ['trim', 'required']);
+					}
+					elseif($this->grc->get_type() == "turnstile")
+					{
+						$this->fv->set_rules('cf-turnstile-response', $this->base->text('recaptcha', 'label'), ['trim', 'required']);
 					}
 					if($this->fv->run() === true)
 					{
@@ -999,9 +1007,13 @@ class A extends CI_Controller
 					{
 						$this->fv->set_rules('CRLT-captcha-token', 'Recaptcha', ['trim', 'required']);
 					}
-					else
+					elseif($this->grc->get_type() == "human")
 					{
 						$this->fv->set_rules('h-captcha-response', 'Recaptcha', ['trim', 'required']);
+					}
+					elseif($this->grc->get_type() == "turnstile")
+					{
+						$this->fv->set_rules('cf-turnstile-response', $this->base->text('recaptcha', 'label'), ['trim', 'required']);
 					}
 					if($this->fv->run() === true)
 					{

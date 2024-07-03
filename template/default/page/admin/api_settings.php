@@ -246,16 +246,28 @@
 								<option value="google" selected="true">Google reCAPTCHA</option>
 								<option value="human">hCaptcha</option>
 								<option value="crypto">CryptoLoot</option>
+								<option value="turnstile">Cloudflare Turnstile</option>
 							<?php
 							elseif ($this->grc->get_type() === 'human') :
 							?>
 								<option value="google">Google reCAPTCHA</option>
 								<option value="human" selected="true">hCaptcha</option>
 								<option value="crypto">CryptoLoot</option>
-							<?php else : ?>
+								<option value="turnstile">Cloudflare Turnstile</option>
+							<?php
+							elseif ($this->grc->get_type() === 'crypto') :
+							?>
 								<option value="google">Google reCAPTCHA</option>
 								<option value="human">hCaptcha</option>
 								<option value="crypto" selected="true">CryptoLoot</option>
+								<option value="turnstile">Cloudflare Turnstile</option>
+							<?php
+							elseif ($this->grc->get_type() === 'turnstile') :
+							?>
+								<option value="google">Google reCAPTCHA</option>
+								<option value="human">hCaptcha</option>
+								<option value="crypto">CryptoLoot</option>
+								<option value="turnstile" selected="true">Cloudflare Turnstile</option>
 							<?php
 							endif;
 							?>
