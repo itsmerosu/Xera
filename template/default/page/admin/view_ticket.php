@@ -118,6 +118,7 @@
 					</div>
 				</div>
 			</div>
+			<?php $count += 1; ?>
 		<?php endforeach ?>
         <div class="card mb-3">
 			<div class="card-body">
@@ -125,21 +126,20 @@
 			    	<div>
 			    		Showing <?php if (isset($mcount)) : echo $mcount;
 			    				else : echo 0;
-			    				endif; ?> to <?php echo ($this->input->get('page') + 1 ?? 1) * $this->base->rpp(); ?> of <?= $this->ticket->list_count_reply($id); ?> entries
+			    				endif; ?> to <?php if (isset($count)) : echo $count - 1;
+											else : echo 0;
+											endif; ?> of <?= $this->ticket->list_count_reply($id); ?> entries
 			    	</div>
 			    	<div>
 			    		<?php $page = $this->input->get('page') ?? 0 ?>
-			    		<?php $i = $this->account->list_count() - $this->base->rpp(); ?>
-			    		<?php $i = $i / $this->base->rpp(); ?>
-			    		<?php $i = intval($i); ?>
 			    		<ul class="pagination mb-0">
 			    			<li class="page-item <?php if ($page < 1) : ?>disabled<?php endif ?>">
 			    				<a class="page-link" <?php if ($page > 0) : ?>href="<?= base_url() ?>admin/ticket/view/<?= $id ?>?page=<?= $page - 1 ?>" <?php endif ?>>
 			    					<span>&laquo;</span>
 			    				</a>
 			    			</li>
-			    			<li class="page-item <?php if (($this->input->get('page') + 1 ?? 1) * $this->base->rpp() >= $this->ticket->list_count_reply($id)) : ?>disabled<?php endif ?>">
-			    				<a class="page-link" <?php if (($this->input->get('page') + 1 ?? 1) * $this->base->rpp() < $this->ticket->list_count_reply($id)) : ?>href="<?= base_url() ?>admin/ticket/view/<?= $id ?>?page=<?= $page + 1 ?>" <?php endif ?>>
+			    			<li class="page-item <?php if (($page + 1) * $this->base->rpp() >= $this->ticket->list_count_reply($id)) : ?>disabled<?php endif ?>">
+			    				<a class="page-link" <?php if (($page + 1) * $this->base->rpp() < $this->ticket->list_count_reply($id)) : ?>href="<?= base_url() ?>admin/ticket/view/<?= $id ?>?page=<?= $page + 1 ?>" <?php endif ?>>
 			    					<span>&raquo;</span>
 			    				</a>
 			    			</li>
