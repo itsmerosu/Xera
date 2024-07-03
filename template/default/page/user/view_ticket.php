@@ -133,7 +133,7 @@
 			    				</a>
 			    			</li>
 			    			<li class="page-item <?php if (($this->input->get('page') + 1 ?? 1) * $this->base->rpp() >= $this->ticket->list_count_reply($id)) : ?>disabled<?php endif ?>">
-			    				<a class="page-link" <?php if ($page < $i + 1) : ?>href="<?= base_url() ?>ticket/view/<?= $id ?>?page=<?= $page + 1 ?>" <?php endif ?>>
+			    				<a class="page-link" <?php if (($this->input->get('page') + 1 ?? 1) * $this->base->rpp() < $this->ticket->list_count_reply($id)) : ?>href="<?= base_url() ?>ticket/view/<?= $id ?>?page=<?= $page + 1 ?>" <?php endif ?>>
 			    					<span>&raquo;</span>
 			    				</a>
 			    			</li>
