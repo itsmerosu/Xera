@@ -56,9 +56,13 @@ class U extends CI_Controller
 					{
 						$this->fv->set_rules('CRLT-captcha-token', $this->base->text('recaptcha', 'label'), ['trim', 'required']);
 					}
-					else
+					elseif($this->grc->get_type() == "human")
 					{
 						$this->fv->set_rules('h-captcha-response', $this->base->text('recaptcha', 'label'), ['trim', 'required']);
+					}
+					elseif($this->grc->get_type() == "turnstile")
+					{
+						$this->fv->set_rules('cf-turnstile-response', $this->base->text('recaptcha', 'label'), ['trim', 'required']);
 					}
 					if($this->fv->run() === true)
 					{
@@ -194,9 +198,13 @@ class U extends CI_Controller
 					{
 						$this->fv->set_rules('CRLT-captcha-token', $this->base->text('recaptcha', 'label'), ['trim', 'required']);
 					}
-					else
+					elseif($this->grc->get_type() == "human")
 					{
 						$this->fv->set_rules('h-captcha-response', $this->base->text('recaptcha', 'label'), ['trim', 'required']);
+					}
+					elseif($this->grc->get_type() == "turnstile")
+					{
+						$this->fv->set_rules('cf-turnstile-response', $this->base->text('recaptcha', 'label'), ['trim', 'required']);
 					}
 					if($this->fv->run() === true)
 					{
@@ -594,9 +602,13 @@ class U extends CI_Controller
 					{
 						$this->fv->set_rules('CRLT-captcha-token', $this->base->text('recaptcha', 'label'), ['trim', 'required']);
 					}
-					else
+					elseif($this->grc->get_type() == "human")
 					{
 						$this->fv->set_rules('h-captcha-response', $this->base->text('recaptcha', 'label'), ['trim', 'required']);
+					}
+					elseif($this->grc->get_type() == "turnstile")
+					{
+						$this->fv->set_rules('cf-turnstile-response', $this->base->text('recaptcha', 'label'), ['trim', 'required']);
 					}
 					if($this->fv->run() === true)
 					{
@@ -760,9 +772,13 @@ class U extends CI_Controller
 					{
 						$this->fv->set_rules('CRLT-captcha-token', $this->base->text('recaptcha', 'label'), ['trim', 'required']);
 					}
-					else
+					elseif($this->grc->get_type() == "human")
 					{
 						$this->fv->set_rules('h-captcha-response', $this->base->text('recaptcha', 'label'), ['trim', 'required']);
+					}
+					elseif($this->grc->get_type() == "turnstile")
+					{
+						$this->fv->set_rules('cf-turnstile-response', $this->base->text('recaptcha', 'label'), ['trim', 'required']);
 					}
 						if($this->fv->run() === true)
 						{
@@ -854,11 +870,13 @@ class U extends CI_Controller
 			else
 			{
 				$data['title'] = 'view_ticket';
+                $data['id'] = $id;
 				$data['active'] = 'ticket';
 				$data['ticket'] = $this->ticket->view_user_ticket($id);
 				if($data['ticket'] !== false)
 				{
-					$data['replies'] = $this->ticket->get_ticket_reply($id);
+                    $count = $this->input->get('page') ?? 0;
+					$data['replies'] = $this->ticket->get_ticket_reply($id, $count);
 
 					$this->load->view($this->base->get_template().'/page/includes/user/header', $data);
 					$this->load->view($this->base->get_template().'/page/includes/user/navbar');
@@ -974,9 +992,13 @@ class U extends CI_Controller
 					{
 						$this->fv->set_rules('CRLT-captcha-token', $this->base->text('recaptcha', 'label'), ['trim', 'required']);
 					}
-					else
+					elseif($this->grc->get_type() == "human")
 					{
 						$this->fv->set_rules('h-captcha-response', $this->base->text('recaptcha', 'label'), ['trim', 'required']);
+					}
+					elseif($this->grc->get_type() == "turnstile")
+					{
+						$this->fv->set_rules('cf-turnstile-response', $this->base->text('recaptcha', 'label'), ['trim', 'required']);
 					}
 						if($this->fv->run() === true)
 						{
@@ -1437,9 +1459,13 @@ class U extends CI_Controller
 					{
 						$this->fv->set_rules('CRLT-captcha-token', $this->base->text('recaptcha', 'label'), ['trim', 'required']);
 					}
-					else
+					elseif($this->grc->get_type() == "human")
 					{
 						$this->fv->set_rules('h-captcha-response', $this->base->text('recaptcha', 'label'), ['trim', 'required']);
+					}
+					elseif($this->grc->get_type() == "turnstile")
+					{
+						$this->fv->set_rules('cf-turnstile-response', $this->base->text('recaptcha', 'label'), ['trim', 'required']);
 					}
 					if($this->fv->run() === true)
 					{

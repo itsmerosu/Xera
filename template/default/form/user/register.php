@@ -52,6 +52,9 @@
 			<?php elseif ($this->grc->get_type() == "human") : ?>
 				<div id='captcha' class='h-captcha' data-sitekey="<?= $this->grc->get_site_key(); ?>"></div>
 				<script src='https://hcaptcha.com/1/api.js' async defer></script>
+			<?php elseif ($this->grc->get_type() == "turnstile") : ?>
+				<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+				<div class="cf-turnstile" data-sitekey="<?= $this->grc->get_site_key(); ?>" data-callback="javascriptCallback"></div>
 			<?php endif ?>
 		</div>
 	<?php endif ?>

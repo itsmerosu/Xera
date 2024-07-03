@@ -150,6 +150,27 @@ class Recaptcha extends CI_Model
 	        }
 	        return false;
 		}
+		elseif($type == "turnstile")
+		{
+			$secret_key = $this->get_secret_key();
+			$ip = $_SERVER['REMOTE_ADDR'];
+    		$param = http_build_query([
+    		    "secret" => $secret_key,
+    		    "response" => $token,
+    		    "remoteip" => $ip
+    		]);
+    		$ch = curl_init("https://challenges.cloudflare.com/turnstile/v0/siteverify");
+    		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+    		curl_setopt($ch, CURLOPT_POSTFIELDS, $param);
+    		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    		$result = curl_exec($ch);
+		
+    		$res = json_decode($result);
+    		if ($res->success) {
+    		    return true;
+    		}
+    		return false;
+		}
         return false;
 	}
 

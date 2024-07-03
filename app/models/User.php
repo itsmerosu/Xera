@@ -448,11 +448,7 @@ class User extends CI_Model
 			'user_'
 		);
 		$list = [];
-		if($count == 0)
-		{
-			$count = 0;
-		}
-		else
+		if($count != 0)
 		{
 			$count = $count * $this->base->rpp();
 		}

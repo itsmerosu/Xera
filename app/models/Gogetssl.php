@@ -152,11 +152,7 @@ class Gogetssl extends CI_Model
 				return $arr;
 			}
 			$list = [];
-			if($count == 0)
-			{
-				$count = 0;
-			}
-			else
+			if($count != 0)
 			{
 				$count = $count * $this->base->rpp();
 			}

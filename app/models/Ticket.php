@@ -47,11 +47,7 @@ class Ticket extends CI_Model
 		$this->db->from('is_ticket');
 		$res = $this->db->get()->result_array();
 		$list = [];
-		if($count == 0)
-		{
-			$count = 0;
-		}
-		else
+		if($count != 0)
 		{
 			$count = $count * $this->base->rpp();
 		}
@@ -164,10 +160,38 @@ class Ticket extends CI_Model
 		return false;
 	}
 
-	function get_ticket_reply($id)
+    function list_count_reply($id)
 	{
 		$res = $this->fetch('is_reply', ['for' => $id], 'reply_');
-		return $res;
+		if($res !== false)
+		{
+			return count($res);
+		}
+		return false;
+	}
+
+	function get_ticket_reply($id, $count)
+	{
+		$res = $this->fetch('is_reply', ['for' => $id], 'reply_');
+        if($res !== false) {
+            $list = [];
+			if($count != 0)
+			{
+				$count = $count * $this->base->rpp();
+			}
+			for ($i = $count; $i < count($res); $i++) { 
+				if($i >= $count + $this->base->rpp())
+				{
+					break;
+				}
+				else
+				{
+					$list[] = $res[$i];
+				}
+			}
+			return $list;
+        }
+        return false;
 	}
 
 	function get_user_name($key)

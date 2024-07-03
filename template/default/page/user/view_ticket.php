@@ -79,13 +79,22 @@
 		</div>
 	</div>
 	<?php if (count($replies) > 0): ?>
+        <?php
+			if ($this->input->get('page')) :
+				$mcount = $this->base->rpp() * $this->input->get('page') + 1;
+			else :
+				$mcount = 1;
+			endif;
+			?>
+        <div class="card mb-3">
+            <div class="card-body pb-0">
 		<?php foreach ($replies as $reply): ?>
 			<?php if ($reply['reply_by'] == $this->user->get_key()): 
 				$reply_name = $this->user->get_name();
 				$ico = $this->user->get_avatar();
 			 else:
 			  	$reply_name = $this->ticket->get_admin_name($reply['reply_by']);
-			  	$ico = base_url().'assets/<?= $this->base->get_template() ?>/img/fav.png';
+			  	$ico = base_url().'assets/'.$this->base->get_template().'/img/fav.png';
 			 endif ?>
 			<div class="card mb-3">
 				<div class="card-header d-block">
@@ -104,6 +113,36 @@
 				</div>
 			</div>
 		<?php endforeach ?>
+        <div class="card mb-3">
+			<div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+			    	<div>
+			    		Showing <?php if (isset($mcount)) : echo $mcount;
+			    				else : echo 0;
+			    				endif; ?> to <?php if (isset($count)) : echo $count - 1;
+											else : echo 0;
+											endif; ?> of <?= $this->ticket->list_count_reply($id); ?> entries
+			    	</div>
+			    	<div>
+			    		<?php $page = $this->input->get('page') ?? 0 ?>
+			    		<ul class="pagination mb-0">
+			    			<li class="page-item <?php if ($page < 1) : ?>disabled<?php endif ?>">
+			    				<a class="page-link" <?php if ($page > 0) : ?>href="<?= base_url() ?>ticket/view/<?= $id ?>?page=<?= $page - 1 ?>" <?php endif ?>>
+			    					<span>&laquo;</span>
+			    				</a>
+			    			</li>
+			    			<li class="page-item <?php if (($page + 1) * $this->base->rpp() >= $this->ticket->list_count_reply($id)) : ?>disabled<?php endif ?>">
+			    				<a class="page-link" <?php if (($page + 1) * $this->base->rpp() < $this->ticket->list_count_reply($id)) : ?>href="<?= base_url() ?>ticket/view/<?= $id ?>?page=<?= $page + 1 ?>" <?php endif ?>>
+			    					<span>&raquo;</span>
+			    				</a>
+			    			</li>
+			    		</ul>
+			    	</div>
+			    </div>
+            </div>
+        </div>
+	</div>
+    </div>
 	<?php else: ?>
 		<div class="card mb-3">
 			<div class="card-body">
@@ -142,6 +181,9 @@
 							<?php elseif($this->grc->get_type() == "human"): ?>
 								<div id='captcha' class='h-captcha' data-sitekey="<?= $this->grc->get_site_key();?>"></div>
 								<script src='https://hcaptcha.com/1/api.js' async defer ></script>
+							<?php elseif ($this->grc->get_type() == "turnstile") : ?>
+								<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+								<div class="cf-turnstile" data-sitekey="<?= $this->grc->get_site_key(); ?>" data-callback="javascriptCallback"></div>
 							<?php endif ?>
 						</div>
 					<?php endif ?>

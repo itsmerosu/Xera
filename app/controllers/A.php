@@ -53,9 +53,13 @@ class A extends CI_Controller
 					{
 						$this->fv->set_rules('CRLT-captcha-token', 'Recaptcha', ['trim', 'required']);
 					}
-					else
+					elseif($this->grc->get_type() == "human")
 					{
 						$this->fv->set_rules('h-captcha-response', 'Recaptcha', ['trim', 'required']);
+					}
+					elseif($this->grc->get_type() == "turnstile")
+					{
+						$this->fv->set_rules('cf-turnstile-response', $this->base->text('recaptcha', 'label'), ['trim', 'required']);
 					}
 					if($this->fv->run() === true)
 					{
@@ -191,9 +195,13 @@ class A extends CI_Controller
 					{
 						$this->fv->set_rules('CRLT-captcha-token', 'Recaptcha', ['trim', 'required']);
 					}
-					else
+					elseif($this->grc->get_type() == "human")
 					{
 						$this->fv->set_rules('h-captcha-response', 'Recaptcha', ['trim', 'required']);
+					}
+					elseif($this->grc->get_type() == "turnstile")
+					{
+						$this->fv->set_rules('cf-turnstile-response', $this->base->text('recaptcha', 'label'), ['trim', 'required']);
 					}
 					if($this->fv->run() === true)
 					{
@@ -964,12 +972,12 @@ class A extends CI_Controller
 				if($res)
 				{
 					$this->session->set_flashdata('msg', json_encode([1, 'Ticket has been closed successfully.']));
-					redirect("admin/ticket/list/$id");
+					redirect("admin/ticket/view/$id");
 				}
 				else
 				{
 					$this->session->set_flashdata('msg', json_encode([0, 'An error occured. Try again later.']));
-					redirect("admin/ticket/list/$id");
+					redirect("admin/ticket/view/$id");
 				}
 			}
 			elseif($this->input->get('open'))
@@ -978,12 +986,12 @@ class A extends CI_Controller
 				if($res)
 				{
 					$this->session->set_flashdata('msg', json_encode([1, 'Ticket has been opened successfully.']));
-					redirect("admin/ticket/list/$id");
+					redirect("admin/ticket/view/$id");
 				}
 				else
 				{
 					$this->session->set_flashdata('msg', json_encode([0, 'An error occured. Try again later.']));
-					redirect("admin/ticket/list/$id");
+					redirect("admin/ticket/view/$id");
 				}
 			}
 			elseif($this->input->post('reply'))
@@ -999,9 +1007,13 @@ class A extends CI_Controller
 					{
 						$this->fv->set_rules('CRLT-captcha-token', 'Recaptcha', ['trim', 'required']);
 					}
-					else
+					elseif($this->grc->get_type() == "human")
 					{
 						$this->fv->set_rules('h-captcha-response', 'Recaptcha', ['trim', 'required']);
+					}
+					elseif($this->grc->get_type() == "turnstile")
+					{
+						$this->fv->set_rules('cf-turnstile-response', $this->base->text('recaptcha', 'label'), ['trim', 'required']);
 					}
 					if($this->fv->run() === true)
 					{
@@ -1027,18 +1039,18 @@ class A extends CI_Controller
 							if($res)
 							{
 								$this->session->set_flashdata('msg', json_encode([1, 'Ticket reply added successfully.']));
-								redirect("admin/ticket/list/$id");
+								redirect("admin/ticket/view/$id");
 							}
 							else
 							{
 								$this->session->set_flashdata('msg', json_encode([0, 'An error occured. Try again later.']));
-								redirect("admin/ticket/list/$id");
+								redirect("admin/ticket/view/$id");
 							}
 						}
 						else
 						{
 							$this->session->set_flashdata('msg', json_encode([0, 'Invalid captcha response received.']));
-							redirect("admin/ticket/list/$id");
+							redirect("admin/ticket/view/$id");
 						}
 					}
 					else
@@ -1051,7 +1063,7 @@ class A extends CI_Controller
 						{
 							$this->session->set_flashdata('msg', json_encode([0, 'Please fill all required fields.']));
 						}
-						redirect("admin/ticket/list/$id");
+						redirect("admin/ticket/view/$id");
 					}
 				}
 				else
@@ -1063,12 +1075,12 @@ class A extends CI_Controller
 						if($res)
 						{
 							$this->session->set_flashdata('msg', json_encode([1, 'Ticket reply added successfully.']));
-							redirect("admin/ticket/list/$id");
+							redirect("admin/ticket/view/$id");
 						}
 						else
 						{
 							$this->session->set_flashdata('msg', json_encode([0, 'An error occured. Try again later.']));
-							redirect("admin/ticket/list/$id");
+							redirect("admin/ticket/view/$id");
 						}
 					}
 					else
@@ -1081,18 +1093,21 @@ class A extends CI_Controller
 						{
 							$this->session->set_flashdata('msg', json_encode([0, 'Please fill all required fields.']));
 						}
-						redirect("admin/ticket/list/$id");
+						redirect("admin/ticket/view/$id");
 					}
 				}
 			}
 			else
 			{
 				$data['title'] = 'View Ticket '.$id;
+                $data['id'] = $id;
+                $data['count'] = $count;
 				$data['active'] = 'ticket';
 				$data['ticket'] = $this->ticket->view_ticket($id);
 				if($data['ticket'] !== false)
 				{
-					$data['replies'] = $this->ticket->get_ticket_reply($id);
+                    $count = $this->input->get('page') ?? 0;
+					$data['replies'] = $this->ticket->get_ticket_reply($id, $count);
 
 					$this->load->view($this->base->get_template().'/page/includes/admin/header', $data);
 					$this->load->view($this->base->get_template().'/page/includes/admin/navbar');
