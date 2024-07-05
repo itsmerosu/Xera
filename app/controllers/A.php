@@ -10,6 +10,7 @@ class A extends CI_Controller
 		$this->load->model('ticket');
 		$this->load->model('account');
 		$this->load->model(['gogetssl' => 'ssl']);
+		$this->load->model(['acme' => 'acme']);
 		$this->load->model(['sitepro' => 'sp']);
 		$this->load->model('mofh');
 		$this->load->model('oauth');
@@ -675,6 +676,49 @@ class A extends CI_Controller
 					if($res !== false)
 					{
 						$this->session->set_flashdata('msg', json_encode([1, 'GoGetSSL settings updated successfully.']));
+						redirect('api/settings?ssl=1');
+					}
+					else
+					{
+						$this->session->set_flashdata('msg', json_encode([0, 'An error occured. Try again later.']));
+						redirect('api/settings?ssl=1');
+					}
+				}
+				else
+				{
+					$this->session->set_flashdata('msg', json_encode([0, validation_errors()]));
+					redirect('api/settings?ssl=1');
+				}
+			}
+			elseif($this->input->post('update_acme'))
+			{
+				$this->fv->set_rules('letsencrypt', "Let's Encrypt", ['trim']);
+				$this->fv->set_rules('zerossl', 'ZeroSSL', ['trim']);
+				$this->fv->set_rules('googletrust', 'Google Trust Services', ['trim']);
+				$this->fv->set_rules('status', 'Status', ['trim', 'required']);
+				if($this->fv->run() === true)
+				{
+					$letsencrypt = $this->input->post('letsencrypt');
+					if ($letsencrypt == '') {
+						$letsencrypt = 'not-set';
+					}
+					$zerossl = $this->input->post('zerossl');
+					if ($zerossl == '') {
+						$zerossl = 'not-set';
+					}
+					$googletrust = $this->input->post('googletrust');
+					if ($googletrust == '') {
+						$googletrust = 'not-set';
+					}
+
+					$status = $this->input->post('status');
+					$res = $this->acme->set_letsencrypt($letsencrypt);
+					$res = $this->acme->set_zerossl($zerossl);
+					$res = $this->acme->set_googletrust($googletrust);
+					$res = $this->acme->set_status($status);
+					if($res !== false)
+					{
+						$this->session->set_flashdata('msg', json_encode([1, 'ACME SSL settings updated successfully.']));
 						redirect('api/settings?ssl=1');
 					}
 					else
@@ -1522,7 +1566,7 @@ class A extends CI_Controller
 			$data['title'] = 'SSL Certificates';
 			$data['active'] = 'ssl';
 			$count = $this->input->get('page') ?? 0;
-			$data['list'] = $this->ssl->get_ssl_list_all($count);
+			$data['list'] = $this->acme->get_ssl_list_all($count);
 			
 			$this->load->view($this->base->get_template().'/page/includes/admin/header', $data);
 			$this->load->view($this->base->get_template().'/page/includes/admin/navbar');
@@ -1557,7 +1601,7 @@ class A extends CI_Controller
 			}
 			elseif($this->input->get('cancel'))
 			{
-				$res = $this->ssl->cancel_ssl($id, 'Some Reason');
+				$res = $this->acme->cancel_ssl($id, 'Some Reason');
 				if(!is_bool($res))
 				{
 					$this->session->set_flashdata('msg', json_encode([0, $res]));
@@ -1579,7 +1623,7 @@ class A extends CI_Controller
 				$data['title'] = 'View SSL';
 				$data['active'] = 'ssl';
 				$data['id'] = $id;
-				$data['data'] = $this->ssl->get_ssl_info($id);
+				$data['data'] = $this->acme->get_ssl_info($id);
 				if($data['data'] !== false)
 				{
 					$this->load->view($this->base->get_template().'/page/includes/admin/header', $data);

@@ -468,6 +468,30 @@ INSERT INTO `is_gogetssl` (
 	'inactive'
 );
 
+-- Create new table `is_acme`
+
+DROP TABLE IF EXISTS `is_acme`;
+
+CREATE TABLE `is_acme` (
+	`acme_id` varchar(13) NOT NULL DEFAULT 'xera_acme',
+	`acme_letsencrypt` varchar(100) NOT NULL,
+	`acme_zerossl` varchar(100) NOT NULL,
+	`acme_googletrust` varchar(100) NOT NULL,
+	`acme_status` varchar(8) NOT NULL
+);
+
+INSERT INTO `is_acme` (
+	`acme_letsencrypt`,
+	`acme_zerossl`,
+	`acme_googletrust`,
+	`acme_status`
+) VALUES (
+	'not-set',
+	'not-set',
+	'not-set',
+	'inactive'
+);
+
 -- Create new table `is_ssl`
 
 DROP TABLE IF EXISTS `is_ssl`;

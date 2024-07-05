@@ -295,6 +295,12 @@ if (isset($_GET['step']) and $_GET['step'] == 1 and isset($_POST['submit'])) {
 		) VALUES ('username','password','inactive'
 		);");
 
+		$sql = mysqli_query($mysqli, "INSERT INTO `is_acme` (`acme_letsencrypt`, `acme_zerossl`, `acme_googletrust`, `acme_status`) VALUES ('not-set', 'not-set', 'not-set', 'inactive');");
+
+		$sql = mysqli_query($mysqli, "CREATE TABLE `is_acme` (`acme_id` varchar(13) NOT NULL DEFAULT 'xera_acme', `acme_letsencrypt` varchar(100) NOT NULL, `acme_zerossl` varchar(100) NOT NULL, `acme_googletrust` varchar(100) NOT NULL, `acme_status` varchar(8) NOT NULL);");
+
+		$sql = mysqli_query($mysqli, "DROP TABLE IF EXISTS `is_acme`;");
+
 		$sql = mysqli_query($mysqli, "DROP TABLE IF EXISTS `is_ssl`;");
 
 		$sql = mysqli_query($mysqli, "CREATE TABLE `is_ssl` (`ssl_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,`ssl_pid` varchar(250) NOT NULL,`ssl_key` varchar(20) NOT NULL,`ssl_for` varchar(20) NOT NULL,`ssl_private` varchar(5000) NOT NULL

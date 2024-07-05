@@ -298,6 +298,16 @@ class User extends CI_Model
 		return false;
 	}
 
+	function get_id()
+	{
+		$res = $this->fetch_if_logged();
+		if($res !== false)
+		{
+			return $res['user_id'];
+		}
+		return false;
+	}
+
 	function is_active()
 	{
 		$res = $this->fetch_if_logged();

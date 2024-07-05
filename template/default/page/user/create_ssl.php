@@ -8,7 +8,50 @@
 		<div class="card-body">
 			<?= form_open('ssl/create') ?>
 				<div class="row">
+					<?php
+					if ($acme_active) :
+					?>
+					<div class="col-sm-6">
+						<label class="form-label">SSL Type</label>
+						<select class="form-control mb-2" name="type">
+							<?php
+							if ($this->acme->get_letsencrypt() != 'not-set') :
+							?>
+							<option value="letsencrypt" selected="true">Let's Encrypt</option>
+							<?php
+							endif;
+							?>
+							<?php
+							if ($this->ssl->is_active()) :
+							?>
+							<option value="gogetssl">GoGetSSL</option>
+							<?php
+							endif;
+							?>
+							<?php
+							if ($this->acme->get_zerossl() != 'not-set') :
+							?>
+							<option value="zerossl">ZeroSSL</option>
+							<?php
+							endif;
+							?>
+							<?php
+							if ($this->acme->get_googletrust() != 'not-set') :
+							?>
+							<option value="googletrust">Google Trust Services</option>
+							<?php
+							endif;
+							?>
+						</select>
+					</div>
+					<div class="col-sm-6 mb-2">
+					<?php
+					else :
+					?>
 					<div class="col-sm-12 mb-2">
+					<?php
+					endif;
+					?>
 						<label class="form-label"><?= $this->base->text('domain_name', 'label') ?></label>
 						<input type="text" class="form-control" name="domain" placeholder="<?= $this->base->text('domain_name', 'label') ?>"/>
 					</div>
