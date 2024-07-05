@@ -1535,7 +1535,7 @@ class U extends CI_Controller
 									redirect('u/create_ssl');
 								}
 
-								$res = $this->acme->create_ssl($domain);
+								$res = $this->acme->create_ssl($domain, $autority);
 							}
 							if(!is_bool($res))
 							{
@@ -1577,7 +1577,23 @@ class U extends CI_Controller
 					if($this->fv->run() === true)
 					{
 						$domain = $this->input->post('domain');
-						$res = $this->ssl->create_ssl($domain);
+						$type = $this->input->post('type');
+						if ($type == 'gogetssl') {
+							$res = $this->ssl->create_ssl($domain);
+						} else {
+							$res = $this->acme->initilize($type);
+							if (!is_bool($res))
+							{
+								$this->session->set_flashdata('msg', json_encode([0, $res]));
+								redirect('ssl/list');
+							} elseif(is_bool($res) AND $res == false)
+							{
+								$this->session->set_flashdata('msg', json_encode([0, $this->base->text('error_occured', 'error')]));
+								redirect('u/create_ssl');
+							}
+
+							$res = $this->acme->create_ssl($domain, $autority);
+						}
 						if(!is_bool($res))
 						{
 							$this->session->set_flashdata('msg', json_encode([0, $res]));
@@ -1655,7 +1671,28 @@ class U extends CI_Controller
 			}
 			elseif($this->input->get('cancel'))
 			{
-				$res = $this->acme->cancel_ssl($id, 'Some Reason');
+				$ssl_type = $this->ssl->get_ssl_type($id);
+				if ($ssl_type == 'gogetssl') {
+					$res = $this->ssl->cancel_ssl($id, 'Some Reason');
+				} else {
+					$res = $this->acme->initilize($ssl_type);
+					if(!is_bool($res))
+					{
+						$this->session->set_flashdata('msg', json_encode([0, $res]));
+						redirect("ssl/view/$id");
+					}
+					elseif(is_bool($res) AND $res == true)
+					{
+						$this->session->set_flashdata('msg', json_encode([1, $this->base->text('ssl_cancelled_msg', 'success')]));
+						redirect("ssl/view/$id");
+					}
+					else
+					{
+						$this->session->set_flashdata('msg', json_encode([0, $this->base->text('error_occured', 'error')]));
+						redirect("ssl/view/$id");
+					}
+					$res = $this->acme->cancel_ssl($id, 'Some Reason');
+				}
 				if(!is_bool($res))
 				{
 					$this->session->set_flashdata('msg', json_encode([0, $res]));
@@ -1679,7 +1716,28 @@ class U extends CI_Controller
 					$data['title'] = 'view_ssl';
 					$data['active'] = 'ssl';
 					$data['id'] = $id;
-					$data['data'] = $this->acme->get_ssl_info($id);
+					$ssl_type = $this->ssl->get_ssl_type($id);
+					if ($ssl_type == 'gogetssl') {
+						$data['data'] = $this->ssl->get_ssl_info($id);
+					} else {
+						$res = $this->acme->initilize($ssl_type);
+						if(!is_bool($res))
+						{
+							$this->session->set_flashdata('msg', json_encode([0, $res]));
+							redirect("ssl/view/$id");
+						}
+						elseif(is_bool($res) AND $res == true)
+						{
+							$this->session->set_flashdata('msg', json_encode([1, $this->base->text('ssl_cancelled_msg', 'success')]));
+							redirect("ssl/view/$id");
+						}
+						else
+						{
+							$this->session->set_flashdata('msg', json_encode([0, $this->base->text('error_occured', 'error')]));
+							redirect("ssl/view/$id");
+						}
+						$data['data'] = $this->acme->get_ssl_info($id);
+					}
 					if($data['data'] !== false)
 					{
 						$this->load->view($this->base->get_template().'/page/includes/user/header', $data);

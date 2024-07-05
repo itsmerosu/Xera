@@ -116,6 +116,16 @@ class Gogetssl extends CI_Model
 		return false;
 	}
 
+	function get_ssl_type($key)
+	{
+		$res = $this->fetch(['key' => $key]);
+		if($res !== [])
+		{
+			return $res['ssl_type'];
+		}
+		return false;
+	}
+
 	function get_ssl_list()
 	{
 		$res = $this->fetch(['for' => $this->user->get_key()]);

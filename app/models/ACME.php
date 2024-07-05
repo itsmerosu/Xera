@@ -1,6 +1,4 @@
 <?php 
-require_once __DIR__ . '/../vendor/autoload.php';
-
 use AcmePhp\Ssl\Certificate;
 use AcmePhp\Ssl\Generator\KeyPairGenerator;
 use InfinityFree\AcmeCore\Http\Base64SafeEncoder;
@@ -66,6 +64,7 @@ class ACME extends CI_Model
 
         $secureHttpClient = $secureHttpClientFactory->createSecureHttpClient($this->keyPair);
         $this->acme = new AcmeClient($secureHttpClient, $acme_directory);
+        return True;
     }
     
     function registerAccount()
@@ -73,7 +72,7 @@ class ACME extends CI_Model
         $this->acme->registerAccount(null, new ExternalAccount($this->user->get_id(), 'mailto:'.$this->user->get_email()));
     }
 
-    public function create_ssl($domain)
+    public function create_ssl($domain, $autority)
     {
         $keyPairGenerator = new KeyPairGenerator();
         $domainKeyPair = $keyPairGenerator->generateKeyPair();
@@ -102,7 +101,8 @@ class ACME extends CI_Model
             'ssl_pid' => $certificateOrder->getOrderEndpoint(),
             'ssl_key' => $key,
             'ssl_for' => $this->user->get_key(),
-            'ssl_private' => $domainKeyPair->getPrivateKey()->getPEM()
+            'ssl_private' => $domainKeyPair->getPrivateKey()->getPEM(),
+            'ssl_type' => $autority
         ];
         $res = $this->db->insert('is_ssl', $data);
 		if($res !== false)
@@ -315,6 +315,12 @@ class ACME extends CI_Model
         return False;
     }
 
+    function getOrderStatus_goget($id)
+    {
+        $this->load->model(['gogetssl' => 'ssl']);
+        return $this->ssl->getOrderStatus($id);
+    }
+
     function get_ssl_list()
 	{
 		$res = $this->fetch(['for' => $this->user->get_key()]);
@@ -324,7 +330,18 @@ class ACME extends CI_Model
 			if(count($res)>0)
 			{
 				foreach ($res as $key) {
-					$data = $this->getOrderStatus($key['ssl_pid']);
+                    if ($key['ssl_type'] == 'gogetssl') {
+                        $data = $this->getOrderStatus_goget($key['ssl_pid']);
+                    } elseif ($key['ssl_type'] == 'letsencrypt') {
+                        $this->initilize($key['ssl_type']);
+                        $data = $this->getOrderStatus($key['ssl_pid']);
+                    } elseif ($key['ssl_type'] == 'zerossl') {
+                        $this->initilize($key['ssl_type']);
+                        $data = $this->getOrderStatus($key['ssl_pid']);
+                    } elseif ($key['ssl_type'] == 'googletrust') {
+                        $this->initilize($key['ssl_type']);
+                        $data = $this->getOrderStatus($key['ssl_pid']);
+                    }
 					$data['key'] = $key['ssl_key'];
 					$arr[] = $data;
 				}
@@ -344,7 +361,18 @@ class ACME extends CI_Model
 			if(count($res)>0)
 			{
 				foreach ($res as $key) {
-					$data = $this->getOrderStatus($key['ssl_pid']);
+					if ($key['ssl_type'] == 'gogetssl') {
+                        $data = $this->getOrderStatus_goget($key['ssl_pid']);
+                    } elseif ($key['ssl_type'] == 'letsencrypt') {
+                        $this->initilize($key['ssl_type']);
+                        $data = $this->getOrderStatus($key['ssl_pid']);
+                    } elseif ($key['ssl_type'] == 'zerossl') {
+                        $this->initilize($key['ssl_type']);
+                        $data = $this->getOrderStatus($key['ssl_pid']);
+                    } elseif ($key['ssl_type'] == 'googletrust') {
+                        $this->initilize($key['ssl_type']);
+                        $data = $this->getOrderStatus($key['ssl_pid']);
+                    }
 					$data['key'] = $key['ssl_key'];
 					$arr[] = $data;
 				}
@@ -379,7 +407,18 @@ class ACME extends CI_Model
 			if(count($res)>0)
 			{
 				foreach ($res as $key) {
-					$data = $this->getOrderStatus($key['ssl_pid']);
+					if ($key['ssl_type'] == 'gogetssl') {
+                        $data = $this->getOrderStatus_goget($key['ssl_pid']);
+                    } elseif ($key['ssl_type'] == 'letsencrypt') {
+                        $this->initilize($key['ssl_type']);
+                        $data = $this->getOrderStatus($key['ssl_pid']);
+                    } elseif ($key['ssl_type'] == 'zerossl') {
+                        $this->initilize($key['ssl_type']);
+                        $data = $this->getOrderStatus($key['ssl_pid']);
+                    } elseif ($key['ssl_type'] == 'googletrust') {
+                        $this->initilize($key['ssl_type']);
+                        $data = $this->getOrderStatus($key['ssl_pid']);
+                    }
 					$data['key'] = $key['ssl_key'];
 					$arr[] = $data;
 				}
