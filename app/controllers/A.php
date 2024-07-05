@@ -77,6 +77,11 @@ class A extends CI_Controller
 							$token = $this->input->post('CRLT-captcha-token');
 							$type = "crypto";
 						}
+						elseif($this->grc->get_type() == "turnstile")
+						{
+							$token = $this->input->post('cf-turnstile-response');
+							$type = "turnstile";
+						}
 						else
 						{
 							$token = $this->input->post('h-captcha-response');
@@ -226,6 +231,11 @@ class A extends CI_Controller
 						{
 							$token = $this->input->post('CRLT-captcha-token');
 							$type = "crypto";
+						}
+						elseif($this->grc->get_type() == "turnstile")
+						{
+							$token = $this->input->post('cf-turnstile-response');
+							$type = "turnstile";
 						}
 						else
 						{
@@ -1072,6 +1082,11 @@ class A extends CI_Controller
 							$token = $this->input->post('CRLT-captcha-token');
 							$type = "crypto";
 						}
+						elseif($this->grc->get_type() == "turnstile")
+						{
+							$token = $this->input->post('cf-turnstile-response');
+							$type = "turnstile";
+						}
 						else
 						{
 							$token = $this->input->post('h-captcha-response');
@@ -1144,13 +1159,13 @@ class A extends CI_Controller
 			else
 			{
 				$data['title'] = 'View Ticket '.$id;
-                $data['id'] = $id;
-                $data['count'] = $count;
+		                $data['id'] = $id;
+		                $data['count'] = $count;
 				$data['active'] = 'ticket';
 				$data['ticket'] = $this->ticket->view_ticket($id);
 				if($data['ticket'] !== false)
 				{
-                    $count = $this->input->get('page') ?? 0;
+                    			$count = $this->input->get('page') ?? 0;
 					$data['replies'] = $this->ticket->get_ticket_reply($id, $count);
 
 					$this->load->view($this->base->get_template().'/page/includes/admin/header', $data);
