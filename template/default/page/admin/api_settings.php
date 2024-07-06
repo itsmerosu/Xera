@@ -34,7 +34,7 @@
 			<li class="nav-item">
 				<a href="#acme" class="nav-link <?php if ($this->input->get('acme')) : ?>
 					active
-				<?php endif ?>" data-bs-toggle="tab"><em class="fa fa-shield-alt me-2"></em>SSL Certificates</a>
+				<?php endif ?>" data-bs-toggle="tab"><em class="fa fa-shield-alt me-2"></em>SSL Certificates (ACME)</a>
 			</li>
 			<li class="nav-item">
 				<a href="#sitepro" class="nav-link <?php if ($this->input->get('sitepro')) : ?>
@@ -374,7 +374,7 @@
 						<label class="form-label">Status</label>
 						<select class="form-control mb-2" name="status">
 							<?php
-							if ($this->ssl->get_status() === 'active') :
+							if ($this->acme->get_status() === 'active') :
 							?>
 								<option value="1" selected="true">Active</option>
 								<option value="0">Inactive</option>

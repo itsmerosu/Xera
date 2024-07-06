@@ -729,18 +729,18 @@ class A extends CI_Controller
 					if($res !== false)
 					{
 						$this->session->set_flashdata('msg', json_encode([1, 'ACME SSL settings updated successfully.']));
-						redirect('api/settings?ssl=1');
+						redirect('api/settings?acme=1');
 					}
 					else
 					{
 						$this->session->set_flashdata('msg', json_encode([0, 'An error occured. Try again later.']));
-						redirect('api/settings?ssl=1');
+						redirect('api/settings?acme=1');
 					}
 				}
 				else
 				{
 					$this->session->set_flashdata('msg', json_encode([0, validation_errors()]));
-					redirect('api/settings?ssl=1');
+					redirect('api/settings?acme=1');
 				}
 			}
 			elseif($this->input->post('update_github'))

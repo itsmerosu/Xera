@@ -17,29 +17,29 @@ use AcmePhp\Ssl\Signer\CertificateRequestSigner;
 use InfinityFree\AcmeCore\Protocol\ExternalAccount;
 use InfinityFree\AcmeCore\Protocol\CertificateOrder;
 
-class ACME extends CI_Model
+class acme extends CI_Model
 {
     protected $acme;
     private $keyPair;
+    private $publicKeyPath;
+    private $privateKeyPath;
 
-	function __construct($autority)
+	function __construct()
 	{
+        $this->publicKeyPath = './acme-storage/'.$this->user->get_email().'/eab/account.pub.pem';
+        $this->privateKeyPath = './acme-storage/'.$this->user->get_email().'/eab/account.pem';
+        $directory = './acme-storage/'.$this->user->get_email().'/eab/';
+        if (!file_exists($directory )) {
+            mkdir($directory , 0777, true);
+        }
         /*
-        $publicKeyPath = './acme-storage/'.'testemail@testing.com'.'/account.pub.pem';
-        $privateKeyPath = './acme-storage/'.'testemail@testing.com'.'/account.pem';
-        */
         $publicKeyPath = 'account.pub.pem';
         $privateKeyPath = 'account.pem';
+        */
         
-        if (!file_exists($privateKeyPath)) {
-            $keyPairGenerator = new KeyPairGenerator();
-            $this->keyPair = $keyPairGenerator->generateKeyPair();
-        
-            file_put_contents($publicKeyPath, $this->keyPair->getPublicKey()->getPEM());
-            file_put_contents($privateKeyPath, $this->keyPair->getPrivateKey()->getPEM());
-        } else {
-            $publicKey = new PublicKey(file_get_contents($publicKeyPath));
-            $privateKey = new PrivateKey(file_get_contents($privateKeyPath));
+        if (file_exists($this->privateKeyPath)) {
+            $publicKey = new PublicKey(file_get_contents($this->publicKeyPath));
+            $privateKey = new PrivateKey(file_get_contents($this->privateKeyPath));
             $this->keyPair = new KeyPair($publicKey, $privateKey);
         }
 	}
@@ -50,21 +50,44 @@ class ACME extends CI_Model
         if (array_key_exists($autority, $acme_directory)) {
             return 'Autority not valid.';
         }
-        $acme_directory = $acme_directory[$autority];
+        $acme_directory = $acme_directory['acme_'.$autority];
         if ($acme_directory == 'not-set') {
             return 'Autority not set by the admin, please use another.';
         }
-        $secureHttpClientFactory = new SecureHttpClientFactory(
-            new GuzzleHttpClient(),
-            new Base64SafeEncoder(),
-            new KeyParser(),
-            new DataSigner(),
-            new ServerErrorHandler()
-        );
+        
+        if (!file_exists($this->privateKeyPath)) {
+            $keyPairGenerator = new KeyPairGenerator();
+            $this->keyPair = $keyPairGenerator->generateKeyPair();
+            file_put_contents($this->publicKeyPath, $this->keyPair->getPublicKey()->getPEM());
+            file_put_contents($this->privateKeyPath, $this->keyPair->getPrivateKey()->getPEM());
+            
+            $secureHttpClientFactory = new SecureHttpClientFactory(
+                new GuzzleHttpClient(),
+                new Base64SafeEncoder(),
+                new KeyParser(),
+                new DataSigner(),
+                new ServerErrorHandler()
+            );
 
-        $secureHttpClient = $secureHttpClientFactory->createSecureHttpClient($this->keyPair);
-        $this->acme = new AcmeClient($secureHttpClient, $acme_directory);
-        return True;
+            $secureHttpClient = $secureHttpClientFactory->createSecureHttpClient($this->keyPair);
+            $this->acme = new AcmeClient($secureHttpClient, $acme_directory);
+            
+            $this->acme->registerAccount($this->user->get_email());
+            return True;
+        } else {
+            $secureHttpClientFactory = new SecureHttpClientFactory(
+                new GuzzleHttpClient(),
+                new Base64SafeEncoder(),
+                new KeyParser(),
+                new DataSigner(),
+                new ServerErrorHandler()
+            );
+
+            $secureHttpClient = $secureHttpClientFactory->createSecureHttpClient($this->keyPair);
+            $this->acme = new AcmeClient($secureHttpClient, $acme_directory);
+            $this->acme->registerAccount($this->user->get_email());
+            return True;
+        }
     }
     
     function registerAccount()
@@ -79,7 +102,10 @@ class ACME extends CI_Model
 
         $certificateOrder = $this->acme->requestOrder([$domain]);
 
-        $challenges = $certificateOrder->getAuthorizationChallenges($domain);
+        $allChallenges = $certificateOrder->getAuthorizationChallenges();
+        $domain = array_key_first($allChallenges);
+
+        $challenges = $allChallenges[$domain];
         $dnsChallenge = null;
         foreach ($challenges as $challenge) {
             if ($challenge->getType() === 'dns-01') {
@@ -155,7 +181,7 @@ class ACME extends CI_Model
         $order = new CertificateOrder([], $orderId);
         $order = $this->acme->reloadOrder($order);
 
-        if ($order->getStatus() != 'issued') {
+        if ($order->getStatus() == 'valid') {
             $certificate = $this->acme->retrieveCertificate($order);
 
             $privateKey = $domainKeyPair->getPrivateKey()->getPem();
@@ -221,33 +247,19 @@ class ACME extends CI_Model
             
             }
         }
-
-        $certificate = $this->getCertificate($orderId, $privateKey->getPEM());
-        if ($certificate == False) {
-            return False;
-        }
-        $cert = openssl_x509_read($certificate['certificate_code']);
-
-        $creationDate = openssl_x509_parse($cert)['validFrom_time_t'];
-        $expirynDate = openssl_x509_parse($cert)['validTo_time_t'];
-        $creationDate = new DateTime("@$creationDate");
-        $expirynDate = new DateTime("@$expirynDate");
-        
-        if (new DateTime() >= $expirynDate) {
-            $status = 'expired';
-        }
-
         $return = [
             'status' => $status,
-            'begin_date' => $creationDate->format('Y-m-d'),
-            'end_date' => $expirynDate->format('Y-m-d'),
+            'begin_date' => '---- -- --',
+            'end_date' => '---- -- --',
             'csr_code' => $csrCode
         ];
-
         if ($status == 'processing') {
             $order = new CertificateOrder([], $orderId);
             $order = $this->acme->reloadOrder($order);
-            $challenges = $order->getAuthorizationChallenges($domain);
+            
+            $allChallenges = $order->getAuthorizationChallenges();
+            $domain = array_key_first($allChallenges);
+            $challenges = $allChallenges[$domain];
             
             $dnsChallenge = null;
             foreach ($challenges as $challenge) {
@@ -260,15 +272,48 @@ class ACME extends CI_Model
                 return False;
             }
 
+            $return = [
+                'status' => $status,
+                'begin_date' => '---- -- --',
+                'end_date' => '---- -- --',
+                'csr_code' => $csrCode
+            ];
+
             $challenge = $this->acme->challengeAuthorization($dnsChallenge);
             $digest = hash('sha256', $dnsChallenge->getPayload(), true);
             $base64urlDigest = rtrim(strtr(base64_encode($digest), '+/', '-_'), '=');
             $dnsContent = $base64urlDigest;
             $return['approver_method']['dns']['record'] = '_acme-challenge.'.$dnsChallenge->getDomain().' TXT '.$dnsContent;
-        } else {
+        } elseif ($this->getCertificate($orderId, $privateKey->getPEM())) {
             $return['private_key'] = $privateKey->getPEM();
+
+            $certificate = $this->getCertificate($orderId, $privateKey->getPEM());
+            if ($certificate == False) {
+                return False;
+            }
+            $cert = openssl_x509_read($certificate['certificate_code']);
+
+            $creationDate = openssl_x509_parse($cert)['validFrom_time_t'];
+            $expirynDate = openssl_x509_parse($cert)['validTo_time_t'];
+            $creationDate = new DateTime("@$creationDate");
+            $expirynDate = new DateTime("@$expirynDate");
+
+            if (new DateTime() >= $expirynDate) {
+                $status = 'expired';
+            }
+
+            $return['begin_date'] = $creationDate->format('Y-m-d');
+            $return['end_date'] = $expirynDate->format('Y-m-d');
             $return['crt_code'] = $certificate['certificate_code'];
             $return['ca_code'] = $certificate['intermediate_code'];
+        } else {
+            $return['private_key'] = $privateKey->getPEM();
+
+            $return['begin_date'] = '---- -- --';
+            $return['end_date'] = '---- -- --';
+
+            $return['crt_code'] = '';
+            $return['ca_code'] = '';
         }
         return $return;
     }
@@ -292,7 +337,7 @@ class ACME extends CI_Model
                     break;
             
             }
-            return $status;
+            return ['status' => $status];
         }
         return False;
     }

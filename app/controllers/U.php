@@ -1592,7 +1592,7 @@ class U extends CI_Controller
 								redirect('u/create_ssl');
 							}
 
-							$res = $this->acme->create_ssl($domain, $autority);
+							$res = $this->acme->create_ssl($domain, $type);
 						}
 						if(!is_bool($res))
 						{
@@ -1724,17 +1724,15 @@ class U extends CI_Controller
 						if(!is_bool($res))
 						{
 							$this->session->set_flashdata('msg', json_encode([0, $res]));
-							redirect("ssl/view/$id");
+							redirect("ssl/list");
 						}
 						elseif(is_bool($res) AND $res == true)
 						{
-							$this->session->set_flashdata('msg', json_encode([1, $this->base->text('ssl_cancelled_msg', 'success')]));
-							redirect("ssl/view/$id");
 						}
 						else
 						{
 							$this->session->set_flashdata('msg', json_encode([0, $this->base->text('error_occured', 'error')]));
-							redirect("ssl/view/$id");
+							redirect("ssl/list");
 						}
 						$data['data'] = $this->acme->get_ssl_info($id);
 					}
