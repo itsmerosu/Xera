@@ -79,6 +79,11 @@ class U extends CI_Controller
 							$token = $this->input->post('CRLT-captcha-token');
 							$type = "crypto";
 						}
+						elseif($this->grc->get_type() == "turnstile")
+						{
+							$token = $this->input->post('cf-turnstile-response');
+							$type = "turnstile";
+						}
 						else
 						{
 							$token = $this->input->post('h-captcha-response');
@@ -220,6 +225,11 @@ class U extends CI_Controller
 						{
 							$token = $this->input->post('CRLT-captcha-token');
 							$type = "crypto";
+						}
+						elseif($this->grc->get_type() == "turnstile")
+						{
+							$token = $this->input->post('cf-turnstile-response');
+							$type = "turnstile";
 						}
 						else
 						{
@@ -623,6 +633,11 @@ class U extends CI_Controller
 						{
 							$token = $this->input->post('CRLT-captcha-token');
 							$type = "crypto";
+						}
+						elseif($this->grc->get_type() == "turnstile")
+						{
+							$token = $this->input->post('cf-turnstile-response');
+							$type = "turnstile";
 						}
 						else
 						{
@@ -1479,6 +1494,11 @@ class U extends CI_Controller
 						{
 							$token = $this->input->post('CRLT-captcha-token');
 							$type = "crypto";
+						}
+						elseif($this->grc->get_type() == "turnstile")
+						{
+							$token = $this->input->post('cf-turnstile-response');
+							$type = "turnstile";
 						}
 						else
 						{
