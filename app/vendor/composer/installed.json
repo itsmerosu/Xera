@@ -954,6 +954,57 @@
             "install-path": "../psr/log"
         },
         {
+            "name": "purplepixie/phpdns",
+            "version": "2.1.1",
+            "version_normalized": "2.1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/purplepixie/phpdns.git",
+                "reference": "18cd3a43fadcfd16e2789e3c78a264945f6cbfad"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/purplepixie/phpdns/zipball/18cd3a43fadcfd16e2789e3c78a264945f6cbfad",
+                "reference": "18cd3a43fadcfd16e2789e3c78a264945f6cbfad",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.5"
+            },
+            "time": "2024-05-27T13:27:50+00:00",
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0-dev"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-0": {
+                    "PurplePixie": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "David Cutting",
+                    "email": "dcutting@purplepixie.org"
+                }
+            ],
+            "description": "PHP DNS Direct Query Module",
+            "support": {
+                "issues": "https://github.com/purplepixie/phpdns/issues",
+                "source": "https://github.com/purplepixie/phpdns/tree/2.1.1"
+            },
+            "install-path": "../purplepixie/phpdns"
+        },
+        {
             "name": "ralouphie/getallheaders",
             "version": "3.0.3",
             "version_normalized": "3.0.3.0",

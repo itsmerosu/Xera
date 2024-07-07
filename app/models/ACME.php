@@ -16,6 +16,7 @@ use AcmePhp\Ssl\CertificateRequest;
 use AcmePhp\Ssl\Signer\CertificateRequestSigner;
 use InfinityFree\AcmeCore\Protocol\ExternalAccount;
 use InfinityFree\AcmeCore\Protocol\CertificateOrder;
+use PurplePixie\PhpDns\DNSQuery;
 
 class acme extends CI_Model
 {
@@ -103,7 +104,6 @@ class acme extends CI_Model
         $certificateOrder = $this->acme->requestOrder([$domain]);
 
         $allChallenges = $certificateOrder->getAuthorizationChallenges();
-        $domain = array_key_first($allChallenges);
 
         $challenges = $allChallenges[$domain];
         $dnsChallenge = null;
@@ -161,13 +161,22 @@ class acme extends CI_Model
         if (!$dnsChallenge) {
             return false;
         }
-        $challenge = $this->acme->challengeAuthorization($dnsChallenge);
 
-        if ($challenge->getStatus() == 'valid') {
-            $dn = new DistinguishedName($domain);
-            $csr = new CertificateRequest($dn, $domainKeyPair);
-            $this->acme->finalizeOrder($order, $csr, 180, false);
-            return true;
+        $query = new DNSQuery("8.8.8.8");
+        $digest = hash('sha256', $dnsChallenge->getPayload(), true);
+        $base64urlDigest = rtrim(strtr(base64_encode($digest), '+/', '-_'), '=');
+        $name = '_acme-challenge.'.$dnsChallenge->getDomain();
+        $dnsContent = $base64urlDigest;
+        $result = $query->query($name, \PurplePixie\PhpDns\DNSTypes::NAME_TXT);
+
+        if ($result->current()->getData() == $dnsContent) {
+            $challenge = $this->acme->challengeAuthorization($dnsChallenge);
+            if ($challenge->getStatus() == 'valid') {
+                $dn = new DistinguishedName($domain);
+                $csr = new CertificateRequest($dn, $domainKeyPair);
+                $this->acme->finalizeOrder($order, $csr, 180, false);
+                return true;
+            }
         }
         return false;
     }
@@ -231,9 +240,15 @@ class acme extends CI_Model
                 case 'pending':
                     $status = 'processing';
                     if ($this->checkValidation($orderId, $privateKey->getPEM())) {
-                        if ($order->getStatus() == 'processing') {
-                            $status = 'processing';
-                        } elseif ($order->getStatus() == 'valid') {
+                        if ($order->getStatus() == 'valid') {
+                            $status = 'active';
+                        }
+                    }
+                    break;
+                case 'ready':
+                    $status = 'processing';
+                    if ($this->checkValidation($orderId, $privateKey->getPEM())) {
+                        if ($order->getStatus() == 'valid') {
                             $status = 'active';
                         }
                     }
@@ -251,7 +266,8 @@ class acme extends CI_Model
             'status' => $status,
             'begin_date' => '---- -- --',
             'end_date' => '---- -- --',
-            'csr_code' => $csrCode
+            'csr_code' => $csrCode,
+            'domain' => $domain
         ];
         if ($status == 'processing') {
             $order = new CertificateOrder([], $orderId);
@@ -279,7 +295,6 @@ class acme extends CI_Model
                 'csr_code' => $csrCode
             ];
 
-            $challenge = $this->acme->challengeAuthorization($dnsChallenge);
             $digest = hash('sha256', $dnsChallenge->getPayload(), true);
             $base64urlDigest = rtrim(strtr(base64_encode($digest), '+/', '-_'), '=');
             $dnsContent = $base64urlDigest;
@@ -308,10 +323,8 @@ class acme extends CI_Model
             $return['ca_code'] = $certificate['intermediate_code'];
         } else {
             $return['private_key'] = $privateKey->getPEM();
-
             $return['begin_date'] = '---- -- --';
             $return['end_date'] = '---- -- --';
-
             $return['crt_code'] = '';
             $return['ca_code'] = '';
         }
@@ -329,6 +342,9 @@ class acme extends CI_Model
                 case 'pending':
                     $status = 'processing';
                     break;
+                case 'ready':
+                    $status = 'processing';
+                    break;
                 case 'processing':
                     $status = 'processing';
                     break;
@@ -337,7 +353,12 @@ class acme extends CI_Model
                     break;
             
             }
-            return ['status' => $status];
+            $allChallenges = $order->getAuthorizationChallenges();
+            $domain = array_key_first($allChallenges);
+            return [
+                'status' => $status,
+                'domain' => $domain
+            ];
         }
         return False;
     }
