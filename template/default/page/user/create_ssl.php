@@ -29,18 +29,24 @@
 							endif;
 							?>
 							<?php
-							if ($this->acme->get_zerossl() != 'not-set') :
+							$zerossl = $this->acme->get_zerossl();
+							if ($zerossl == 'not-set') {
+
+							} elseif ($zerossl['url'] != '' && $zerossl['eab_kid'] != '' && $zerossl['eab_hmac_key'] != '') {
 							?>
 							<option value="zerossl">ZeroSSL</option>
 							<?php
-							endif;
+							}
 							?>
 							<?php
-							if ($this->acme->get_googletrust() != 'not-set') :
+							$googletrust = $this->acme->get_googletrust();
+							if ($googletrust == 'not-set') {
+
+							} elseif ($googletrust['url'] != '' && $googletrust['eab_kid'] != '' && $googletrust['eab_hmac_key'] != '') {
 							?>
 							<option value="googletrust">Google Trust Services</option>
 							<?php
-							endif;
+							}
 							?>
 						</select>
 					</div>
