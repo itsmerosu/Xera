@@ -237,7 +237,7 @@ class C extends CI_Controller
 					$edata = json_decode($edata, true);
 					curl_close($ch); 
 					$email = $edata[0]['email'];
-					if($this->user->is_register())
+					if($this->user->is_register($email))
 					{
 						$res = $this->user->oauth_login($email, $secret, 30);
 						if($res !== false)
