@@ -296,15 +296,19 @@ class acme extends CI_Model
             }
         }
         $type = 'Unknow';
-        switch ($this->ssl->get_ssl_type($key)) {
+        switch ($res[0]['ssl_type']) {
             case 'letsencrypt':
                 $type = "Let's Encrypt";
+                break;
             case 'zerossl':
                 $type = "ZeroSSL";
+                break;
             case 'googletrust':
                 $type = "Google Trust Services";
-            case 'gogetssl':
+                break;
+            default:
                 $type = "GoGetSSL";
+                break;
         }
         
         $return = [
@@ -437,15 +441,19 @@ class acme extends CI_Model
 				foreach ($res as $key) {
                     if ($key['ssl_type'] == 'gogetssl') {
                         $data = $this->getOrderStatus_goget($key['ssl_pid']);
+                        $data['type'] = "GoGetSSL";
                     } elseif ($key['ssl_type'] == 'letsencrypt') {
                         $this->initilize($key['ssl_type']);
                         $data = $this->getOrderStatus($key['ssl_pid']);
+                        $data['type'] = "Let's Encrypt";
                     } elseif ($key['ssl_type'] == 'zerossl') {
                         $this->initilize($key['ssl_type']);
                         $data = $this->getOrderStatus($key['ssl_pid']);
+                        $data['type'] = "ZeroSSL";
                     } elseif ($key['ssl_type'] == 'googletrust') {
                         $this->initilize($key['ssl_type']);
                         $data = $this->getOrderStatus($key['ssl_pid']);
+                        $data['type'] = "Google Trust Services";
                     }
 					$data['key'] = $key['ssl_key'];
 					$arr[] = $data;
@@ -468,15 +476,19 @@ class acme extends CI_Model
 				foreach ($res as $key) {
 					if ($key['ssl_type'] == 'gogetssl') {
                         $data = $this->getOrderStatus_goget($key['ssl_pid']);
+                        $data['type'] = "GoGetSSL";
                     } elseif ($key['ssl_type'] == 'letsencrypt') {
                         $this->initilize($key['ssl_type']);
                         $data = $this->getOrderStatus($key['ssl_pid']);
+                        $data['type'] = "Let's Encrypt";
                     } elseif ($key['ssl_type'] == 'zerossl') {
                         $this->initilize($key['ssl_type']);
                         $data = $this->getOrderStatus($key['ssl_pid']);
+                        $data['type'] = "ZeroSSL";
                     } elseif ($key['ssl_type'] == 'googletrust') {
                         $this->initilize($key['ssl_type']);
                         $data = $this->getOrderStatus($key['ssl_pid']);
+                        $data['type'] = "Google Trust Services";
                     }
 					$data['key'] = $key['ssl_key'];
 					$arr[] = $data;
@@ -514,15 +526,19 @@ class acme extends CI_Model
 				foreach ($res as $key) {
 					if ($key['ssl_type'] == 'gogetssl') {
                         $data = $this->getOrderStatus_goget($key['ssl_pid']);
+                        $data['type'] = "GoGetSSL";
                     } elseif ($key['ssl_type'] == 'letsencrypt') {
                         $this->initilize($key['ssl_type']);
                         $data = $this->getOrderStatus($key['ssl_pid']);
+                        $data['type'] = "Let's Encrypt";
                     } elseif ($key['ssl_type'] == 'zerossl') {
                         $this->initilize($key['ssl_type']);
                         $data = $this->getOrderStatus($key['ssl_pid']);
+                        $data['type'] = "ZeroSSL";
                     } elseif ($key['ssl_type'] == 'googletrust') {
                         $this->initilize($key['ssl_type']);
                         $data = $this->getOrderStatus($key['ssl_pid']);
+                        $data['type'] = "Google Trust Services";
                     }
 					$data['key'] = $key['ssl_key'];
 					$arr[] = $data;

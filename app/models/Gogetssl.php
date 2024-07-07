@@ -102,6 +102,7 @@ class Gogetssl extends CI_Model
  		    $data['private_key'] = $res[0]['ssl_private'];
 			if(count($data) > 4)
 			{
+				$data['type'] = 'GoGetSSL';
 				return $data;
 			}
 			else
@@ -142,6 +143,7 @@ class Gogetssl extends CI_Model
 				foreach ($res as $key) {
 					$data = $this->s->getOrderStatus($key['ssl_pid']);
 					$data['key'] = $key['ssl_key'];
+					$data['type'] = "GoGetSSL";
 					$arr[] = $data;
 				}
 				return $arr;
@@ -162,6 +164,7 @@ class Gogetssl extends CI_Model
 				foreach ($res as $key) {
 					$data = $this->s->getOrderStatus($key['ssl_pid']);
 					$data['key'] = $key['ssl_key'];
+					$data['type'] = "GoGetSSL";
 					$arr[] = $data;
 				}
 				return $arr;
@@ -197,6 +200,7 @@ class Gogetssl extends CI_Model
 				foreach ($res as $key) {
 					$data = $this->s->getOrderStatus($key['ssl_pid']);
 					$data['key'] = $key['ssl_key'];
+					$data['type'] = "GoGetSSL";
 					$arr[] = $data;
 				}
 			}
