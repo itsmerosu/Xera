@@ -47,12 +47,12 @@ class acme extends CI_Model
 
     function initilize($autority)
     {
-        $acme_directory = $this->fetch_base();
-        if (array_key_exists($autority, $acme_directory)) {
+        $ca_settings = $this->fetch_base();
+        if (!array_key_exists('acme_'.$autority, $ca_settings)) {
             return 'Autority not valid.';
         }
-        $acme_directory = $acme_directory['acme_'.$autority];
-        if ($acme_directory == 'not-set') {
+        $ca_settings = $ca_settings['acme_'.$autority];
+        if ($ca_settings == 'not-set') {
             return 'Autority not set by the admin, please use another.';
         }
         
@@ -71,10 +71,26 @@ class acme extends CI_Model
             );
 
             $secureHttpClient = $secureHttpClientFactory->createSecureHttpClient($this->keyPair);
-            $this->acme = new AcmeClient($secureHttpClient, $acme_directory);
-            
-            $this->acme->registerAccount($this->user->get_email());
-            return True;
+            if ($autority == 'letsencrypt') {
+                $this->acme = new AcmeClient($secureHttpClient, $ca_settings);
+                $this->acme->registerAccount($this->user->get_email());
+                return True;
+            } elseif ($autority == 'zerossl') {
+                $ca_settings = $this->get_zerossl();
+                if ($ca_settings['url'] != '' && $ca_settings['eab_kid'] != '' && $ca_settings['eab_hmac_key'] != '') {
+                    $this->acme = new AcmeClient($secureHttpClient, $ca_settings['url']);
+                    $this->acme->registerAccount($this->user->get_email(), new ExternalAccount($ca_settings['eab_kid'], $ca_settings['eab_hmac_key']));
+                    return True;
+                }
+            } elseif ($autority == 'googletrust') {
+                $ca_settings = $this->get_googletrust();
+                if ($ca_settings['url'] != '' && $ca_settings['eab_kid'] != '' && $ca_settings['eab_hmac_key'] != '') {
+                    $this->acme = new AcmeClient($secureHttpClient, $ca_settings['url']);
+                    $this->acme->registerAccount($this->user->get_email(), new ExternalAccount($ca_settings['eab_kid'], $ca_settings['eab_hmac_key']));
+                    return True;
+                }
+            }
+            return False;
         } else {
             $secureHttpClientFactory = new SecureHttpClientFactory(
                 new GuzzleHttpClient(),
@@ -85,9 +101,26 @@ class acme extends CI_Model
             );
 
             $secureHttpClient = $secureHttpClientFactory->createSecureHttpClient($this->keyPair);
-            $this->acme = new AcmeClient($secureHttpClient, $acme_directory);
-            $this->acme->registerAccount($this->user->get_email());
-            return True;
+            if ($autority == 'letsencrypt') {
+                $this->acme = new AcmeClient($secureHttpClient, $ca_settings);
+                $this->acme->registerAccount($this->user->get_email());
+                return True;
+            } elseif ($autority == 'zerossl') {
+                $ca_settings = $this->get_zerossl();
+                if ($ca_settings['url'] != '' && $ca_settings['eab_kid'] != '' && $ca_settings['eab_hmac_key'] != '') {
+                    $this->acme = new AcmeClient($secureHttpClient, $ca_settings['url']);
+                    $this->acme->registerAccount($this->user->get_email(), new ExternalAccount($ca_settings['eab_kid'], $ca_settings['eab_hmac_key']));
+                    return True;
+                }
+            } elseif ($autority == 'googletrust') {
+                $ca_settings = $this->get_googletrust();
+                if ($ca_settings['url'] != '' && $ca_settings['eab_kid'] != '' && $ca_settings['eab_hmac_key'] != '') {
+                    $this->acme = new AcmeClient($secureHttpClient, $ca_settings['url']);
+                    $this->acme->registerAccount($this->user->get_email(), new ExternalAccount($ca_settings['eab_kid'], $ca_settings['eab_hmac_key']));
+                    return True;
+                }
+            }
+            return False;
         }
     }
     
@@ -288,13 +321,6 @@ class acme extends CI_Model
                 return False;
             }
 
-            $return = [
-                'status' => $status,
-                'begin_date' => '---- -- --',
-                'end_date' => '---- -- --',
-                'csr_code' => $csrCode
-            ];
-
             $digest = hash('sha256', $dnsChallenge->getPayload(), true);
             $base64urlDigest = rtrim(strtr(base64_encode($digest), '+/', '-_'), '=');
             $dnsContent = $base64urlDigest;
@@ -384,7 +410,7 @@ class acme extends CI_Model
     function getOrderStatus_goget($id)
     {
         $this->load->model(['gogetssl' => 'ssl']);
-        return $this->ssl->getOrderStatus($id);
+        return $this->ssl->getStatus($id);
     }
 
     function get_ssl_list()
@@ -509,7 +535,17 @@ class acme extends CI_Model
 		$res = $this->fetch_base();
 		if($res !== false)
 		{
-			return $res['acme_zerossl'];
+            if ($res['acme_zerossl'] != 'not-set') {
+                $zerossl = json_decode($res['acme_zerossl'], true);
+                $return = [
+                    'url' => $zerossl['url'],
+                    'eab_kid' => $zerossl['eab_kid'],
+                    'eab_hmac_key' => $zerossl['eab_hmac_key']
+                ];
+			    return $return;
+            } else {
+                return 'not-set';
+            }
 		}
 		return false;
 	}
@@ -519,7 +555,17 @@ class acme extends CI_Model
 		$res = $this->fetch_base();
 		if($res !== false)
 		{
-			return $res['acme_googletrust'];
+            if ($res['acme_googletrust'] != 'not-set') {
+                $googletrust = json_decode($res['acme_googletrust'], true);
+                $return = [
+                    'url' => $googletrust['url'],
+                    'eab_kid' => $googletrust['eab_kid'],
+                    'eab_hmac_key' => $googletrust['eab_hmac_key']
+                ];
+			    return $return;
+            } else {
+                return 'not-set';
+            }
 		}
 		return false;
 	}
@@ -534,9 +580,18 @@ class acme extends CI_Model
 		return false;
 	}
 
-    function set_zerossl($acme_directory)
+    function set_zerossl($zerossl)
 	{
-		$res = $this->update('zerossl', $acme_directory);
+        if ($zerossl == 'not-set') {
+            $res = $this->update('zerossl', $zerossl);
+        } else {
+            if ($zerossl['url'] == '' && $zerossl['eab_kid'] == '' && $zerossl['eab_hmac_key'] == '') {
+                $zerossl = 'not-set';
+            } else {
+                $zerossl = json_encode($zerossl);
+            }
+            $res = $this->update('zerossl', $zerossl);
+        }
 		if($res)
 		{
 			return true;
@@ -544,9 +599,17 @@ class acme extends CI_Model
 		return false;
 	}
 
-    function set_googletrust($acme_directory)
+    function set_googletrust($googletrust)
 	{
-		$res = $this->update('googletrust', $acme_directory);
+        if ($googletrust == 'not-set') {
+            $res = $this->update('googletrust', $googletrust);
+        } else {
+            if ($googletrust['url'] == '' && $googletrust['eab_kid'] == '' && $googletrust['eab_hmac_key'] == '') {
+                $googletrust = 'not-set';
+            } else {
+                $googletrust = json_encode($googletrust);
+            }
+        }
 		if($res)
 		{
 			return true;

@@ -703,8 +703,12 @@ class A extends CI_Controller
 			elseif($this->input->post('update_acme'))
 			{
 				$this->fv->set_rules('letsencrypt', "Let's Encrypt", ['trim']);
-				$this->fv->set_rules('zerossl', 'ZeroSSL', ['trim']);
-				$this->fv->set_rules('googletrust', 'Google Trust Services', ['trim']);
+				$this->fv->set_rules('zerossl_url', 'ZeroSSL Directory URL', ['trim']);
+				$this->fv->set_rules('zerossl_kid', 'ZeroSSL EAB Key ID', ['trim']);
+				$this->fv->set_rules('zerossl_hmac', 'ZeroSSL EAB HMAC Key', ['trim']);
+				$this->fv->set_rules('googletrust_url', 'Google Trust Services Directory URL', ['trim']);
+				$this->fv->set_rules('googletrust_kid', 'Google Trust Services EAB Key ID', ['trim']);
+				$this->fv->set_rules('googletrust_hmac', 'Google Trust Services EAB HMAC Key', ['trim']);
 				$this->fv->set_rules('status', 'Status', ['trim', 'required']);
 				if($this->fv->run() === true)
 				{
@@ -712,12 +716,20 @@ class A extends CI_Controller
 					if ($letsencrypt == '') {
 						$letsencrypt = 'not-set';
 					}
-					$zerossl = $this->input->post('zerossl');
-					if ($zerossl == '') {
+					$zerossl = [
+						'url' => $this->input->post('zerossl_url'),
+						'eab_kid' => $this->input->post('zerossl_kid'),
+						'eab_hmac_key' => $this->input->post('zerossl_hmac')
+					];
+					if ($zerossl['url'] == '' && $zerossl['eab_kid'] == '' && $zerossl['eab_hmac_key'] == '') {
 						$zerossl = 'not-set';
 					}
-					$googletrust = $this->input->post('googletrust');
-					if ($googletrust == '') {
+					$googletrust = [
+						'url' => $this->input->post('googletrust_url'),
+						'eab_kid' => $this->input->post('googletrust_kid'),
+						'eab_hmac_key' => $this->input->post('googletrust_hmac')
+					];
+					if ($googletrust['url'] == '' && $googletrust['eab_kid'] == '' && $googletrust['eab_hmac_key'] == '') {
 						$googletrust = 'not-set';
 					}
 

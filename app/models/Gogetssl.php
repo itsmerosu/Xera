@@ -72,7 +72,8 @@ class Gogetssl extends CI_Model
 				'ssl_pid' => $res['order_id'],
 				'ssl_key' => $key,
 				'ssl_for' => $this->user->get_key(),
- 			    'ssl_private' => $csr['private_key']
+ 			    'ssl_private' => $csr['private_key'],
+				'ssl_type' => 'gogetssl'
 			];
 			$res = $this->db->insert('is_ssl', $data);
 			if($res !== false)
@@ -124,6 +125,10 @@ class Gogetssl extends CI_Model
 			return $res[0]['ssl_type'];
 		}
 		return false;
+	}
+
+	function getStatus($id) {
+		return $this->s->getOrderStatus($id);
 	}
 
 	function get_ssl_list()

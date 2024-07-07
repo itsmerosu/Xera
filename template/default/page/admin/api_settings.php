@@ -362,13 +362,49 @@
 						<label class="form-label">Let's Encrypt Directory URL</label>
 						<input type="text" name="letsencrypt" class="form-control mb-2" value="<?= $this->acme->get_letsencrypt() ?>">
 					</div>
+					<?php
+						$zerossl = $this->acme->get_zerossl();
+						if ($zerossl == 'not-set') {
+							$zerossl = [
+								'url' => '',
+								'eab_kid' => '',
+								'eab_hmac_key' => ''
+							];
+						}
+					?>
 					<div class="col-sm-6">
 						<label class="form-label">ZeroSSL Directory URL</label>
-						<input type="text" name="zerossl" class="form-control mb-2" value="<?= $this->acme->get_zerossl() ?>">
+						<input type="text" name="zerossl_url" class="form-control mb-2" value="<?= $zerossl['url'] ?>">
 					</div>
 					<div class="col-sm-6">
+						<label class="form-label">ZeroSSL EAB Key ID</label>
+						<input type="text" name="zerossl_kid" class="form-control mb-2" value="<?= $zerossl['eab_kid'] ?>">
+					</div>
+					<div class="col-sm-6">
+						<label class="form-label">ZeroSSL EAB HMAC Key</label>
+						<input type="text" name="zerossl_hmac" class="form-control mb-2" value="<?= $zerossl['eab_hmac_key'] ?>">
+					</div>
+					<?php
+						$googletrust = $this->acme->get_googletrust();
+						if ($googletrust == 'not-set') {
+							$googletrust = [
+								'url' => '',
+								'eab_kid' => '',
+								'eab_hmac_key' => ''
+							];
+						}
+					?>
+					<div class="col-sm-6">
 						<label class="form-label">Google Trust Services Directory URL</label>
-						<input type="text" name="googletrust" class="form-control mb-2" value="<?= $this->acme->get_googletrust() ?>">
+						<input type="text" name="googletrust_url" class="form-control mb-2" value="<?= $googletrust['url'] ?>">
+					</div>
+					<div class="col-sm-6">
+						<label class="form-label">Google Trust Services EAB Key ID</label>
+						<input type="text" name="googletrust_kid" class="form-control mb-2" value="<?= $googletrust['eab_kid'] ?>">
+					</div>
+					<div class="col-sm-6">
+						<label class="form-label">Google Trust Services EAB HMAC Key</label>
+						<input type="text" name="googletrust_hmac" class="form-control mb-2" value="<?= $googletrust['eab_hmac_key'] ?>">
 					</div>
 					<div class="col-sm-6">
 						<label class="form-label">Status</label>
