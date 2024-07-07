@@ -295,12 +295,25 @@ class acme extends CI_Model
             
             }
         }
+        $type = 'Unknow';
+        switch ($this->ssl->get_ssl_type($key)) {
+            case 'letsencrypt':
+                $type = "Let's Encrypt";
+            case 'zerossl':
+                $type = "ZeroSSL";
+            case 'googletrust':
+                $type = "Google Trust Services";
+            case 'gogetssl':
+                $type = "GoGetSSL";
+        }
+        
         $return = [
             'status' => $status,
             'begin_date' => '---- -- --',
             'end_date' => '---- -- --',
             'csr_code' => $csrCode,
-            'domain' => $domain
+            'domain' => $domain,
+            'type' => $type
         ];
         if ($status == 'processing') {
             $order = new CertificateOrder([], $orderId);
