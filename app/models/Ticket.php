@@ -172,6 +172,10 @@ class Ticket extends CI_Model
 
 	function get_ticket_reply($id, $count)
 	{
+		if ($count == False) {
+			$count = 0;
+			$inifnity = True;
+		}
 		$res = $this->fetch('is_reply', ['for' => $id], 'reply_');
         if($res !== false) {
             $list = [];
@@ -179,8 +183,12 @@ class Ticket extends CI_Model
 			{
 				$count = $count * $this->base->rpp();
 			}
-			for ($i = $count; $i < count($res); $i++) { 
-				if($i >= $count + $this->base->rpp())
+			for ($i = $count; $i < count($res); $i++) {
+				if ($inifnity == True)
+				{
+					$list[] = $res[$i];
+				}
+				elseif($i >= $count + $this->base->rpp())
 				{
 					break;
 				}
@@ -270,7 +278,7 @@ class Ticket extends CI_Model
 
 	function fetch_user_except($key, $id)
 	{
-		$res = $this->get_ticket_reply($id);
+		$res = $this->get_ticket_reply($id, False);
 		if(count($res)>0)
 		{
 			foreach ($res as $value) {
