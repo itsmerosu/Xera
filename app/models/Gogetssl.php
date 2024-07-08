@@ -72,7 +72,8 @@ class Gogetssl extends CI_Model
 				'ssl_pid' => $res['order_id'],
 				'ssl_key' => $key,
 				'ssl_for' => $this->user->get_key(),
- 			    'ssl_private' => $csr['private_key']
+ 			    'ssl_private' => $csr['private_key'],
+				'ssl_type' => 'gogetssl'
 			];
 			$res = $this->db->insert('is_ssl', $data);
 			if($res !== false)
@@ -101,6 +102,7 @@ class Gogetssl extends CI_Model
  		    $data['private_key'] = $res[0]['ssl_private'];
 			if(count($data) > 4)
 			{
+				$data['type'] = 'GoGetSSL';
 				return $data;
 			}
 			else
@@ -116,6 +118,20 @@ class Gogetssl extends CI_Model
 		return false;
 	}
 
+	function get_ssl_type($key)
+	{
+		$res = $this->fetch(['key' => $key]);
+		if($res !== [])
+		{
+			return $res[0]['ssl_type'];
+		}
+		return false;
+	}
+
+	function getStatus($id) {
+		return $this->s->getOrderStatus($id);
+	}
+
 	function get_ssl_list()
 	{
 		$res = $this->fetch(['for' => $this->user->get_key()]);
@@ -127,6 +143,7 @@ class Gogetssl extends CI_Model
 				foreach ($res as $key) {
 					$data = $this->s->getOrderStatus($key['ssl_pid']);
 					$data['key'] = $key['ssl_key'];
+					$data['type'] = "GoGetSSL";
 					$arr[] = $data;
 				}
 				return $arr;
@@ -147,6 +164,7 @@ class Gogetssl extends CI_Model
 				foreach ($res as $key) {
 					$data = $this->s->getOrderStatus($key['ssl_pid']);
 					$data['key'] = $key['ssl_key'];
+					$data['type'] = "GoGetSSL";
 					$arr[] = $data;
 				}
 				return $arr;
@@ -182,6 +200,7 @@ class Gogetssl extends CI_Model
 				foreach ($res as $key) {
 					$data = $this->s->getOrderStatus($key['ssl_pid']);
 					$data['key'] = $key['ssl_key'];
+					$data['type'] = "GoGetSSL";
 					$arr[] = $data;
 				}
 			}

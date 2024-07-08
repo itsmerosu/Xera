@@ -59,7 +59,7 @@
 							</span>
 						</a>
 					</li>
-					<?php if ($this->ssl->is_active()) : ?>
+					<?php if ($this->ssl->is_active() || $this->acme->is_active()) : ?>
 						<li class="nav-item <?php if (isset($active) and $active == 'ssl') : ?>
 							active
 						<?php endif ?>">

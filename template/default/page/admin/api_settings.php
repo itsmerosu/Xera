@@ -32,6 +32,11 @@
 				<?php endif ?>" data-bs-toggle="tab"><em class="fa fa-shield-alt me-2"></em>SSL Certificates</a>
 			</li>
 			<li class="nav-item">
+				<a href="#acme" class="nav-link <?php if ($this->input->get('acme')) : ?>
+					active
+				<?php endif ?>" data-bs-toggle="tab"><em class="fa fa-shield-alt me-2"></em>SSL Certificates (ACME)</a>
+			</li>
+			<li class="nav-item">
 				<a href="#sitepro" class="nav-link <?php if ($this->input->get('sitepro')) : ?>
 					active
 				<?php endif ?>" data-bs-toggle="tab"><em class="fa fa-brush me-2"></em>Site Builder</a>
@@ -344,6 +349,83 @@
 					</div>
 					<div class="col-sm-12">
 						<input type="submit" name="update_ssl" value="Change" class="btn btn-primary btn-pill">
+					</div>
+				</div>
+				</form>
+			</div>
+			<div class="tab-pane <?php if ($this->input->get('acme')) : ?>
+				active
+			<?php endif ?>" id="acme">
+				<?= form_open('api/settings') ?>
+				<div class="row">
+					<div class="col-sm-6">
+						<label class="form-label">Let's Encrypt Directory URL</label>
+						<input type="text" name="letsencrypt" class="form-control mb-2" value="<?= $this->acme->get_letsencrypt() ?>">
+					</div>
+					<?php
+						$zerossl = $this->acme->get_zerossl();
+						if ($zerossl == 'not-set') {
+							$zerossl = [
+								'url' => '',
+								'eab_kid' => '',
+								'eab_hmac_key' => ''
+							];
+						}
+					?>
+					<div class="col-sm-6">
+						<label class="form-label">ZeroSSL Directory URL</label>
+						<input type="text" name="zerossl_url" class="form-control mb-2" value="<?= $zerossl['url'] ?>">
+					</div>
+					<div class="col-sm-6">
+						<label class="form-label">ZeroSSL EAB Key ID</label>
+						<input type="text" name="zerossl_kid" class="form-control mb-2" value="<?= $zerossl['eab_kid'] ?>">
+					</div>
+					<div class="col-sm-6">
+						<label class="form-label">ZeroSSL EAB HMAC Key</label>
+						<input type="text" name="zerossl_hmac" class="form-control mb-2" value="<?= $zerossl['eab_hmac_key'] ?>">
+					</div>
+					<?php
+						$googletrust = $this->acme->get_googletrust();
+						if ($googletrust == 'not-set') {
+							$googletrust = [
+								'url' => '',
+								'eab_kid' => '',
+								'eab_hmac_key' => ''
+							];
+						}
+					?>
+					<div class="col-sm-6">
+						<label class="form-label">Google Trust Services Directory URL</label>
+						<input type="text" name="googletrust_url" class="form-control mb-2" value="<?= $googletrust['url'] ?>">
+					</div>
+					<div class="col-sm-6">
+						<label class="form-label">Google Trust Services EAB Key ID</label>
+						<input type="text" name="googletrust_kid" class="form-control mb-2" value="<?= $googletrust['eab_kid'] ?>">
+					</div>
+					<div class="col-sm-6">
+						<label class="form-label">Google Trust Services EAB HMAC Key</label>
+						<input type="text" name="googletrust_hmac" class="form-control mb-2" value="<?= $googletrust['eab_hmac_key'] ?>">
+					</div>
+					<div class="col-sm-6">
+						<label class="form-label">Status</label>
+						<select class="form-control mb-2" name="status">
+							<?php
+							if ($this->acme->get_status() === 'active') :
+							?>
+								<option value="1" selected="true">Active</option>
+								<option value="0">Inactive</option>
+							<?php
+							else :
+							?>
+								<option value="1">Active</option>
+								<option value="0" selected="true">Inactive</option>
+							<?php
+							endif;
+							?>
+						</select>
+					</div>
+					<div class="col-sm-12">
+						<input type="submit" name="update_acme" value="Change" class="btn btn-primary btn-pill">
 					</div>
 				</div>
 				</form>

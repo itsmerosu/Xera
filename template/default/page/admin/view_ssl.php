@@ -3,7 +3,7 @@
 		<div class="row align-items-center">
 			<div class="col">
 				<h2 class="page-title py-3">
-					View SSL
+					View SSL (<?php echo $data['type']; ?>)
 				</h2>
 			</div>
 			<div class="col-auto ms-auto d-print-none">

@@ -8,7 +8,56 @@
 		<div class="card-body">
 			<?= form_open('ssl/create') ?>
 				<div class="row">
+					<?php
+					if ($acme_active) :
+					?>
+					<div class="col-sm-6">
+						<label class="form-label">SSL Type</label>
+						<select class="form-control mb-2" name="type">
+							<?php
+							if ($this->acme->get_letsencrypt() != 'not-set') :
+							?>
+							<option value="letsencrypt" selected="true">Let's Encrypt</option>
+							<?php
+							endif;
+							?>
+							<?php
+							if ($this->ssl->is_active()) :
+							?>
+							<option value="gogetssl">GoGetSSL</option>
+							<?php
+							endif;
+							?>
+							<?php
+							$zerossl = $this->acme->get_zerossl();
+							if ($zerossl == 'not-set') {
+
+							} elseif ($zerossl['url'] != '' && $zerossl['eab_kid'] != '' && $zerossl['eab_hmac_key'] != '') {
+							?>
+							<option value="zerossl">ZeroSSL</option>
+							<?php
+							}
+							?>
+							<?php
+							$googletrust = $this->acme->get_googletrust();
+							if ($googletrust == 'not-set') {
+
+							} elseif ($googletrust['url'] != '' && $googletrust['eab_kid'] != '' && $googletrust['eab_hmac_key'] != '') {
+							?>
+							<option value="googletrust">Google Trust Services</option>
+							<?php
+							}
+							?>
+						</select>
+					</div>
+					<div class="col-sm-6 mb-2">
+					<?php
+					else :
+					?>
 					<div class="col-sm-12 mb-2">
+					<?php
+					endif;
+					?>
 						<label class="form-label"><?= $this->base->text('domain_name', 'label') ?></label>
 						<input type="text" class="form-control" name="domain" placeholder="<?= $this->base->text('domain_name', 'label') ?>"/>
 					</div>

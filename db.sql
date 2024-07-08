@@ -468,6 +468,30 @@ INSERT INTO `is_gogetssl` (
 	'inactive'
 );
 
+-- Create new table `is_acme`
+
+DROP TABLE IF EXISTS `is_acme`;
+
+CREATE TABLE `is_acme` (
+	`acme_id` varchar(13) NOT NULL DEFAULT 'xera_acme',
+	`acme_letsencrypt` varchar(100) NOT NULL,
+	`acme_zerossl` varchar(100) NOT NULL,
+	`acme_googletrust` varchar(100) NOT NULL,
+	`acme_status` varchar(8) NOT NULL
+);
+
+INSERT INTO `is_acme` (
+	`acme_letsencrypt`,
+	`acme_zerossl`,
+	`acme_googletrust`,
+	`acme_status`
+) VALUES (
+	'not-set',
+	'not-set',
+	'not-set',
+	'inactive'
+);
+
 -- Create new table `is_ssl`
 
 DROP TABLE IF EXISTS `is_ssl`;
@@ -477,7 +501,10 @@ CREATE TABLE `is_ssl` (
 	`ssl_pid` varchar(250) NOT NULL,
 	`ssl_key` varchar(20) NOT NULL,
 	`ssl_for` varchar(20) NOT NULL,
-	`ssl_private` varchar(5000) NOT NULL
+	`ssl_private` varchar(5000) NOT NULL,
+	`ssl_type` varchar(50) NULL,
+	`ssl_domain` varchar(250) NULL,
+	`ssl_status` varchar(250) NULL
 );
 
 -- Create new table `is_oauth`

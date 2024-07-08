@@ -17,8 +17,9 @@
 				<thead>
 					<tr>
 						<th width="5%">ID</th>
-						<th width="75%">Domain</th>
+						<th width="65%">Domain</th>
 						<th width="10%">Method</th>
+						<th width="10%">Provider</th>
 						<th width="10%">Status</th>
 						<th width="10%" class="text-center">Action</th>
 					</tr>
@@ -37,6 +38,7 @@
 								<td><?php echo $count = $count ?? $mcount ?></td>
 								<td><?= $item['domain'] ?></td>
 								<td>DNS</td>
+								<td><?= $item['type'] ?></td>
 								<td>
 									<?php if ($item['status'] == 'processing') : ?>
 										<span class="badge bg-yellow">

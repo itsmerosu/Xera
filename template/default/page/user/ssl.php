@@ -20,8 +20,9 @@
 				<thead>
 					<tr>
 						<th width="5%"><?= $this->base->text('id', 'table') ?></th>
-						<th width="75%"><?= $this->base->text('domain', 'table') ?></th>
+						<th width="65%"><?= $this->base->text('domain', 'table') ?></th>
 						<th width="10%"><?= $this->base->text('method', 'table') ?></th>
+						<th width="10%"><?= $this->base->text('provider', 'table') ?></th>
 						<th width="10%"><?= $this->base->text('status', 'table') ?></th>
 						<th width="10%" class="text-center"><?= $this->base->text('action', 'table') ?></th>
 					</tr>
@@ -33,6 +34,7 @@
 								<td><?php echo $count = $count ?? 1 ?></td>
 								<td><?= $item['domain'] ?></td>
 								<td>DNS</td>
+								<td><?= $item['type'] ?></td>
 								<td>
 									<?php if ($item['status'] == 'processing') : ?>
 										<span class="badge bg-yellow">
