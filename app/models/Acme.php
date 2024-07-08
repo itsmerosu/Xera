@@ -199,7 +199,8 @@ class acme extends CI_Model
         if (!$dnsChallenge) {
             return false;
         }
-
+	try
+	{
         $query = new DNSQuery("8.8.8.8");
         $digest = hash('sha256', $dnsChallenge->getPayload(), true);
         $base64urlDigest = rtrim(strtr(base64_encode($digest), '+/', '-_'), '=');
@@ -215,6 +216,11 @@ class acme extends CI_Model
                 $this->acme->finalizeOrder($order, $csr, 180, false);
                 return true;
             }
+        }
+	}
+	catch(Throwable $e)
+        {
+            return false;
         }
         return false;
     }
