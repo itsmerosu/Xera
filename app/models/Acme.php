@@ -524,7 +524,7 @@ class acme extends CI_Model
         return $return;
     }
 
-    function getOrderStatus($orderId, $autority) {
+    function getOrderStatus($orderId, $autority, $admin = false) {
         $res = $this->fetch(['pid' => $orderId]);
 		if($res !== []) {
             $status = $res[0]['ssl_status'];
@@ -558,7 +558,11 @@ class acme extends CI_Model
                 'domain' => $domain
             ];
         } else {
-            $this->initilize($autority);
+            if ($admin) {
+                $this->initilize($autority, $key);
+            } else {
+                $this->initilize($autority);
+            }
             $order = new CertificateOrder([], $orderId);
             $order = $this->acme->reloadOrder($order);
             if ($order->getStatus()) {
@@ -680,16 +684,13 @@ class acme extends CI_Model
                         $data = $this->getOrderStatus_goget($key['ssl_pid']);
                         $data['type'] = "GoGetSSL";
                     } elseif ($key['ssl_type'] == 'letsencrypt') {
-                        $this->initilize($key['ssl_type'], $key['ssl_key']);
-                        $data = $this->getOrderStatus($key['ssl_pid'], $key['ssl_type']);
+                        $data = $this->getOrderStatus($key['ssl_pid'], $key['ssl_type'], true);
                         $data['type'] = "Let's Encrypt";
                     } elseif ($key['ssl_type'] == 'zerossl') {
-                        $this->initilize($key['ssl_type'], $key['ssl_key']);
-                        $data = $this->getOrderStatus($key['ssl_pid'], $key['ssl_type']);
+                        $data = $this->getOrderStatus($key['ssl_pid'], $key['ssl_type'], true);
                         $data['type'] = "ZeroSSL";
                     } elseif ($key['ssl_type'] == 'googletrust') {
-                        $this->initilize($key['ssl_type'], $key['ssl_key']);
-                        $data = $this->getOrderStatus($key['ssl_pid'], $key['ssl_type']);
+                        $data = $this->getOrderStatus($key['ssl_pid'], $key['ssl_type'], true);
                         $data['type'] = "Google Trust Services";
                     }
 					$data['key'] = $key['ssl_key'];
