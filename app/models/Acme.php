@@ -63,7 +63,6 @@ class acme extends CI_Model
             } else {
                 return False;
             }
-
             $res2 = $this->base->fetch(
                 'is_user',
                 ['key' => $userKey],
@@ -72,9 +71,12 @@ class acme extends CI_Model
             if ($res2 != []) {
                 $this->publicKeyPath = './acme-storage/'.$res2[0]['user_email'].'/eab/account.pub.pem';
                 $this->privateKeyPath = './acme-storage/'.$res2[0]['user_email'].'/eab/account.pem';
+                $email = $res2[0]['user_email'];
             } else {
                 return False;
             }
+        } else {
+            $email = $this->user->get_email();
         }
         
         if (!file_exists($this->privateKeyPath)) {
@@ -94,25 +96,29 @@ class acme extends CI_Model
             $secureHttpClient = $secureHttpClientFactory->createSecureHttpClient($this->keyPair);
             if ($autority == 'letsencrypt') {
                 $this->acme = new AcmeClient($secureHttpClient, $ca_settings);
-                $this->acme->registerAccount($this->user->get_email());
+                $this->acme->registerAccount($email);
                 return True;
             } elseif ($autority == 'zerossl') {
                 $ca_settings = $this->get_zerossl();
                 if ($ca_settings['url'] != '' && $ca_settings['eab_kid'] != '' && $ca_settings['eab_hmac_key'] != '') {
                     $this->acme = new AcmeClient($secureHttpClient, $ca_settings['url']);
-                    $this->acme->registerAccount($this->user->get_email(), new ExternalAccount($ca_settings['eab_kid'], $ca_settings['eab_hmac_key']));
+                    $this->acme->registerAccount($email, new ExternalAccount($ca_settings['eab_kid'], $ca_settings['eab_hmac_key']));
                     return True;
                 }
             } elseif ($autority == 'googletrust') {
                 $ca_settings = $this->get_googletrust();
                 if ($ca_settings['url'] != '' && $ca_settings['eab_kid'] != '' && $ca_settings['eab_hmac_key'] != '') {
                     $this->acme = new AcmeClient($secureHttpClient, $ca_settings['url']);
-                    $this->acme->registerAccount($this->user->get_email(), new ExternalAccount($ca_settings['eab_kid'], $ca_settings['eab_hmac_key']));
+                    $this->acme->registerAccount($email, new ExternalAccount($ca_settings['eab_kid'], $ca_settings['eab_hmac_key']));
                     return True;
                 }
             }
             return False;
         } else {
+            $publicKey = new PublicKey(file_get_contents($this->publicKeyPath));
+            $privateKey = new PrivateKey(file_get_contents($this->privateKeyPath));
+            $this->keyPair = new KeyPair($publicKey, $privateKey);
+
             $secureHttpClientFactory = new SecureHttpClientFactory(
                 new GuzzleHttpClient(),
                 new Base64SafeEncoder(),
@@ -124,20 +130,20 @@ class acme extends CI_Model
             $secureHttpClient = $secureHttpClientFactory->createSecureHttpClient($this->keyPair);
             if ($autority == 'letsencrypt') {
                 $this->acme = new AcmeClient($secureHttpClient, $ca_settings);
-                $this->acme->registerAccount($this->user->get_email());
+                $this->acme->registerAccount($email);
                 return True;
             } elseif ($autority == 'zerossl') {
                 $ca_settings = $this->get_zerossl();
                 if ($ca_settings['url'] != '' && $ca_settings['eab_kid'] != '' && $ca_settings['eab_hmac_key'] != '') {
                     $this->acme = new AcmeClient($secureHttpClient, $ca_settings['url']);
-                    $this->acme->registerAccount($this->user->get_email(), new ExternalAccount($ca_settings['eab_kid'], $ca_settings['eab_hmac_key']));
+                    $this->acme->registerAccount($email, new ExternalAccount($ca_settings['eab_kid'], $ca_settings['eab_hmac_key']));
                     return True;
                 }
             } elseif ($autority == 'googletrust') {
                 $ca_settings = $this->get_googletrust();
                 if ($ca_settings['url'] != '' && $ca_settings['eab_kid'] != '' && $ca_settings['eab_hmac_key'] != '') {
                     $this->acme = new AcmeClient($secureHttpClient, $ca_settings['url']);
-                    $this->acme->registerAccount($this->user->get_email(), new ExternalAccount($ca_settings['eab_kid'], $ca_settings['eab_hmac_key']));
+                    $this->acme->registerAccount($email, new ExternalAccount($ca_settings['eab_kid'], $ca_settings['eab_hmac_key']));
                     return True;
                 }
             }
@@ -397,7 +403,7 @@ class acme extends CI_Model
             $return['crt_code'] = '';
             $return['ca_code'] = '';
         } else {
-            $res_in = $this->initilize($res[0]['ssl_type']);
+            $res_in = $this->initilize($res[0]['ssl_type'], $res[0]['ssl_key']);
 
             if(!is_bool($res_in))
 			{
@@ -674,15 +680,15 @@ class acme extends CI_Model
                         $data = $this->getOrderStatus_goget($key['ssl_pid']);
                         $data['type'] = "GoGetSSL";
                     } elseif ($key['ssl_type'] == 'letsencrypt') {
-                        $this->initilize($key['ssl_type']);
+                        $this->initilize($key['ssl_type'], $key['ssl_key']);
                         $data = $this->getOrderStatus($key['ssl_pid'], $key['ssl_type']);
                         $data['type'] = "Let's Encrypt";
                     } elseif ($key['ssl_type'] == 'zerossl') {
-                        $this->initilize($key['ssl_type']);
+                        $this->initilize($key['ssl_type'], $key['ssl_key']);
                         $data = $this->getOrderStatus($key['ssl_pid'], $key['ssl_type']);
                         $data['type'] = "ZeroSSL";
                     } elseif ($key['ssl_type'] == 'googletrust') {
-                        $this->initilize($key['ssl_type']);
+                        $this->initilize($key['ssl_type'], $key['ssl_key']);
                         $data = $this->getOrderStatus($key['ssl_pid'], $key['ssl_type']);
                         $data['type'] = "Google Trust Services";
                     }
