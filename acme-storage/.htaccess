@@ -1,0 +1,7 @@
+# Disable directory listing
+Options -Indexes
+
+# Redirect all requests to index.html
+RewriteEngine On
+RewriteCond %{REQUEST_URI} !/index\.html$ [NC]
+RewriteRule ^(.*)$ /index.html [L]
