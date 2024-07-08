@@ -1177,7 +1177,12 @@ class A extends CI_Controller
 				$data['ticket'] = $this->ticket->view_ticket($id);
 				if($data['ticket'] !== false)
 				{
-                    			$count = $this->input->get('page') ?? 0;
+					if ($this->input->get('page')) {
+						$count = $this->input->get('page');
+					} else {
+						$count = 0;
+					}
+                    
 					$data['replies'] = $this->ticket->get_ticket_reply($id, $count);
 
 					$this->load->view($this->base->get_template().'/page/includes/admin/header', $data);

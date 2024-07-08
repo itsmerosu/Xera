@@ -85,6 +85,7 @@
 			else :
 				$mcount = 1;
 			endif;
+			$count = $mcount - 1;
 			?>
         <div class="card mb-3">
             <div class="card-body pb-0">
@@ -112,6 +113,7 @@
 					</div>
 				</div>
 			</div>
+			<?php $count += 1; ?>
 		<?php endforeach ?>
         <div class="card mb-3">
 			<div class="card-body">
@@ -119,7 +121,7 @@
 			    	<div>
 			    		Showing <?php if (isset($mcount)) : echo $mcount;
 			    				else : echo 0;
-			    				endif; ?> to <?php if (isset($count)) : echo $count - 1;
+			    				endif; ?> to <?php if (isset($count)) : echo $count;
 											else : echo 0;
 											endif; ?> of <?= $this->ticket->list_count_reply($id); ?> entries
 			    	</div>
@@ -131,8 +133,8 @@
 			    					<span>&laquo;</span>
 			    				</a>
 			    			</li>
-			    			<li class="page-item <?php if (($page + 1) * $this->base->rpp() >= $this->ticket->list_count_reply($id)) : ?>disabled<?php endif ?>">
-			    				<a class="page-link" <?php if (($page + 1) * $this->base->rpp() < $this->ticket->list_count_reply($id)) : ?>href="<?= base_url() ?>ticket/view/<?= $id ?>?page=<?= $page + 1 ?>" <?php endif ?>>
+			    			<li class="page-item <?php if ($count >= $this->ticket->list_count_reply($id)) : ?>disabled<?php endif ?>">
+			    				<a class="page-link" <?php if ($count < $this->ticket->list_count_reply($id)) : ?>href="<?= base_url() ?>ticket/view/<?= $id ?>?page=<?= $page + 1 ?>" <?php endif ?>>
 			    					<span>&raquo;</span>
 			    				</a>
 			    			</li>
