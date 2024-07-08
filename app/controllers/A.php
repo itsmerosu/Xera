@@ -1171,8 +1171,7 @@ class A extends CI_Controller
 			else
 			{
 				$data['title'] = 'View Ticket '.$id;
-		                $data['id'] = $id;
-		                $data['count'] = $count;
+		        $data['id'] = $id;
 				$data['active'] = 'ticket';
 				$data['ticket'] = $this->ticket->view_ticket($id);
 				if($data['ticket'] !== false)
@@ -1182,6 +1181,7 @@ class A extends CI_Controller
 					} else {
 						$count = 0;
 					}
+					$data['count'] = $count;
                     
 					$data['replies'] = $this->ticket->get_ticket_reply($id, $count);
 
@@ -1681,22 +1681,6 @@ class A extends CI_Controller
 				if ($ssl_type == 'gogetssl') {
 					$data['data'] = $this->ssl->get_ssl_info($id);
 				} else {
-					$res = $this->acme->initilize($ssl_type);
-					if(!is_bool($res))
-					{
-						$this->session->set_flashdata('msg', json_encode([0, $res]));
-						redirect("ssl/view/$id");
-					}
-					elseif(is_bool($res) AND $res == true)
-					{
-						$this->session->set_flashdata('msg', json_encode([1, $this->base->text('ssl_cancelled_msg', 'success')]));
-						redirect("ssl/view/$id");
-					}
-					else
-					{
-						$this->session->set_flashdata('msg', json_encode([0, $this->base->text('error_occured', 'error')]));
-						redirect("ssl/view/$id");
-					}
 					$data['data'] = $this->acme->get_ssl_info($id);
 				}
 				if($data['data'] !== false)
@@ -1706,9 +1690,14 @@ class A extends CI_Controller
 					$this->load->view($this->base->get_template().'/page/admin/view_ssl');
 					$this->load->view($this->base->get_template().'/page/includes/admin/footer');
 				}
-				else
+				elseif ($data['data'] == False)
 				{
-					redirect('404');
+					$this->session->set_flashdata('msg', json_encode([0, 'An error occured. Try again later.']));
+					redirect("ssl/list");
+				} else
+				{
+					$this->session->set_flashdata('msg', json_encode([0, $data['data']]));
+					redirect("ssl/list");
 				}
 			}
 		}

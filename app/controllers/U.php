@@ -1720,20 +1720,6 @@ class U extends CI_Controller
 					if ($ssl_type == 'gogetssl') {
 						$data['data'] = $this->ssl->get_ssl_info($id);
 					} else {
-						$res = $this->acme->initilize($ssl_type);
-						if(!is_bool($res))
-						{
-							$this->session->set_flashdata('msg', json_encode([0, $res]));
-							redirect("ssl/list");
-						}
-						elseif(is_bool($res) AND $res == true)
-						{
-						}
-						else
-						{
-							$this->session->set_flashdata('msg', json_encode([0, $this->base->text('error_occured', 'error')]));
-							redirect("ssl/list");
-						}
 						$data['data'] = $this->acme->get_ssl_info($id);
 					}
 					if($data['data'] !== false)
@@ -1748,9 +1734,14 @@ class U extends CI_Controller
 						redirect('404');
 					}
 				}
-				else
+				elseif ($data['data'] == False)
 				{
-					redirect('user');
+					$this->session->set_flashdata('msg', json_encode([0, $this->base->text('error_occured', 'error')]));
+					redirect("ssl/list");
+				} else
+				{
+					$this->session->set_flashdata('msg', json_encode([0, $data['data']]));
+					redirect("ssl/list");
 				}
 			}
 		}
