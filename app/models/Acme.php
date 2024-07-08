@@ -45,7 +45,7 @@ class acme extends CI_Model
         }
 	}
 
-    function initilize($autority)
+    function initilize($autority, $key = null)
     {
         $ca_settings = $this->fetch_base();
         if (!array_key_exists('acme_'.$autority, $ca_settings)) {
@@ -54,6 +54,27 @@ class acme extends CI_Model
         $ca_settings = $ca_settings['acme_'.$autority];
         if ($ca_settings == 'not-set') {
             return 'Autority not set by the admin, please use another.';
+        }
+
+        if ($key != null) {
+            $res = $this->fetch(['key' => $key]);
+		    if($res !== []) {
+                $userKey = $res[0]['ssl_for'];
+            } else {
+                return False;
+            }
+
+            $res2 = $this->base->fetch(
+                'is_user',
+                ['key' => $userKey],
+                'user_'
+            );
+            if ($res2 != []) {
+                $this->publicKeyPath = './acme-storage/'.$res2[0]['user_email'].'/eab/account.pub.pem';
+                $this->privateKeyPath = './acme-storage/'.$res2[0]['user_email'].'/eab/account.pem';
+            } else {
+                return False;
+            }
         }
         
         if (!file_exists($this->privateKeyPath)) {
@@ -259,16 +280,26 @@ class acme extends CI_Model
             $orderId = $res[0]['ssl_pid'];
             $status = $res[0]['ssl_status'];
             $domain = $res[0]['ssl_domain'];
+            $userKey = $res[0]['ssl_for'];
         } else {
             return False;
         }
 
-        $directory = './acme-storage/'.$this->user->get_email().'/certificates/';
+        $res2 = $this->base->fetch(
+			'is_user',
+			['key' => $userKey],
+			'user_'
+		);
+        if ($res2 == [] && $res2 == False) {
+            return False;
+        }
+
+        $directory = './acme-storage/'.$res2[0]['user_email'].'/certificates/';
         if (!file_exists($directory )) {
             mkdir($directory , 0777, true);
         }
 
-        $privateDir = './acme-storage/'.$this->user->get_email().'/certificates/'.$key.'.priv.pem';
+        $privateDir = './acme-storage/'.$res2[0]['user_email'].'/certificates/'.$key.'.priv.pem';
         if (!file_exists($privateDir)) {
             $privateKey = $res[0]['ssl_private'];
             file_put_contents($privateDir, $privateKey);
@@ -292,7 +323,7 @@ class acme extends CI_Model
                 break;
         }
 
-        $csrDir = './acme-storage/'.$this->user->get_email().'/certificates/'.$key.'.csr';
+        $csrDir = './acme-storage/'.$res2[0]['user_email'].'/certificates/'.$key.'.csr';
         if (!file_exists($csrDir)) {
             $privateKeyObj = new PrivateKey($privateKey);
             $publicKey = $privateKeyObj->getPublicKey();
@@ -317,8 +348,8 @@ class acme extends CI_Model
         ];
 
         if ($status == 'active') {
-            $certificateDir = './acme-storage/'.$this->user->get_email().'/certificates/'.$key.'.pem';
-            $intermediateDir = './acme-storage/'.$this->user->get_email().'/certificates/'.$key.'.ca.pem';
+            $certificateDir = './acme-storage/'.$res2[0]['user_email'].'/certificates/'.$key.'.pem';
+            $intermediateDir = './acme-storage/'.$res2[0]['user_email'].'/certificates/'.$key.'.ca.pem';
             if (!file_exists($certificateDir) || !file_exists($intermediateDir)) {
                 $res_in = $this->initilize($res[0]['ssl_type']);
                 if(!is_bool($res_in))
@@ -433,8 +464,8 @@ class acme extends CI_Model
             } elseif ($this->getCertificate($orderId, $privateKey)) {
                 $return['private_key'] = $privateKey;
 
-                $certificateDir = './acme-storage/'.$this->user->get_email().'/certificates/'.$key.'.pem';
-                $intermediateDir = './acme-storage/'.$this->user->get_email().'/certificates/'.$key.'.ca.pem';
+                $certificateDir = './acme-storage/'.$res2[0]['user_email'].'/certificates/'.$key.'.pem';
+                $intermediateDir = './acme-storage/'.$res2[0]['user_email'].'/certificates/'.$key.'.ca.pem';
                 if (!file_exists($certificateDir) || !file_exists($intermediateDir)) {
                     $certificate = $this->getCertificate($orderId, $privateKey);
                     if ($certificate == False) {
@@ -493,9 +524,19 @@ class acme extends CI_Model
             $status = $res[0]['ssl_status'];
             $domain = $res[0]['ssl_domain'];
             $key = $res[0]['ssl_key'];
+            $userKey = $res[0]['ssl_for'];
         }
 
-        $privateDir = './acme-storage/'.$this->user->get_email().'/certificates/'.$key.'.priv.pem';
+        $res2 = $this->base->fetch(
+			'is_user',
+			['key' => $userKey],
+			'user_'
+		);
+        if ($res2 == [] && $res2 == False) {
+            return False;
+        }
+
+        $privateDir = './acme-storage/'.$res2[0]['user_email'].'/certificates/'.$key.'.priv.pem';
         if (file_exists($privateDir)) {
             $privateKey = file_get_contents($privateDir);
         }

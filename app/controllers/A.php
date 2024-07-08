@@ -1618,12 +1618,12 @@ class A extends CI_Controller
 			$id = $this->security->xss_clean($id);
 			if($this->input->get('delete'))
 			{
-				$this->db->where(['key' => $id]);
+				$this->db->where(['ssl_key' => $id]);
 				$res = $this->db->delete('is_ssl');
 				if($res !== false)
 				{
 					$this->session->set_flashdata('msg', json_encode([1, 'SSL certificate deleted successfully.']));
-					redirect("admin/ssl/view/$id");
+					redirect("admin/ssl/list");
 				}
 				else
 				{
@@ -1637,7 +1637,7 @@ class A extends CI_Controller
 				if ($ssl_type == 'gogetssl') {
 					$res = $this->ssl->cancel_ssl($id, 'Some Reason');
 				} else {
-					$res = $this->acme->initilize($ssl_type);
+					$res = $this->acme->initilize($ssl_type, $id);
 					if(!is_bool($res))
 					{
 						$this->session->set_flashdata('msg', json_encode([0, $res]));
