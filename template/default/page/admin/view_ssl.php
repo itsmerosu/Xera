@@ -10,25 +10,31 @@
 				<?php if ($data['status'] == 'cancelled' OR $data['status'] == 'expired'): ?>
 					<a class="btn btn-danger" href="?delete=true">Delete</a>
 				<?php elseif ($data['type'] != 'gogetssl'): ?>
-					<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#delete">
-						<?= $this->base->text('delete', 'button') ?>
+					<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">
+					    <?= $this->base->text('delete', 'button') ?>
 					</button>
-					<div class="modal btn btn-danger" id="delete" tabindex="-1">
-						<div class="modal-dialog" role="document">
-							<div class="modal-content">
-								<div class="modal-header">
-									<h5 class="modal-title"><?= $this->base->text('delete', 'button') ?></h5>
-									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-								</div>
-								<div class="modal-body">
-									<?= $this->base->text('delete_msg', 'paragraph') ?>
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn me-auto" data-bs-dismiss="modal"><?= $this->base->text('close', 'button') ?></button>
-									<a class="btn btn-danger" href="?delete=true"><?= $this->base->text('delete', 'button') ?></a>
-								</div>
-							</div>
-						</div>
+									
+					<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+					    <div class="modal-dialog" role="document">
+					        <div class="modal-content">
+					            <div class="modal-header">
+					                <h5 class="modal-title" id="deleteModalLabel">Delete</h5>
+					                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					            </div>
+					            <div class="modal-body">
+					                Deleting the certificate here will remove the certificate from the list in the client area.
+									<ul>
+									    <li>This will NOT remove the SSL certificate currently installed on your domain.</li>
+									    <li>This will NOT make your website switch back to HTTP.</li>
+									    <li>The certificate WILL remain valid until the expiration date.</li>
+									</ul>
+					            </div>
+					            <div class="modal-footer">
+					                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					                <a class="btn btn-danger" href="?delete=true">Delete</a>
+					            </div>
+					        </div>
+					    </div>
 					</div>
 				<?php elseif ($data['status'] !== 'cancelled' OR $data['status'] !== 'expired'): ?>
 					<a class="btn btn-danger" href="?cancel=true">Cancel</a>

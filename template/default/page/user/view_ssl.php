@@ -10,25 +10,26 @@
 				<?php if ($data['status'] == 'cancelled' OR $data['status'] == 'expired'): ?>
 					<a class="btn btn-danger" href="?delete=true"><?= $this->base->text('delete', 'button') ?></a>
 				<?php elseif ($data['type'] != 'gogetssl'): ?>
-					<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#delete">
-						<?= $this->base->text('delete', 'button') ?>
+					<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">
+					    <?= $this->base->text('delete', 'button') ?>
 					</button>
-					<div class="modal btn btn-danger" id="delete" tabindex="-1">
-						<div class="modal-dialog" role="document">
-							<div class="modal-content">
-								<div class="modal-header">
-									<h5 class="modal-title"><?= $this->base->text('delete', 'button') ?></h5>
-									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-								</div>
-								<div class="modal-body">
-									<?= $this->base->text('delete_msg', 'paragraph') ?>
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn me-auto" data-bs-dismiss="modal"><?= $this->base->text('close', 'button') ?></button>
-									<a class="btn btn-danger" href="?delete=true"><?= $this->base->text('delete', 'button') ?></a>
-								</div>
-							</div>
-						</div>
+									
+					<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+					    <div class="modal-dialog" role="document">
+					        <div class="modal-content">
+					            <div class="modal-header">
+					                <h5 class="modal-title" id="deleteModalLabel"><?= $this->base->text('delete', 'button') ?></h5>
+					                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					            </div>
+					            <div class="modal-body">
+					                <?= $this->base->text('delete_msg', 'paragraph') ?>
+					            </div>
+					            <div class="modal-footer">
+					                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?= $this->base->text('close', 'button') ?></button>
+					                <a class="btn btn-danger" href="?delete=true"><?= $this->base->text('delete', 'button') ?></a>
+					            </div>
+					        </div>
+					    </div>
 					</div>
 				<?php elseif ($data['status'] !== 'cancelled' OR $data['status'] !== 'expired'): ?>
 					<a class="btn btn-danger" href="?cancel=true"><?= $this->base->text('cancel', 'button') ?></a>

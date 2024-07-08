@@ -45,7 +45,7 @@ class acme extends CI_Model
         }
 	}
 
-    function initilize($autority)
+    function initilize($autority, $key = null)
     {
         $ca_settings = $this->fetch_base();
         if (!array_key_exists('acme_'.$autority, $ca_settings)) {
@@ -54,6 +54,29 @@ class acme extends CI_Model
         $ca_settings = $ca_settings['acme_'.$autority];
         if ($ca_settings == 'not-set') {
             return 'Autority not set by the admin, please use another.';
+        }
+
+        if ($key != null) {
+            $res = $this->fetch(['key' => $key]);
+		    if($res !== []) {
+                $userKey = $res[0]['ssl_for'];
+            } else {
+                return False;
+            }
+            $res2 = $this->base->fetch(
+                'is_user',
+                ['key' => $userKey],
+                'user_'
+            );
+            if ($res2 != []) {
+                $this->publicKeyPath = './acme-storage/'.$res2[0]['user_email'].'/eab/account.pub.pem';
+                $this->privateKeyPath = './acme-storage/'.$res2[0]['user_email'].'/eab/account.pem';
+                $email = $res2[0]['user_email'];
+            } else {
+                return False;
+            }
+        } else {
+            $email = $this->user->get_email();
         }
         
         if (!file_exists($this->privateKeyPath)) {
@@ -73,25 +96,29 @@ class acme extends CI_Model
             $secureHttpClient = $secureHttpClientFactory->createSecureHttpClient($this->keyPair);
             if ($autority == 'letsencrypt') {
                 $this->acme = new AcmeClient($secureHttpClient, $ca_settings);
-                $this->acme->registerAccount($this->user->get_email());
+                $this->acme->registerAccount($email);
                 return True;
             } elseif ($autority == 'zerossl') {
                 $ca_settings = $this->get_zerossl();
                 if ($ca_settings['url'] != '' && $ca_settings['eab_kid'] != '' && $ca_settings['eab_hmac_key'] != '') {
                     $this->acme = new AcmeClient($secureHttpClient, $ca_settings['url']);
-                    $this->acme->registerAccount($this->user->get_email(), new ExternalAccount($ca_settings['eab_kid'], $ca_settings['eab_hmac_key']));
+                    $this->acme->registerAccount($email, new ExternalAccount($ca_settings['eab_kid'], $ca_settings['eab_hmac_key']));
                     return True;
                 }
             } elseif ($autority == 'googletrust') {
                 $ca_settings = $this->get_googletrust();
                 if ($ca_settings['url'] != '' && $ca_settings['eab_kid'] != '' && $ca_settings['eab_hmac_key'] != '') {
                     $this->acme = new AcmeClient($secureHttpClient, $ca_settings['url']);
-                    $this->acme->registerAccount($this->user->get_email(), new ExternalAccount($ca_settings['eab_kid'], $ca_settings['eab_hmac_key']));
+                    $this->acme->registerAccount($email, new ExternalAccount($ca_settings['eab_kid'], $ca_settings['eab_hmac_key']));
                     return True;
                 }
             }
             return False;
         } else {
+            $publicKey = new PublicKey(file_get_contents($this->publicKeyPath));
+            $privateKey = new PrivateKey(file_get_contents($this->privateKeyPath));
+            $this->keyPair = new KeyPair($publicKey, $privateKey);
+
             $secureHttpClientFactory = new SecureHttpClientFactory(
                 new GuzzleHttpClient(),
                 new Base64SafeEncoder(),
@@ -103,20 +130,20 @@ class acme extends CI_Model
             $secureHttpClient = $secureHttpClientFactory->createSecureHttpClient($this->keyPair);
             if ($autority == 'letsencrypt') {
                 $this->acme = new AcmeClient($secureHttpClient, $ca_settings);
-                $this->acme->registerAccount($this->user->get_email());
+                $this->acme->registerAccount($email);
                 return True;
             } elseif ($autority == 'zerossl') {
                 $ca_settings = $this->get_zerossl();
                 if ($ca_settings['url'] != '' && $ca_settings['eab_kid'] != '' && $ca_settings['eab_hmac_key'] != '') {
                     $this->acme = new AcmeClient($secureHttpClient, $ca_settings['url']);
-                    $this->acme->registerAccount($this->user->get_email(), new ExternalAccount($ca_settings['eab_kid'], $ca_settings['eab_hmac_key']));
+                    $this->acme->registerAccount($email, new ExternalAccount($ca_settings['eab_kid'], $ca_settings['eab_hmac_key']));
                     return True;
                 }
             } elseif ($autority == 'googletrust') {
                 $ca_settings = $this->get_googletrust();
                 if ($ca_settings['url'] != '' && $ca_settings['eab_kid'] != '' && $ca_settings['eab_hmac_key'] != '') {
                     $this->acme = new AcmeClient($secureHttpClient, $ca_settings['url']);
-                    $this->acme->registerAccount($this->user->get_email(), new ExternalAccount($ca_settings['eab_kid'], $ca_settings['eab_hmac_key']));
+                    $this->acme->registerAccount($email, new ExternalAccount($ca_settings['eab_kid'], $ca_settings['eab_hmac_key']));
                     return True;
                 }
             }
@@ -259,16 +286,26 @@ class acme extends CI_Model
             $orderId = $res[0]['ssl_pid'];
             $status = $res[0]['ssl_status'];
             $domain = $res[0]['ssl_domain'];
+            $userKey = $res[0]['ssl_for'];
         } else {
             return False;
         }
 
-        $directory = './acme-storage/'.$this->user->get_email().'/certificates/';
+        $res2 = $this->base->fetch(
+			'is_user',
+			['key' => $userKey],
+			'user_'
+		);
+        if ($res2 == [] && $res2 == False) {
+            return False;
+        }
+
+        $directory = './acme-storage/'.$res2[0]['user_email'].'/certificates/';
         if (!file_exists($directory )) {
             mkdir($directory , 0777, true);
         }
 
-        $privateDir = './acme-storage/'.$this->user->get_email().'/certificates/'.$key.'.priv.pem';
+        $privateDir = './acme-storage/'.$res2[0]['user_email'].'/certificates/'.$key.'.priv.pem';
         if (!file_exists($privateDir)) {
             $privateKey = $res[0]['ssl_private'];
             file_put_contents($privateDir, $privateKey);
@@ -292,7 +329,7 @@ class acme extends CI_Model
                 break;
         }
 
-        $csrDir = './acme-storage/'.$this->user->get_email().'/certificates/'.$key.'.csr';
+        $csrDir = './acme-storage/'.$res2[0]['user_email'].'/certificates/'.$key.'.csr';
         if (!file_exists($csrDir)) {
             $privateKeyObj = new PrivateKey($privateKey);
             $publicKey = $privateKeyObj->getPublicKey();
@@ -317,8 +354,8 @@ class acme extends CI_Model
         ];
 
         if ($status == 'active') {
-            $certificateDir = './acme-storage/'.$this->user->get_email().'/certificates/'.$key.'.pem';
-            $intermediateDir = './acme-storage/'.$this->user->get_email().'/certificates/'.$key.'.ca.pem';
+            $certificateDir = './acme-storage/'.$res2[0]['user_email'].'/certificates/'.$key.'.pem';
+            $intermediateDir = './acme-storage/'.$res2[0]['user_email'].'/certificates/'.$key.'.ca.pem';
             if (!file_exists($certificateDir) || !file_exists($intermediateDir)) {
                 $res_in = $this->initilize($res[0]['ssl_type']);
                 if(!is_bool($res_in))
@@ -366,7 +403,7 @@ class acme extends CI_Model
             $return['crt_code'] = '';
             $return['ca_code'] = '';
         } else {
-            $res_in = $this->initilize($res[0]['ssl_type']);
+            $res_in = $this->initilize($res[0]['ssl_type'], $res[0]['ssl_key']);
 
             if(!is_bool($res_in))
 			{
@@ -433,8 +470,8 @@ class acme extends CI_Model
             } elseif ($this->getCertificate($orderId, $privateKey)) {
                 $return['private_key'] = $privateKey;
 
-                $certificateDir = './acme-storage/'.$this->user->get_email().'/certificates/'.$key.'.pem';
-                $intermediateDir = './acme-storage/'.$this->user->get_email().'/certificates/'.$key.'.ca.pem';
+                $certificateDir = './acme-storage/'.$res2[0]['user_email'].'/certificates/'.$key.'.pem';
+                $intermediateDir = './acme-storage/'.$res2[0]['user_email'].'/certificates/'.$key.'.ca.pem';
                 if (!file_exists($certificateDir) || !file_exists($intermediateDir)) {
                     $certificate = $this->getCertificate($orderId, $privateKey);
                     if ($certificate == False) {
@@ -487,15 +524,25 @@ class acme extends CI_Model
         return $return;
     }
 
-    function getOrderStatus($orderId, $autority) {
+    function getOrderStatus($orderId, $autority, $admin = false) {
         $res = $this->fetch(['pid' => $orderId]);
 		if($res !== []) {
             $status = $res[0]['ssl_status'];
             $domain = $res[0]['ssl_domain'];
             $key = $res[0]['ssl_key'];
+            $userKey = $res[0]['ssl_for'];
         }
 
-        $privateDir = './acme-storage/'.$this->user->get_email().'/certificates/'.$key.'.priv.pem';
+        $res2 = $this->base->fetch(
+			'is_user',
+			['key' => $userKey],
+			'user_'
+		);
+        if ($res2 == [] && $res2 == False) {
+            return False;
+        }
+
+        $privateDir = './acme-storage/'.$res2[0]['user_email'].'/certificates/'.$key.'.priv.pem';
         if (file_exists($privateDir)) {
             $privateKey = file_get_contents($privateDir);
         }
@@ -511,7 +558,11 @@ class acme extends CI_Model
                 'domain' => $domain
             ];
         } else {
-            $this->initilize($autority);
+            if ($admin) {
+                $this->initilize($autority, $key);
+            } else {
+                $this->initilize($autority);
+            }
             $order = new CertificateOrder([], $orderId);
             $order = $this->acme->reloadOrder($order);
             if ($order->getStatus()) {
@@ -633,16 +684,13 @@ class acme extends CI_Model
                         $data = $this->getOrderStatus_goget($key['ssl_pid']);
                         $data['type'] = "GoGetSSL";
                     } elseif ($key['ssl_type'] == 'letsencrypt') {
-                        $this->initilize($key['ssl_type']);
-                        $data = $this->getOrderStatus($key['ssl_pid'], $key['ssl_type']);
+                        $data = $this->getOrderStatus($key['ssl_pid'], $key['ssl_type'], true);
                         $data['type'] = "Let's Encrypt";
                     } elseif ($key['ssl_type'] == 'zerossl') {
-                        $this->initilize($key['ssl_type']);
-                        $data = $this->getOrderStatus($key['ssl_pid'], $key['ssl_type']);
+                        $data = $this->getOrderStatus($key['ssl_pid'], $key['ssl_type'], true);
                         $data['type'] = "ZeroSSL";
                     } elseif ($key['ssl_type'] == 'googletrust') {
-                        $this->initilize($key['ssl_type']);
-                        $data = $this->getOrderStatus($key['ssl_pid'], $key['ssl_type']);
+                        $data = $this->getOrderStatus($key['ssl_pid'], $key['ssl_type'], true);
                         $data['type'] = "Google Trust Services";
                     }
 					$data['key'] = $key['ssl_key'];

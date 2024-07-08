@@ -1656,12 +1656,12 @@ class U extends CI_Controller
 			$id = $this->security->xss_clean($id);
 			if($this->input->get('delete'))
 			{
-				$this->db->where(['key' => $id]);
+				$this->db->where(['ssl_key' => $id]);
 				$res = $this->db->delete('is_ssl');
 				if($res !== false)
 				{
 					$this->session->set_flashdata('msg', json_encode([1, $this->base->text('ssl_deleted_msg', 'success')]));
-					redirect("ssl/view/$id");
+					redirect("ssl/list");
 				}
 				else
 				{
