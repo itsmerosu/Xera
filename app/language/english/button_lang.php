@@ -35,3 +35,4 @@ $lang['add_reply'] = 'Add Reply';
 $lang['lookup'] = 'Lookup';
 $lang['redirect_now'] = 'Redirect Now';
 $lang['github_signin'] = 'Sign in with GitHub';
+$lang['close'] = 'Close';

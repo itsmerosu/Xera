@@ -42,3 +42,4 @@ $lang['ip'] = 'IP adrese';
 $lang['target'] = 'Mērķis';
 $lang['content'] = 'Saturs';
 $lang['pri'] = 'Prioritāte';
+$lang['provider'] = 'Pakalpojumu sniedzējs';

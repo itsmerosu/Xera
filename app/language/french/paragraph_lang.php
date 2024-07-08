@@ -23,3 +23,9 @@ $lang['account_note'] = "Certaines des fonctionnalités d'hébergement peuvent n
 $lang['no_reply_found'] = 'Aucune réponse trouvée.';
 $lang['ticket_closed'] = 'Le ticket a été fermé. Cliquez pour';
 $lang['to_reopen'] = 'ré-ouvrir.';
+$lang['delete_msg'] = 'La suppression du certificat ici le retirera de la liste dans l\'espace client.
+<ul>
+    <li>Cela NE supprimera PAS le certificat SSL actuellement installé sur votre domaine.</li>
+    <li>Cela NE fera PAS revenir votre site web en HTTP.</li>
+    <li>Le certificat RESTERA valide jusqu\'à la date d\'expiration.</li>
+</ul>';

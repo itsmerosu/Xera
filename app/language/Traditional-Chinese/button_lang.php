@@ -35,3 +35,4 @@ $lang['add_reply'] = '新增回覆';
 $lang['lookup'] = 'Lookup';
 $lang['redirect_now'] = '現在導向';
 $lang['github_signin'] = 'Sign in with GitHub';
+$lang['close'] = '關閉';

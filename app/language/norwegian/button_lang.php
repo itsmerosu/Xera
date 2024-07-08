@@ -35,3 +35,4 @@ $lang['add_reply'] = 'Legg til svar';
 $lang['lookup'] = 'Lookup';
 $lang['redirect_now'] = 'Omdiriger nå';
 $lang['github_signin'] = 'Logg på med GitHub';
+$lang['close'] = 'Lukk';

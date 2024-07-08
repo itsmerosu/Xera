@@ -24,3 +24,9 @@ $lang['account_note'] = 'Some of the hosting features may not work. It may take 
 $lang['no_reply_found'] = 'No reply found.';
 $lang['ticket_closed'] = 'Ticket has been closed. Click';
 $lang['to_reopen'] = 'to re-open.';
+$lang['delete_msg'] = 'Deleting the certificate here will remove the certificate from the list in the client area.
+<ul>
+    <li>This will NOT remove the SSL certificate currently installed on your domain.</li>
+    <li>This will NOT make your website switch back to HTTP.</li>
+    <li>The certificate WILL remain valid until the expiration date.</li>
+</ul>';

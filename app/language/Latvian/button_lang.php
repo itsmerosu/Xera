@@ -35,3 +35,4 @@ $lang['add_reply'] = 'Pievienot atbildi';
 $lang['lookup'] = 'Meklēt';
 $lang['redirect_now'] = 'Novirzīt tagad';
 $lang['github_signin'] = 'Pierakstīties ar GitHub';
+$lang['close'] = 'Aizvērt';

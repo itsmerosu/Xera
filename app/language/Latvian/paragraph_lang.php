@@ -24,3 +24,9 @@ $lang['account_note'] = 'Dažas mājinfrastuktūras funkcijas var nedarboties. L
 $lang['no_reply_found'] = 'Nav atrasta neviena atbilde.';
 $lang['ticket_closed'] = 'Biļete ir slēgta. Noklikšķiniet';
 $lang['to_reopen'] = 'lai atvērtu atkal.';
+$lang['delete_msg'] = 'Dzēšot sertifikātu šeit, tas tiks noņemts no klientu zonas saraksta.
+<ul>
+    <li>Tas NENOŅEMS pašlaik instalēto SSL sertifikātu jūsu domēnā.</li>
+    <li>Tas NEMAINĪS jūsu vietni atpakaļ uz HTTP.</li>
+    <li>Sertifikāts PALIKS derīgs līdz derīguma termiņa beigām.</li>
+</ul>';

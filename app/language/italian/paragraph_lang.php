@@ -23,3 +23,9 @@ $lang['account_note'] = 'Alcune delle funzioni di hosting possono non funzionare
 $lang['no_reply_found'] = 'Nessuna risposta trovata.';
 $lang['ticket_closed'] = 'Il biglietto � stato chiuso. Clicca';
 $lang['to_reopen'] = 'per riaprirlo.';
+$lang['delete_msg'] = 'Eliminando il certificato qui verrà rimosso dall\'elenco nell\'area clienti.
+<ul>
+    <li>Questo NON rimuoverà il certificato SSL attualmente installato sul tuo dominio.</li>
+    <li>Questo NON farà tornare il tuo sito web su HTTP.</li>
+    <li>Il certificato RIMARRÀ valido fino alla data di scadenza.</li>
+</ul>';
