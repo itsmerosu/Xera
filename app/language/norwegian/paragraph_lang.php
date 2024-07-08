@@ -23,3 +23,9 @@ $lang['account_note'] = 'Noen av vertsfunksjonene fungerer kanskje ikke. Det kan
 $lang['no_reply_found'] = 'Finner ikke noe svar.';
 $lang['ticket_closed'] = 'Billetten var stengt. Klikk';
 $lang['to_reopen'] = 'å åpne igjen.';
+$lang['delete_msg'] = 'Ved å slette sertifikatet her vil det bli fjernet fra listen i kundeområdet.
+<ul>
+    <li>Dette vil IKKE fjerne SSL-sertifikatet som for øyeblikket er installert på ditt domene.</li>
+    <li>Dette vil IKKE få nettstedet ditt til å gå tilbake til HTTP.</li>
+    <li>Sertifikatet vil FORBLI gyldig til utløpsdatoen.</li>
+</ul>';

@@ -23,3 +23,9 @@ $lang['account_note'] = '一些托管功能可能不可用,可能须等待高达
 $lang['no_reply_found'] = '没有回覆.';
 $lang['ticket_closed'] = '服务单已被关闭,请点击';
 $lang['to_reopen'] = '来开启.';
+$lang['delete_msg'] = '在此删除证书将从客户区列表中删除证书。
+<ul>
+    <li>这不会删除当前安装在您域名上的SSL证书。</li>
+    <li>这不会使您的网站切换回HTTP。</li>
+    <li>证书将继续有效，直至到期日期。</li>
+</ul>';

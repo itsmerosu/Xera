@@ -35,3 +35,4 @@ $lang['add_reply'] = 'Προσθήκη Απάντησης';
 $lang['lookup'] = 'Αναζήτηση';
 $lang['redirect_now'] = 'Ανακατεύθυνση Τώρα';
 $lang['github_signin'] = 'Είσοδος με GitHub';
+$lang['close'] = 'Κλείσιμο';

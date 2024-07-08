@@ -23,3 +23,9 @@ $lang['account_note'] = '一些託管功能可能不可用,可能須等待高達
 $lang['no_reply_found'] = '沒有回覆.';
 $lang['ticket_closed'] = '服務單已被關閉,請點擊';
 $lang['to_reopen'] = '來開啟.';
+$lang['delete_msg'] = '在此刪除證書將從客戶區列表中刪除證書。
+<ul>
+    <li>這不會刪除當前安裝在您域名上的SSL證書。</li>
+    <li>這不會使您的網站切換回HTTP。</li>
+    <li>證書將繼續有效，直到到期日期。</li>
+</ul>';
