@@ -175,7 +175,7 @@ if (isset($_GET['step']) and $_GET['step'] == 1 and isset($_POST['submit'])) {
 
 		$sql = mysqli_query($mysqli, "DROP TABLE IF EXISTS `is_recaptcha`;");
 
-		$sql = mysqli_query($mysqli, "CREATE TABLE `is_recaptcha` (`recaptcha_id` varchar(89) NOT NULL DEFAULT 'xera_recaptcha',`recaptcha_site` varchar(100) NOT NULL,`recaptcha_key` varchar(100) NOT NULL,`recaptcha_status` varchar(8) NOT NULL,`recaptcha_type` varchar(6) NOT NULL
+		$sql = mysqli_query($mysqli, "CREATE TABLE `is_recaptcha` (`recaptcha_id` varchar(89) NOT NULL DEFAULT 'xera_recaptcha',`recaptcha_site` varchar(200) NOT NULL,`recaptcha_key` varchar(200) NOT NULL,`recaptcha_status` varchar(8) NOT NULL,`recaptcha_type` varchar(15) NOT NULL
 		);");
 
 		$sql = mysqli_query($mysqli, "INSERT INTO `is_recaptcha` (`recaptcha_id`,`recaptcha_site`,`recaptcha_key`,`recaptcha_status`,`recaptcha_type`
@@ -297,7 +297,7 @@ if (isset($_GET['step']) and $_GET['step'] == 1 and isset($_POST['submit'])) {
 
 		$sql = mysqli_query($mysqli, "DROP TABLE IF EXISTS `is_acme`;");
 
-		$sql = mysqli_query($mysqli, "CREATE TABLE `is_acme` (`acme_id` varchar(13) NOT NULL DEFAULT 'xera_acme', `acme_letsencrypt` varchar(100) NOT NULL, `acme_zerossl` varchar(100) NOT NULL, `acme_googletrust` varchar(100) NOT NULL, `acme_status` varchar(8) NOT NULL);");
+		$sql = mysqli_query($mysqli, "CREATE TABLE `is_acme` (`acme_id` varchar(13) NOT NULL DEFAULT 'xera_acme', `acme_letsencrypt` varchar(100) NOT NULL, `acme_zerossl` varchar(1000) NOT NULL, `acme_googletrust` varchar(1000) NOT NULL, `acme_status` varchar(8) NOT NULL);");
 
 		$sql = mysqli_query($mysqli, "INSERT INTO `is_acme` (`acme_letsencrypt`, `acme_zerossl`, `acme_googletrust`, `acme_status`) VALUES ('not-set', 'not-set', 'not-set', 'inactive');");
 
