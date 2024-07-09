@@ -841,6 +841,7 @@ class acme extends CI_Model
             } else {
                 $googletrust = json_encode($googletrust);
             }
+            $res = $this->update('googletrust', $googletrust);
         }
 		if($res)
 		{
