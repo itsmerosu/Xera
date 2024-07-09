@@ -105,6 +105,10 @@
 					<input type="text" class="form-control" value="<?= trim($record[0]) ?>" readonly="true">
 				</div>
 				<div class="mb-3">
+					<label class="form-label">Record Type</label>
+					<input type="text" class="form-control" value="<?= trim($record[1]) ?>" readonly="true">
+				</div>
+				<div class="mb-3">
 					<label class="form-label">Record Content</label>
 					<input type="text" class="form-control" value="<?= trim($record[2]) ?>" readonly="true">
 				</div>

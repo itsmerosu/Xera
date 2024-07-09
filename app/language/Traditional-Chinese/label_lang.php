@@ -28,3 +28,4 @@ $lang['or'] = '或';
 $lang['show_hide'] = '顯示/隱藏';
 $lang['record_name'] = '紀錄名稱';
 $lang['record_content'] = '紀錄內容';
+$lang['record_type'] = '記錄類型';

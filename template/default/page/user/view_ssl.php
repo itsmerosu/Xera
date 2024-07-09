@@ -100,6 +100,10 @@
 					<input type="text" class="form-control" value="<?= trim($record[0]) ?>" readonly="true">
 				</div>
 				<div class="mb-3">
+					<label class="form-label"><?= $this->base->text('record_type', 'label') ?></label>
+					<input type="text" class="form-control" value="<?= trim($record[1]) ?>" readonly="true">
+				</div>
+				<div class="mb-3">
 					<label class="form-label"><?= $this->base->text('record_content', 'label') ?></label>
 					<input type="text" class="form-control" value="<?= trim($record[2]) ?>" readonly="true">
 				</div>
