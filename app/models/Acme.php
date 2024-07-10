@@ -190,7 +190,8 @@ class acme extends CI_Model
 
         $this->load->library('cloudflareapi');
         $cfCredentials = $this->get_cloudflare();
-        $cf_api = new CloudFlareAPI($cfCredentials['email'], $cfCredentials['api_key']);
+        $cf_api = new CloudFlareAPI();
+        $cf_api->auth($cfCredentials['email'], $cfCredentials['api_key']);
         $cf_api->setZone($cfCredentials['domain']);
         $addResult = $cf_api->addDNSrecord('txt', $key, $dnsContent);
 
@@ -310,7 +311,8 @@ class acme extends CI_Model
 
             $this->load->library('cloudflareapi');
             $cfCredentials = $this->get_cloudflare();
-            $cf_api = new CloudFlareAPI($cfCredentials['email'], $cfCredentials['api_key']);
+            $cf_api = new CloudFlareAPI();
+            $cf_api->auth($cfCredentials['email'], $cfCredentials['api_key']);
             $cf_api->setZone($cfCredentials['domain']);
             $cf_api->deleteDNSrecord($dnsid);
 

@@ -2,7 +2,10 @@
 class CloudFlareAPI{	
 	private $api;
 	private $zone_id;		
-	public function __construct($mail,$api_key)
+	public function __construct()
+	{
+    }	
+	public function auth($mail,$api_key)
 	{
 		$api = [ 			
 			"X-Auth-Email: $mail",
