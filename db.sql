@@ -507,7 +507,9 @@ CREATE TABLE `is_ssl` (
 	`ssl_private` varchar(5000) NOT NULL,
 	`ssl_type` varchar(50) NULL,
 	`ssl_domain` varchar(250) NULL,
-	`ssl_status` varchar(250) NULL
+	`ssl_status` varchar(250) NULL,
+	`ssl_dns` varchar(250) NOT NULL,
+	`ssl_dnsid` varchar(250) NULL
 );
 
 -- Create new table `is_oauth`

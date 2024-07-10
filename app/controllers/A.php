@@ -711,6 +711,7 @@ class A extends CI_Controller
 				$this->fv->set_rules('googletrust_hmac', 'EAB HMAC Key', ['trim']);
 				$this->fv->set_rules('clouflare_email', 'Account Email', ['trim']);
 				$this->fv->set_rules('clouflare_key', 'Account API Key', ['trim']);
+				$this->fv->set_rules('clouflare_domain', 'Domain Name Added in CloudFlare', ['trim']);
 				$this->fv->set_rules('status', 'Status', ['trim', 'required']);
 				if($this->fv->run() === true)
 				{
@@ -736,9 +737,10 @@ class A extends CI_Controller
 					}
 					$clouflare = [
 						'email' => $this->input->post('clouflare_email'),
-						'api_key' => $this->input->post('clouflare_key')
+						'api_key' => $this->input->post('clouflare_key'),
+						'domain' => $this->input->post('clouflare_domain')
 					];
-					if ($clouflare['email'] == '' && $clouflare['email'] == '') {
+					if ($clouflare['email'] == '' && $clouflare['api_key'] == '' && $clouflare['domain'] == '') {
 						$clouflare = 'not-set';
 					}
 

@@ -415,7 +415,8 @@
 						if ($cloudflare == 'not-set') {
 							$cloudflare = [
 								'email' => '',
-								'api_key' => ''
+								'api_key' => '',
+								'domain' => ''
 							];
 						}
 					?>
@@ -426,6 +427,10 @@
 					<div class="col-sm-6">
 						<label class="form-label">Account API Key</label>
 						<input type="text" name="clouflare_key" class="form-control mb-2" value="<?= $cloudflare['api_key'] ?>">
+					</div>
+					<div class="col-sm-6">
+						<label class="form-label">Domain Name Added in CloudFlare</label>
+						<input type="text" name="clouflare_domain" class="form-control mb-2" value="<?= $cloudflare['domain'] ?>">
 					</div>
 					<div class="col-sm-6">
 						<label class="form-label">Status</label>
