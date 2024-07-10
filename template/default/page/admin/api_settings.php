@@ -358,10 +358,12 @@
 			<?php endif ?>" id="acme">
 				<?= form_open('api/settings') ?>
 				<div class="row">
+				<div class="hr-text text-green">Let's Encrypt</div>
 					<div class="col-sm-6">
-						<label class="form-label">Let's Encrypt Directory URL</label>
+						<label class="form-label">Directory URL</label>
 						<input type="text" name="letsencrypt" class="form-control mb-2" value="<?= $this->acme->get_letsencrypt() ?>">
 					</div>
+					<div class="hr-text text-green">ZeroSSL</div>
 					<?php
 						$zerossl = $this->acme->get_zerossl();
 						if ($zerossl == 'not-set') {
@@ -373,17 +375,18 @@
 						}
 					?>
 					<div class="col-sm-6">
-						<label class="form-label">ZeroSSL Directory URL</label>
+						<label class="form-label">Directory URL</label>
 						<input type="text" name="zerossl_url" class="form-control mb-2" value="<?= $zerossl['url'] ?>">
 					</div>
 					<div class="col-sm-6">
-						<label class="form-label">ZeroSSL EAB Key ID</label>
+						<label class="form-label">EAB Key ID</label>
 						<input type="text" name="zerossl_kid" class="form-control mb-2" value="<?= $zerossl['eab_kid'] ?>">
 					</div>
 					<div class="col-sm-6">
-						<label class="form-label">ZeroSSL EAB HMAC Key</label>
+						<label class="form-label">EAB HMAC Key</label>
 						<input type="text" name="zerossl_hmac" class="form-control mb-2" value="<?= $zerossl['eab_hmac_key'] ?>">
 					</div>
+					<div class="hr-text text-green">Google Trust</div>
 					<?php
 						$googletrust = $this->acme->get_googletrust();
 						if ($googletrust == 'not-set') {
@@ -395,16 +398,34 @@
 						}
 					?>
 					<div class="col-sm-6">
-						<label class="form-label">Google Trust Services Directory URL</label>
+						<label class="form-label">Directory URL</label>
 						<input type="text" name="googletrust_url" class="form-control mb-2" value="<?= $googletrust['url'] ?>">
 					</div>
 					<div class="col-sm-6">
-						<label class="form-label">Google Trust Services EAB Key ID</label>
+						<label class="form-label">EAB Key ID</label>
 						<input type="text" name="googletrust_kid" class="form-control mb-2" value="<?= $googletrust['eab_kid'] ?>">
 					</div>
 					<div class="col-sm-6">
-						<label class="form-label">Google Trust Services EAB HMAC Key</label>
+						<label class="form-label">EAB HMAC Key</label>
 						<input type="text" name="googletrust_hmac" class="form-control mb-2" value="<?= $googletrust['eab_hmac_key'] ?>">
+					</div>
+					<div class="hr-text text-green">CloudFlare API</div>
+					<?php
+						$cloudflare = $this->acme->get_clouflare();
+						if ($cloudflare == 'not-set') {
+							$cloudflare = [
+								'email' => '',
+								'api_key' => ''
+							];
+						}
+					?>
+					<div class="col-sm-6">
+						<label class="form-label">Account Email</label>
+						<input type="text" name="clouflare_email" class="form-control mb-2" value="<?= $cloudflare['email'] ?>">
+					</div>
+					<div class="col-sm-6">
+						<label class="form-label">Account API Key</label>
+						<input type="text" name="clouflare_key" class="form-control mb-2" value="<?= $cloudflare['api_key'] ?>">
 					</div>
 					<div class="col-sm-6">
 						<label class="form-label">Status</label>
