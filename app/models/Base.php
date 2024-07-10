@@ -202,6 +202,9 @@ class Base extends CI_Model
 
 	function update($data, $where, $table = 'is_base', $prefix = 'base_')
 	{
+		$this->load->database();
+        $this->db->close();
+		$this->db->initialize();
 		$data = remap_array($prefix, $data);
 		$where = remap_array($prefix, $where);
 		$this->db->where($where);
@@ -216,6 +219,9 @@ class Base extends CI_Model
 
 	function fetch($table, $where = [], $prefix = 'base_', $data = '*')
 	{
+		$this->load->database();
+        $this->db->close();
+		$this->db->initialize();
 		if(count($where)>0)
 		{
 			$where = remap_array($prefix, $where);
