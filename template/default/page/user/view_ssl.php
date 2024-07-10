@@ -53,11 +53,11 @@
 					<div class="row align-items-center">
 						<span class="col"><?= $this->base->text('status', 'table') ?>:</span>
 						<span class="col-auto ms-auto">
-							<?php if ($data['status'] == 'processing'): ?>
+							<?php if ($data['status'] == 'processing'|| $data['status'] == 'pending'): ?>
 								<span class="badge bg-yellow">
 									<?= $this->base->text($data['status'], 'table') ?>
 								</span>
-							<?php elseif ($data['status'] == 'active'): ?>
+							<?php elseif ($data['status'] == 'active' || $data['status'] == 'ready'): ?>
 								<span class="badge bg-green">
 									<?= $this->base->text($data['status'], 'table') ?>
 								</span>

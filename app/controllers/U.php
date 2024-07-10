@@ -1720,8 +1720,6 @@ class U extends CI_Controller
 				}
 				elseif(is_bool($res) AND $res == true)
 				{
-					$this->session->set_flashdata('msg', json_encode([1, $this->base->text('ssl_cancelled_msg', 'success')]));
-					redirect("ssl/view/$id");
 				}
 				else
 				{

@@ -227,7 +227,7 @@ class acme extends CI_Model
 	    {
             $query = new DNSQuery("8.8.8.8");
             $name = '_acme-challenge.'.$domain;
-            $result = $query->query($name, \PurplePixie\PhpDns\DNSTypes::NAME_TXT);
+            $result = $query->query($name, \PurplePixie\PhpDns\DNSTypes::NAME_CNAME);
 
             if ($result->current()->getData() == $dnsContent) {
                 $res = $this->base->update(
@@ -492,8 +492,13 @@ class acme extends CI_Model
             }
         } elseif ($status == 'ready') {
             $return['ready'] = true;
+            $return['approver_method']['dns']['record'] = '_acme-challenge.'.$domain.' TXT '.$dnsContent;
+            if ($dnsid != '' && $dnsid != null) {
+                $return['approver_method']['dns']['record'] = '_acme-challenge.'.$domain.' CNAME '.$dnsContent;
+            }
         } elseif ($status == 'processing') {
             $return['approver_method']['dns']['record'] = '_acme-challenge.'.$domain.' TXT '.$dnsContent;
+            $this->initilize($res[0]['ssl_type']);
             if ($this->getCertificate($orderId, $privateKey)) {
                 $status = 'active';
                 $return['private_key'] = $privateKey;

@@ -16,7 +16,7 @@
 						<select class="form-control mb-2" name="type">
 							<?php
 							$cloudflare = $this->acme->get_cloudflare();
-							if ($this->acme->get_letsencrypt() != 'not-set' && $cloudflare != 'not-set') {
+							if ($this->acme->get_letsencrypt() == 'not-set' && $cloudflare == 'not-set') {
 							} elseif ($cloudflare['email'] != '' && $cloudflare['api_key'] != '') {
 							?>
 							<option value="letsencrypt" selected="true">Let's Encrypt</option>
@@ -85,7 +85,21 @@
 						</div>
 					<?php endif ?>
 					<div class="col-sm-12">
-						<input type="submit" name="create" value="<?= $this->base->text('request', 'button') ?>" class="btn btn-primary btn-pill">
+						<button id="createButton" type="submit" name="create" value="<?= $this->base->text('request', 'button') ?>" class="btn btn-primary btn-pill" onclick="showLoading()">
+    					    <span id="spinner" class="spinner-border" role="status" aria-hidden="true" style="display: none;"></span>
+    					    <span id="buttonText"><?= $this->base->text('request', 'button') ?></span>
+    					</button>
+						<script>
+						function showLoading() {
+						    var spinner = document.getElementById('spinner');
+						    var buttonText = document.getElementById('buttonText');
+						    var submitButton = document.getElementById('createButton');
+						
+						    spinner.style.display = 'inline-block';
+						    buttonText.style.display = 'none';
+						    submitButton.classList.add('disabled');
+						}
+						</script>
 					</div>
 				</div>
 			</form>
