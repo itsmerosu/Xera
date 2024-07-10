@@ -802,6 +802,25 @@ class acme extends CI_Model
 		return false;
 	}
 
+    function get_cloudflare()
+	{
+		$res = $this->fetch_base();
+		if($res !== false)
+		{
+            if ($res['acme_clouflare'] != 'not-set') {
+                $clouflare = json_decode($res['acme_clouflare'], true);
+                $return = [
+                    'email' => $clouflare['email'],
+                    'api_key' => $clouflare['api_key']
+                ];
+			    return $return;
+            } else {
+                return 'not-set';
+            }
+		}
+		return false;
+	}
+
     function set_letsencrypt($acme_directory)
 	{
 		$res = $this->update('letsencrypt', $acme_directory);
@@ -823,6 +842,25 @@ class acme extends CI_Model
                 $zerossl = json_encode($zerossl);
             }
             $res = $this->update('zerossl', $zerossl);
+        }
+		if($res)
+		{
+			return true;
+		}
+		return false;
+	}
+
+    function set_cloudflare($cloudflare)
+	{
+        if ($cloudflare == 'not-set') {
+            $res = $this->update('cloudflare', $cloudflare);
+        } else {
+            if ($cloudflare['email'] == '' && $cloudflare['api_key'] == '') {
+                $cloudflare = 'not-set';
+            } else {
+                $cloudflare = json_encode($cloudflare);
+            }
+            $res = $this->update('cloudflare', $cloudflare);
         }
 		if($res)
 		{

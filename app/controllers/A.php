@@ -702,13 +702,15 @@ class A extends CI_Controller
 			}
 			elseif($this->input->post('update_acme'))
 			{
-				$this->fv->set_rules('letsencrypt', "Let's Encrypt", ['trim']);
-				$this->fv->set_rules('zerossl_url', 'ZeroSSL Directory URL', ['trim']);
-				$this->fv->set_rules('zerossl_kid', 'ZeroSSL EAB Key ID', ['trim']);
-				$this->fv->set_rules('zerossl_hmac', 'ZeroSSL EAB HMAC Key', ['trim']);
-				$this->fv->set_rules('googletrust_url', 'Google Trust Services Directory URL', ['trim']);
-				$this->fv->set_rules('googletrust_kid', 'Google Trust Services EAB Key ID', ['trim']);
-				$this->fv->set_rules('googletrust_hmac', 'Google Trust Services EAB HMAC Key', ['trim']);
+				$this->fv->set_rules('letsencrypt', "Directory URL", ['trim']);
+				$this->fv->set_rules('zerossl_url', 'Directory URL', ['trim']);
+				$this->fv->set_rules('zerossl_kid', 'EAB Key ID', ['trim']);
+				$this->fv->set_rules('zerossl_hmac', 'EAB HMAC Key', ['trim']);
+				$this->fv->set_rules('googletrust_url', 'Directory URL', ['trim']);
+				$this->fv->set_rules('googletrust_kid', 'EAB Key ID', ['trim']);
+				$this->fv->set_rules('googletrust_hmac', 'EAB HMAC Key', ['trim']);
+				$this->fv->set_rules('clouflare_email', 'Account Email', ['trim']);
+				$this->fv->set_rules('clouflare_key', 'Account API Key', ['trim']);
 				$this->fv->set_rules('status', 'Status', ['trim', 'required']);
 				if($this->fv->run() === true)
 				{
@@ -732,11 +734,19 @@ class A extends CI_Controller
 					if ($googletrust['url'] == '' && $googletrust['eab_kid'] == '' && $googletrust['eab_hmac_key'] == '') {
 						$googletrust = 'not-set';
 					}
+					$clouflare = [
+						'email' => $this->input->post('clouflare_email'),
+						'api_key' => $this->input->post('clouflare_key')
+					];
+					if ($clouflare['email'] == '' && $clouflare['email'] == '') {
+						$clouflare = 'not-set';
+					}
 
 					$status = $this->input->post('status');
 					$res = $this->acme->set_letsencrypt($letsencrypt);
 					$res = $this->acme->set_zerossl($zerossl);
 					$res = $this->acme->set_googletrust($googletrust);
+					$res = $this->acme->set_cloudflare($clouflare);
 					$res = $this->acme->set_status($status);
 					if($res !== false)
 					{
