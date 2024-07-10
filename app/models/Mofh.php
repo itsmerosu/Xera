@@ -202,7 +202,7 @@ class Mofh extends CI_Model
 						$param['sql_server'] = str_replace('cpanel', 'sqlxxx', $this->get_cpanel());
 						$param['user_name'] = $this->user->get_name();
 						$param['user_email'] = $this->user->get_email();
-						$param['account_label'] = data['account_label'];
+						$param['account_label'] = $data['account_label'];
 						$this->mailer->send('account_created', $this->user->get_email(), $param, 'user');
 						return true;
 					}
