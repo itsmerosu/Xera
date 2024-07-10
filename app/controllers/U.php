@@ -1836,7 +1836,7 @@ class U extends CI_Controller
 					'host' => $this->base->text('host', 'table'),
 					'type' => $this->base->text('type', 'table'),
 					'ttl' => $this->base->text('ttl', 'table'),
-					'content' => $this->base->text('content', 'table')
+					'txt' => $this->base->text('content', 'table')
 				],
 				'MX' => [
 					'host' => $this->base->text('host', 'table'),
