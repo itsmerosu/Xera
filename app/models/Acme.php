@@ -203,14 +203,12 @@ class acme extends CI_Model
 		return false;
     }
 
-    public function checkValidation($orderId, $privateKey)
+    public function checkValidation($order, $privateKey)
     {
         $privateKey = new PrivateKey($privateKey);
         $publicKey = $privateKey->getPublicKey();
         $domainKeyPair = new KeyPair($publicKey, $privateKey);
         
-        $order = new CertificateOrder([], $orderId);
-        $order = $this->acme->reloadOrder($order);
         $allChallenges = $order->getAuthorizationChallenges();
         $domain = array_key_first($allChallenges);
 
@@ -424,7 +422,7 @@ class acme extends CI_Model
                         break;
                     case 'pending':
                         $status = 'processing';
-                        if ($this->checkValidation($orderId, $privateKey)) {
+                        if ($this->checkValidation($order, $privateKey)) {
                             if ($order->getStatus() == 'valid') {
                                 $status = 'active';
                             }
@@ -432,7 +430,7 @@ class acme extends CI_Model
                         break;
                     case 'ready':
                         $status = 'processing';
-                        if ($this->checkValidation($orderId, $privateKey)) {
+                        if ($this->checkValidation($order, $privateKey)) {
                             if ($order->getStatus() == 'valid') {
                                 $status = 'active';
                             }
@@ -578,7 +576,7 @@ class acme extends CI_Model
                         break;
                     case 'pending':
                         $status = 'processing';
-                        if ($this->checkValidation($orderId, $privateKey)) {
+                        if ($this->checkValidation($order, $privateKey)) {
                             if ($order->getStatus() == 'valid') {
                                 $status = 'active';
                             }
@@ -586,7 +584,7 @@ class acme extends CI_Model
                         break;
                     case 'ready':
                         $status = 'processing';
-                        if ($this->checkValidation($orderId, $privateKey)) {
+                        if ($this->checkValidation($order, $privateKey)) {
                             if ($order->getStatus() == 'valid') {
                                 $status = 'active';
                             }
