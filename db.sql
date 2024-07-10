@@ -477,7 +477,7 @@ CREATE TABLE `is_acme` (
 	`acme_letsencrypt` varchar(100) NOT NULL,
 	`acme_zerossl` varchar(1000) NOT NULL,
 	`acme_googletrust` varchar(1000) NOT NULL,
-	`acme_clouflare` varchar(1000) NOT NULL,
+	`acme_cloudflare` varchar(1000) NOT NULL,
 	`acme_status` varchar(8) NOT NULL
 );
 
@@ -485,7 +485,7 @@ INSERT INTO `is_acme` (
 	`acme_letsencrypt`,
 	`acme_zerossl`,
 	`acme_googletrust`,
-	`acme_clouflare`,
+	`acme_cloudflare`,
 	`acme_status`
 ) VALUES (
 	'not-set',

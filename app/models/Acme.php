@@ -781,12 +781,12 @@ class acme extends CI_Model
 		$res = $this->fetch_base();
 		if($res !== false)
 		{
-            if ($res['acme_clouflare'] != 'not-set') {
-                $clouflare = json_decode($res['acme_clouflare'], true);
+            if ($res['acme_cloudflare'] != 'not-set') {
+                $cloudflare = json_decode($res['acme_cloudflare'], true);
                 $return = [
-                    'email' => $clouflare['email'],
-                    'api_key' => $clouflare['api_key'],
-                    'domain' => $clouflare['domain']
+                    'email' => $cloudflare['email'],
+                    'api_key' => $cloudflare['api_key'],
+                    'domain' => $cloudflare['domain']
                 ];
 			    return $return;
             } else {

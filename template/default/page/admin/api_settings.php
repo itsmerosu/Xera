@@ -411,7 +411,7 @@
 					</div>
 					<div class="hr-text text-green">CloudFlare API</div>
 					<?php
-						$cloudflare = $this->acme->get_clouflare();
+						$cloudflare = $this->acme->get_cloudflare();
 						if ($cloudflare == 'not-set') {
 							$cloudflare = [
 								'email' => '',
@@ -422,15 +422,15 @@
 					?>
 					<div class="col-sm-6">
 						<label class="form-label">Account Email</label>
-						<input type="text" name="clouflare_email" class="form-control mb-2" value="<?= $cloudflare['email'] ?>">
+						<input type="text" name="cloudflare_email" class="form-control mb-2" value="<?= $cloudflare['email'] ?>">
 					</div>
 					<div class="col-sm-6">
 						<label class="form-label">Account API Key</label>
-						<input type="text" name="clouflare_key" class="form-control mb-2" value="<?= $cloudflare['api_key'] ?>">
+						<input type="text" name="cloudflare_key" class="form-control mb-2" value="<?= $cloudflare['api_key'] ?>">
 					</div>
 					<div class="col-sm-6">
 						<label class="form-label">Domain Name Added in CloudFlare</label>
-						<input type="text" name="clouflare_domain" class="form-control mb-2" value="<?= $cloudflare['domain'] ?>">
+						<input type="text" name="cloudflare_domain" class="form-control mb-2" value="<?= $cloudflare['domain'] ?>">
 					</div>
 					<div class="hr-text text-green">ACME</div>
 					<div class="col-sm-6">

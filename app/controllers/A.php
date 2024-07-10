@@ -709,9 +709,9 @@ class A extends CI_Controller
 				$this->fv->set_rules('googletrust_url', 'Directory URL', ['trim']);
 				$this->fv->set_rules('googletrust_kid', 'EAB Key ID', ['trim']);
 				$this->fv->set_rules('googletrust_hmac', 'EAB HMAC Key', ['trim']);
-				$this->fv->set_rules('clouflare_email', 'Account Email', ['trim']);
-				$this->fv->set_rules('clouflare_key', 'Account API Key', ['trim']);
-				$this->fv->set_rules('clouflare_domain', 'Domain Name Added in CloudFlare', ['trim']);
+				$this->fv->set_rules('cloudflare_email', 'Account Email', ['trim']);
+				$this->fv->set_rules('cloudflare_key', 'Account API Key', ['trim']);
+				$this->fv->set_rules('cloudflare_domain', 'Domain Name Added in CloudFlare', ['trim']);
 				$this->fv->set_rules('status', 'Status', ['trim', 'required']);
 				if($this->fv->run() === true)
 				{
@@ -735,20 +735,20 @@ class A extends CI_Controller
 					if ($googletrust['url'] == '' && $googletrust['eab_kid'] == '' && $googletrust['eab_hmac_key'] == '') {
 						$googletrust = 'not-set';
 					}
-					$clouflare = [
-						'email' => $this->input->post('clouflare_email'),
-						'api_key' => $this->input->post('clouflare_key'),
-						'domain' => $this->input->post('clouflare_domain')
+					$cloudflare = [
+						'email' => $this->input->post('cloudflare_email'),
+						'api_key' => $this->input->post('cloudflare_key'),
+						'domain' => $this->input->post('cloudflare_domain')
 					];
-					if ($clouflare['email'] == '' && $clouflare['api_key'] == '' && $clouflare['domain'] == '') {
-						$clouflare = 'not-set';
+					if ($cloudflare['email'] == '' && $cloudflare['api_key'] == '' && $cloudflare['domain'] == '') {
+						$cloudflare = 'not-set';
 					}
 
 					$status = $this->input->post('status');
 					$res = $this->acme->set_letsencrypt($letsencrypt);
 					$res = $this->acme->set_zerossl($zerossl);
 					$res = $this->acme->set_googletrust($googletrust);
-					$res = $this->acme->set_cloudflare($clouflare);
+					$res = $this->acme->set_cloudflare($cloudflare);
 					$res = $this->acme->set_status($status);
 					if($res !== false)
 					{
