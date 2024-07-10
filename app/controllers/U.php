@@ -1535,7 +1535,7 @@ class U extends CI_Controller
 									redirect('u/create_ssl');
 								}
 
-								$res = $this->acme->create_ssl($domain, $autority);
+								$res = $this->acme->create_ssl($domain, $type);
 							}
 							if(!is_bool($res))
 							{
