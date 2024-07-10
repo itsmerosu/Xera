@@ -432,6 +432,7 @@
 						<label class="form-label">Domain Name Added in CloudFlare</label>
 						<input type="text" name="clouflare_domain" class="form-control mb-2" value="<?= $cloudflare['domain'] ?>">
 					</div>
+					<div class="hr-text text-green">ACME</div>
 					<div class="col-sm-6">
 						<label class="form-label">Status</label>
 						<select class="form-control mb-2" name="status">
