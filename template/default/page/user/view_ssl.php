@@ -9,7 +9,7 @@
 			<div class="col-auto ms-auto d-print-none">
 				<?php if ($data['status'] == 'cancelled' OR $data['status'] == 'expired'): ?>
 					<a class="btn btn-danger" href="?delete=true"><?= $this->base->text('delete', 'button') ?></a>
-				<?php elseif ($data['type'] != 'gogetssl'): ?>
+				<?php elseif ($data['type'] != 'GoGetSSL'): ?>
 					<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">
 					    <?= $this->base->text('delete', 'button') ?>
 					</button>
@@ -85,7 +85,7 @@
 		</div>
 	</div>
 	<div class="card mb-3">
-		<?php if ($data['status'] == 'pending' || $data['status'] == 'ready'): ?>
+		<?php if ($data['status'] == 'pending' || $data['status'] == 'ready' || ($data['status'] == 'processing' && $data['type'] == 'GoGetSSL')): ?>
 			<?php $record = explode(' ', $data['approver_method']['dns']['record']) ?>
 			<div class="card-header">
 				<div class="card-title"><?= $this->base->text('verify_ownership', 'heading') ?></div>
