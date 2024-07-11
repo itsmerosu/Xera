@@ -9,7 +9,7 @@
 			<div class="col-auto ms-auto d-print-none">
 				<?php if ($data['status'] == 'cancelled' OR $data['status'] == 'expired'): ?>
 					<a class="btn btn-danger" href="?delete=true">Delete</a>
-				<?php elseif ($data['type'] != 'gogetssl'): ?>
+				<?php elseif ($data['type'] != 'GoGetSSL'): ?>
 					<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">
 					    <?= $this->base->text('delete', 'button') ?>
 					</button>
@@ -58,11 +58,11 @@
 					<div class="row align-items-center">
 						<span class="col">Status:</span>
 						<span class="col-auto ms-auto">
-							<?php if ($data['status'] == 'processing' || $item['status'] == 'pending'): ?>
+							<?php if ($data['status'] == 'processing' || $data['status'] == 'pending'): ?>
 								<span class="badge bg-yellow">
 									<?= $data['status'] ?>
 								</span>
-							<?php elseif ($data['status'] == 'active' || $item['status'] == 'ready'): ?>
+							<?php elseif ($data['status'] == 'active' || $data['status'] == 'ready'): ?>
 								<span class="badge bg-green">
 									<?= $data['status'] ?>
 								</span>
@@ -90,7 +90,7 @@
 		</div>
 	</div>
 	<div class="card mb-3">
-		<?php if ($data['status'] === 'processing'): ?>
+		<?php if ($data['status'] == 'pending' || $data['status'] == 'ready' || ($data['status'] == 'processing' && $data['type'] == 'GoGetSSL')): ?>
 			<?php $record = explode(' ', $data['approver_method']['dns']['record']) ?>
 			<div class="card-header">
 				<div class="card-title">Verify Ownership</div>

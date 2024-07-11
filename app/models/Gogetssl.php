@@ -72,12 +72,14 @@ class Gogetssl extends CI_Model
 				'ssl_pid' => $res['order_id'],
 				'ssl_key' => $key,
 				'ssl_for' => $this->user->get_key(),
- 			    'ssl_private' => $csr['private_key'],
 				'ssl_type' => 'gogetssl'
 			];
 			$res = $this->db->insert('is_ssl', $data);
 			if($res !== false)
 			{
+				$privateDir = './acme-storage/'.$this->user->get_email().'/certificates/'.$key.'.priv.pem';
+            	$privateKey = $csr['private_key'];
+            	file_put_contents($privateDir, $privateKey);
 				return true;
 			}
 			return false;
@@ -99,7 +101,22 @@ class Gogetssl extends CI_Model
 		if($res !== [])
 		{
 			$data = $this->s->getOrderStatus($res[0]['ssl_pid']);
- 		    $data['private_key'] = $res[0]['ssl_private'];
+			$userKey = $res[0]['ssl_for'];
+			$res2 = $this->base->fetch(
+				'is_user',
+				['key' => $userKey],
+				'user_'
+			);
+			if ($res2 == [] && $res2 == False) {
+				return False;
+			}
+			$privateDir = './acme-storage/'.$res2[0]['user_email'].'/certificates/'.$key.'.priv.pem';
+        	if (!file_exists($privateDir)) {
+        	    return false;
+        	} else {
+        	    $data['private_key'] =  file_get_contents($privateDir);
+        	}
+
 			if(count($data) > 4)
 			{
 				$data['type'] = 'GoGetSSL';
