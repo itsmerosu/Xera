@@ -359,7 +359,7 @@
 				<?= form_open('api/settings') ?>
 				<div class="row">
 				<div class="hr-text text-green">Let's Encrypt</div>
-					<div class="col-sm-6">
+					<div class="col-sm-12">
 						<label class="form-label">Directory URL</label>
 						<input type="text" name="letsencrypt" class="form-control mb-2" value="<?= $this->acme->get_letsencrypt() ?>">
 					</div>
@@ -382,7 +382,7 @@
 						<label class="form-label">EAB Key ID</label>
 						<input type="text" name="zerossl_kid" class="form-control mb-2" value="<?= $zerossl['eab_kid'] ?>">
 					</div>
-					<div class="col-sm-6">
+					<div class="col-sm-12">
 						<label class="form-label">EAB HMAC Key</label>
 						<input type="text" name="zerossl_hmac" class="form-control mb-2" value="<?= $zerossl['eab_hmac_key'] ?>">
 					</div>
@@ -405,7 +405,7 @@
 						<label class="form-label">EAB Key ID</label>
 						<input type="text" name="googletrust_kid" class="form-control mb-2" value="<?= $googletrust['eab_kid'] ?>">
 					</div>
-					<div class="col-sm-6">
+					<div class="col-sm-12">
 						<label class="form-label">EAB HMAC Key</label>
 						<input type="text" name="googletrust_hmac" class="form-control mb-2" value="<?= $googletrust['eab_hmac_key'] ?>">
 					</div>
@@ -425,15 +425,47 @@
 						<input type="text" name="cloudflare_email" class="form-control mb-2" value="<?= $cloudflare['email'] ?>">
 					</div>
 					<div class="col-sm-6">
-						<label class="form-label">Account API Key</label>
-						<input type="text" name="cloudflare_key" class="form-control mb-2" value="<?= $cloudflare['api_key'] ?>">
-					</div>
-					<div class="col-sm-6">
 						<label class="form-label">Domain Name Added in CloudFlare</label>
 						<input type="text" name="cloudflare_domain" class="form-control mb-2" value="<?= $cloudflare['domain'] ?>">
 					</div>
+					<div class="col-sm-12">
+						<label class="form-label">Account API Key</label>
+						<input type="text" name="cloudflare_key" class="form-control mb-2" value="<?= $cloudflare['api_key'] ?>">
+					</div>
 					<div class="hr-text text-green">ACME</div>
+					<?php
+						$dnsSettings = $this->acme->get_dns();
+					?>
 					<div class="col-sm-6">
+						<label class="form-label">DNS over HTTPS</label>
+						<select class="form-control mb-2" name="dns_doh">
+							<?php
+							if ($dnsSettings['doh'] === 'active') :
+							?>
+								<option value="active" selected="true">Active</option>
+								<option value="inative">Inactive</option>
+							<?php
+							else :
+							?>
+								<option value="active">Active</option>
+								<option value="inative" selected="true">Inactive</option>
+							<?php
+							endif;
+							?>
+						</select>
+						<p>Use DNS over HTTPS to avoid problems if you are using free hosting.</p>
+					</div>
+					<div class="col-sm-6">
+						<label class="form-label">DNS Resolver</label>
+						<input type="text" name="dns_resolver" class="form-control mb-2" value="<?= $dnsSettings['resolver'] ?>">
+						<p>DNS over HTTPS uses diferent hostname.</p>
+						<p>Google Public DNS:</p>
+						<ul>
+							<li>Normal DNS: 8.8.8.8</li>
+							<li>DNS over HTTPS: dns.google</li>
+						</ul>
+					</div>
+					<div class="col-sm-12">
 						<label class="form-label">Status</label>
 						<select class="form-control mb-2" name="status">
 							<?php

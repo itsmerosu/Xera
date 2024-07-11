@@ -713,6 +713,8 @@ class A extends CI_Controller
 				$this->fv->set_rules('cloudflare_key', 'Account API Key', ['trim']);
 				$this->fv->set_rules('cloudflare_domain', 'Domain Name Added in CloudFlare', ['trim']);
 				$this->fv->set_rules('status', 'Status', ['trim', 'required']);
+				$this->fv->set_rules('dns_resolver', 'DNS Resolver', ['trim', 'required']);
+				$this->fv->set_rules('dns_doh', 'DNS over HTTPS', ['trim', 'required']);
 				if($this->fv->run() === true)
 				{
 					$letsencrypt = $this->input->post('letsencrypt');
@@ -740,6 +742,10 @@ class A extends CI_Controller
 						'api_key' => $this->input->post('cloudflare_key'),
 						'domain' => $this->input->post('cloudflare_domain')
 					];
+					$dnsSettings = [
+						'doh' => $this->input->post('dns_doh'),
+						'resolver' => $this->input->post('dns_resolver')
+					];
 					if ($cloudflare['email'] == '' && $cloudflare['api_key'] == '' && $cloudflare['domain'] == '') {
 						$cloudflare = 'not-set';
 					}
@@ -749,6 +755,7 @@ class A extends CI_Controller
 					$res = $this->acme->set_zerossl($zerossl);
 					$res = $this->acme->set_googletrust($googletrust);
 					$res = $this->acme->set_cloudflare($cloudflare);
+					$res = $this->acme->set_dns($dnsSettings);
 					$res = $this->acme->set_status($status);
 					if($res !== false)
 					{

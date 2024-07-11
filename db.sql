@@ -478,7 +478,8 @@ CREATE TABLE `is_acme` (
 	`acme_zerossl` varchar(1000) NOT NULL,
 	`acme_googletrust` varchar(1000) NOT NULL,
 	`acme_cloudflare` varchar(1000) NOT NULL,
-	`acme_status` varchar(8) NOT NULL
+	`acme_status` varchar(8) NOT NULL,
+	`acme_dns` varchar(500) NULL
 );
 
 INSERT INTO `is_acme` (
@@ -486,13 +487,15 @@ INSERT INTO `is_acme` (
 	`acme_zerossl`,
 	`acme_googletrust`,
 	`acme_cloudflare`,
-	`acme_status`
+	`acme_status`,
+	`acme_dns`
 ) VALUES (
 	'not-set',
 	'not-set',
 	'not-set',
 	'not-set',
-	'inactive'
+	'inactive',
+	'{"doh":"active","resolver":"dns.google"}',
 );
 
 -- Create new table `is_ssl`

@@ -222,13 +222,22 @@ class acme extends CI_Model
 
     public function checkValidation($key, $domain, $dnsContent)
     {
-        $dnsServer = "dns.google";
+        $dnsSettings = $this->get_dns();
         $domain = '_acme-challenge.'.$domain;
         $recordType = "CNAME";
-
         $this->load->library('dnsquery');
         $dnsRes = new DNSQuery();
-        $record = $dnsRes->queryDnsRecordHttp($dnsServer, $domain, $recordType);
+
+        if ($dnsSettings['resolver'] == '' || $dnsSettings['resolver'] == null) {
+            return false;
+        }
+
+        if ($dnsSettings['doh'] == 'active') {
+            $record = $dnsRes->queryDnsRecordHttp($dnsSettings['resolver'], $domain, $recordType);
+        } else {
+            $record = $dnsRes->queryDnsRecord($dnsSettings['resolver'], $domain, $recordType);
+        }
+
         if ($record == false) {
             return false;
         }
@@ -803,6 +812,28 @@ class acme extends CI_Model
 		return false;
 	}
 
+    function get_dns()
+	{
+		$res = $this->fetch_base();
+		if($res !== false)
+		{
+            if ($res['acme_dns'] != '') {
+                $dnsSettings = json_decode($res['acme_dns'], true);
+                $return = [
+                    'doh' => $dnsSettings['doh'],
+                    'resolver' => $dnsSettings['resolver']
+                ];
+			    return $return;
+            } else {
+                return [
+                    'doh' => 'active',
+                    'resolver' => 'dns.google'
+                ];
+            }
+		}
+		return false;
+	}
+
     function set_letsencrypt($acme_directory)
 	{
 		$res = $this->update('letsencrypt', $acme_directory);
@@ -863,6 +894,17 @@ class acme extends CI_Model
             }
             $res = $this->update('googletrust', $googletrust);
         }
+		if($res)
+		{
+			return true;
+		}
+		return false;
+	}
+
+    function set_dns($dnsSetings)
+	{
+        $dnsSetings = json_encode($dnsSetings);
+        $res = $this->update('dns', $dnsSetings);
 		if($res)
 		{
 			return true;
