@@ -222,34 +222,27 @@ class acme extends CI_Model
 
     public function checkValidation($key, $domain, $dnsContent)
     {
-	    try
-	    {
-            $dnsServer = "8.8.8.8";
-            $domain = '_acme-challenge.'.$domain;
-            $recordType = "CNAME";
+        $dnsServer = "dns.google";
+        $domain = '_acme-challenge.'.$domain;
+        $recordType = "CNAME";
 
-            $this->load->library('cloudflareapi');
-            $dnsRes = new DNSQuery();
-            $record = $dnsRes->queryDnsRecord($dnsServer, $domain, $recordType);
-            if ($record == false) {
-                return false;
-            }
-
-            if ($record == $dnsContent) {
-                $res = $this->base->update(
-                    ['status' => 'ready'],
-                    ['key' => $key],
-                    'is_ssl',
-                    'ssl_'
-                );
-                if ($res != false) {
-                    return true;
-                }
-            }
-	    }
-	    catch(Throwable $e)
-        {
+        $this->load->library('dnsquery');
+        $dnsRes = new DNSQuery();
+        $record = $dnsRes->queryDnsRecordHttp($dnsServer, $domain, $recordType);
+        if ($record == false) {
             return false;
+        }
+
+        if ($record == $dnsContent || $record == $dnsContent.'.') {
+            $res = $this->base->update(
+                ['status' => 'ready'],
+                ['key' => $key],
+                'is_ssl',
+                'ssl_'
+            );
+            if ($res != false) {
+                return true;
+            }
         }
         return false;
     }
@@ -490,6 +483,7 @@ class acme extends CI_Model
         } elseif ($status == 'pending') {
             $return['ready'] = false;
             if ($this->checkValidation($key, $domain, $dnsContent)) {
+                $return['status'] = 'ready';
                 $return['ready'] = true;
             }
             $return['approver_method']['dns']['record'] = '_acme-challenge.'.$domain.' TXT '.$dnsContent;

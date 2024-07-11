@@ -1,4 +1,5 @@
 <?php
+use GuzzleHttp\Client;
 class DNSQuery {
     function __construct()
     {
@@ -28,35 +29,31 @@ class DNSQuery {
         $question .= pack('n', $recordTypeValue);
         $question .= pack('n', 1);
         $packet = $header . $question;
-        $socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
+        $socket = fsockopen("udp://$dnsServer", 53, $errno, $errstr, 5);
         if (!$socket) {
-            return "Socket creation failed: " . socket_strerror(socket_last_error());
+            return "Socket creation failed: $errstr ($errno)";
         }
-        if (!socket_sendto($socket, $packet, strlen($packet), 0, $dnsServer, 53)) {
-            return "Failed to send data: " . socket_strerror(socket_last_error());
+        if (!fwrite($socket, $packet, strlen($packet))) {
+            return "Failed to send data";
         }
-        $response = '';
-        if (!socket_recvfrom($socket, $response, 512, 0, $dnsServer, $port)) {
-            return "Failed to receive data: " . socket_strerror(socket_last_error());
+        $response = fread($socket, 512);
+        if ($response === false) {
+            return "Failed to receive data";
         }
-        socket_close($socket);
+        fclose($socket);
         $offset = 12;
         while (ord($response[$offset]) !== 0) {
             $offset += ord($response[$offset]) + 1;
         }
         $offset += 5;
-
         $numAnswers = unpack('n', substr($response, 6, 2))[1];
         if ($numAnswers == 0) {
             return false;
         }
-
         $offset += 10;
         $dataLength = unpack('n', substr($response, $offset, 2))[1];
         $offset += 2;
-
         $recordData = '';
-
         if ($recordType === 'CNAME') {
             $labels = [];
             while (ord($response[$offset]) !== 0) {
@@ -79,7 +76,6 @@ class DNSQuery {
             $offset += 1;
             $recordData = substr($response, $offset, $txtLength);
         }
-
         return $recordData;
     }
 
@@ -100,5 +96,31 @@ class DNSQuery {
         }
         $offset++;
         return implode('.', $labels);
+    }
+
+    function queryDnsRecordHttp($dnsServer, $domain, $recordType) {
+        $client = new Client();
+        $url = "https://$dnsServer/resolve?name=" . urlencode($domain) . "&type=$recordType";
+        try {
+            $response = $client->get($url);
+            $body = $response->getBody()->getContents();
+
+            $data = json_decode($body, true);
+            if (!isset($data['Answer'])) {
+                return false;
+            }
+            $records = $data['Answer'];
+            if (empty($records)) {
+                return false;
+            }
+            if ($recordType === 'CNAME') {
+                return $records[0]['data'];
+            } elseif ($recordType === 'TXT') {
+                return $records[0]['data'];
+            }
+            return false;
+        } catch (Exception $e) {
+            return "Error: " . $e->getMessage();
+        }
     }
 }
