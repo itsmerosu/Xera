@@ -229,9 +229,9 @@ class Account extends CI_Model
 			'is_account',
 			'account_'
 		);
-		if(count($res) > 0)
+		if($res)
 		{
-			return $res;
+			return true;
 		}
 		return false;
 	}
