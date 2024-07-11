@@ -1,0 +1,31 @@
+<?php 
+
+$lang['email_address'] = 'Dirección de Correo Electrónico';
+$lang['username'] = 'Nombre de Usuario';
+$lang['password'] = 'Contraseña';
+$lang['old_password'] = 'Contraseña Anterior';
+$lang['new_password'] = 'Nueva Contraseña';
+$lang['confirm_password'] = 'Confirmar Contraseña';
+$lang['your_name'] = 'Tu Nombre';
+$lang['recaptcha'] = 'Captcha';
+$lang['language'] = 'Idioma';
+$lang['subject'] = 'Asunto';
+$lang['content'] = 'Contenido';
+$lang['domain'] = 'Dominio';
+$lang['theme'] = 'Tema';
+$lang['label'] = 'Etiqueta';
+$lang['csr_code'] = 'Código CSR';
+$lang['private_key'] = 'Clave Privada';
+$lang['crt_code'] = 'Código CRT';
+$lang['ca_code'] = 'Código CA';
+$lang['reason'] = 'Motivo';
+$lang['domain_name'] = 'Nombre de Dominio';
+$lang['account_label'] = 'Etiqueta de Cuenta';
+$lang['ok'] = 'Aceptar';
+$lang['error'] = 'Error';
+$lang['redirecting'] = 'Redirigiendo';
+$lang['or'] = 'o';
+$lang['show_hide'] = 'Mostrar/Ocultar';
+$lang['record_name'] = 'Nombre del Registro';
+$lang['record_content'] = 'Contenido del Registro';
+$lang['record_type'] = 'Tipo de Registro';
