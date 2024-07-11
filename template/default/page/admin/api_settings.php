@@ -140,7 +140,7 @@
 					</div>
 					<div class="col-sm-6">
 						<label class="form-label">Callback URL</label>
-						<input type="text" name="callback" class="form-control mb-2" value="<?= str_replace('https', 'http', base_url()) ?>c/mofh" readonly>
+						<input type="text" name="callback" class="form-control mb-2" value="<?= base_url() ?>c/mofh" readonly>
 					</div>
 					<div class="col-sm-12">
 						<input type="submit" name="update_mofh" value="Change" class="btn btn-primary btn-pill">
