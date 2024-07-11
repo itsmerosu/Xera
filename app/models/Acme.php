@@ -16,7 +16,6 @@ use AcmePhp\Ssl\CertificateRequest;
 use AcmePhp\Ssl\Signer\CertificateRequestSigner;
 use InfinityFree\AcmeCore\Protocol\ExternalAccount;
 use InfinityFree\AcmeCore\Protocol\CertificateOrder;
-use PurplePixie\PhpDns\DNSQuery;
 
 class acme extends CI_Model
 {
@@ -225,11 +224,18 @@ class acme extends CI_Model
     {
 	    try
 	    {
-            $query = new DNSQuery("8.8.8.8");
-            $name = '_acme-challenge.'.$domain;
-            $result = $query->query($name, \PurplePixie\PhpDns\DNSTypes::NAME_CNAME);
+            $dnsServer = "8.8.8.8";
+            $domain = '_acme-challenge.'.$domain;
+            $recordType = "CNAME";
 
-            if ($result->current()->getData() == $dnsContent) {
+            $this->load->library('cloudflareapi');
+            $dnsRes = new DNSQuery();
+            $record = $dnsRes->queryDnsRecord($dnsServer, $domain, $recordType);
+            if ($record == false) {
+                return false;
+            }
+
+            if ($record == $dnsContent) {
                 $res = $this->base->update(
                     ['status' => 'ready'],
                     ['key' => $key],
