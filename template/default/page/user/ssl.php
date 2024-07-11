@@ -36,12 +36,12 @@
 								<td>DNS</td>
 								<td><?= $item['type'] ?></td>
 								<td>
-									<?php if ($item['status'] == 'processing') : ?>
+									<?php if ($item['status'] == 'processing' || $item['status'] == 'pending') : ?>
 										<span class="badge bg-yellow">
 											<?= $this->base->text($item['status'], 'table') ?>
 											<?php $btn = ['fa-cogs', 'btn-yellow'] ?>
 										</span>
-									<?php elseif ($item['status'] == 'active') : ?>
+									<?php elseif ($item['status'] == 'active' || $item['status'] == 'ready') : ?>
 										<span class="badge bg-green">
 											<?= $this->base->text($item['status'], 'table') ?>
 											<?php $btn = ['fa-shield-alt', 'btn-green'] ?>

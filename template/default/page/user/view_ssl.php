@@ -53,11 +53,11 @@
 					<div class="row align-items-center">
 						<span class="col"><?= $this->base->text('status', 'table') ?>:</span>
 						<span class="col-auto ms-auto">
-							<?php if ($data['status'] == 'processing'): ?>
+							<?php if ($data['status'] == 'processing'|| $data['status'] == 'pending'): ?>
 								<span class="badge bg-yellow">
 									<?= $this->base->text($data['status'], 'table') ?>
 								</span>
-							<?php elseif ($data['status'] == 'active'): ?>
+							<?php elseif ($data['status'] == 'active' || $data['status'] == 'ready'): ?>
 								<span class="badge bg-green">
 									<?= $this->base->text($data['status'], 'table') ?>
 								</span>
@@ -85,7 +85,7 @@
 		</div>
 	</div>
 	<div class="card mb-3">
-		<?php if ($data['status'] === 'processing'): ?>
+		<?php if ($data['status'] == 'pending' || $data['status'] == 'ready'): ?>
 			<?php $record = explode(' ', $data['approver_method']['dns']['record']) ?>
 			<div class="card-header">
 				<div class="card-title"><?= $this->base->text('verify_ownership', 'heading') ?></div>
@@ -106,6 +106,45 @@
 				<div class="mb-3">
 					<label class="form-label"><?= $this->base->text('record_content', 'label') ?></label>
 					<input type="text" class="form-control" value="<?= trim($record[2]) ?>" readonly="true">
+				</div>
+				<?php if ($data['ready']): ?>
+				<div class="mb-3">
+					<a id="validateBtn" class="btn btn-success" href="?validate=true">
+						<span id="spinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+						<span id="buttonText"><?= $this->base->text('validate', 'button') ?></span>
+					</a>
+					<script>
+						document.getElementById('validateBtn').addEventListener('click', function(event) {
+							event.preventDefault();
+							var spinner = document.getElementById('spinner');
+							var buttonText = document.getElementById('buttonText');
+							var validateBtn = document.getElementById('validateBtn');
+							spinner.style.display = 'inline-block';
+							buttonText.style.display = 'none';
+							validateBtn.classList.add('disabled');
+							window.location.href = validateBtn.href;
+						});
+					</script>
+				</div>
+				<?php endif ?>
+			</div>
+		<?php elseif ($data['status'] == 'processing'): ?>
+			<div class="card-body">
+				<div class="mb-3">
+					<label class="form-label"><?= $this->base->text('csr_code', 'label') ?></label>
+					<textarea class="form-control" style="min-height: 200px;" readonly="true"><?= $this->base->text('processing', 'table') ?></textarea>
+				</div>
+ 			    <div class="mb-3">
+					<label class="form-label"><?= $this->base->text('private_key', 'label') ?></label>
+					<textarea class="form-control" style="min-height: 200px;" readonly="true"><?= $this->base->text('processing', 'table') ?></textarea>
+				</div>
+				<div class="mb-3">
+					<label class="form-label"><?= $this->base->text('crt_code', 'label') ?></label>
+					<textarea class="form-control" style="min-height: 200px;" readonly="true"><?= $this->base->text('processing', 'table') ?></textarea>
+				</div>
+				<div class="mb-3">
+					<label class="form-label"><?= $this->base->text('ca_code', 'label') ?></label>
+					<textarea class="form-control" style="min-height: 200px;" readonly="true"><?= $this->base->text('processing', 'table') ?></textarea>
 				</div>
 			</div>
 		<?php else: ?>

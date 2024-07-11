@@ -18,3 +18,4 @@ $lang['ssl_created_msg'] = 'SSL certificate requested successfully.';
 $lang['ssl_deleted_msg'] = 'SSL certificate deleted successfully.';
 $lang['account_msg'] = 'Account created successfully.';
 $lang['ssl_cancelled_msg'] = 'SSL certificate deleted successfully.';
+$lang['ssl_validated_msg'] = 'SSL certificate validated successfully, SSL will be available soon.';

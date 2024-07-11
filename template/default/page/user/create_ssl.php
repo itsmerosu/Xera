@@ -15,9 +15,9 @@
 						<label class="form-label">SSL Type</label>
 						<select class="form-control mb-2" name="type">
 							<?php
-							$clouflare = $this->acme->get_cloudflare();
-							if ($this->acme->get_letsencrypt() != 'not-set' && $clouflare != 'not-set') {
-							} elseif ($clouflare['email'] != '' && $clouflare['api_key'] != '') {
+							$cloudflare = $this->acme->get_cloudflare();
+							if ($this->acme->get_letsencrypt() == 'not-set' && $cloudflare == 'not-set') {
+							} elseif ($cloudflare['email'] != '' && $cloudflare['api_key'] != '') {
 							?>
 							<option value="letsencrypt" selected="true">Let's Encrypt</option>
 							<?php
@@ -32,9 +32,9 @@
 							?>
 							<?php
 							$zerossl = $this->acme->get_zerossl();
-							if ($zerossl == 'not-set' && $clouflare != 'not-set') {
+							if ($zerossl == 'not-set' && $cloudflare != 'not-set') {
 
-							} elseif ($zerossl['url'] != '' && $zerossl['eab_kid'] != '' && $zerossl['eab_hmac_key'] != '' && $clouflare['email'] != '' && $clouflare['api_key'] != '') {
+							} elseif ($zerossl['url'] != '' && $zerossl['eab_kid'] != '' && $zerossl['eab_hmac_key'] != '' && $cloudflare['email'] != '' && $cloudflare['api_key'] != '') {
 							?>
 							<option value="zerossl">ZeroSSL</option>
 							<?php
@@ -42,9 +42,9 @@
 							?>
 							<?php
 							$googletrust = $this->acme->get_googletrust();
-							if ($googletrust == 'not-set' && $clouflare != 'not-set') {
+							if ($googletrust == 'not-set' && $cloudflare != 'not-set') {
 
-							} elseif ($googletrust['url'] != '' && $googletrust['eab_kid'] != '' && $googletrust['eab_hmac_key'] != '' && $clouflare['email'] != '' && $clouflare['api_key'] != '') {
+							} elseif ($googletrust['url'] != '' && $googletrust['eab_kid'] != '' && $googletrust['eab_hmac_key'] != '' && $cloudflare['email'] != '' && $cloudflare['api_key'] != '') {
 							?>
 							<option value="googletrust">Google Trust Services</option>
 							<?php
@@ -85,7 +85,21 @@
 						</div>
 					<?php endif ?>
 					<div class="col-sm-12">
-						<input type="submit" name="create" value="<?= $this->base->text('request', 'button') ?>" class="btn btn-primary btn-pill">
+						<button id="createButton" type="submit" name="create" value="<?= $this->base->text('request', 'button') ?>" class="btn btn-primary btn-pill" onclick="showLoading()">
+    					    <span id="spinner" class="spinner-border" role="status" aria-hidden="true" style="display: none;"></span>
+    					    <span id="buttonText"><?= $this->base->text('request', 'button') ?></span>
+    					</button>
+						<script>
+						function showLoading() {
+						    var spinner = document.getElementById('spinner');
+						    var buttonText = document.getElementById('buttonText');
+						    var submitButton = document.getElementById('createButton');
+						
+						    spinner.style.display = 'inline-block';
+						    buttonText.style.display = 'none';
+						    submitButton.classList.add('disabled');
+						}
+						</script>
 					</div>
 				</div>
 			</form>

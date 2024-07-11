@@ -43,3 +43,4 @@ $lang['target'] = 'Target';
 $lang['content'] = 'Content';
 $lang['pri'] = 'Preference';
 $lang['provider'] = 'Leverandør';
+$lang['ready'] = 'Klar';

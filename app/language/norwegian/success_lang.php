@@ -18,3 +18,4 @@ $lang['ssl_created_msg'] = 'SSL-sertifikat ble forespurt.';
 $lang['ssl_deleted_msg'] = 'SSL-sertifikatet ble slettet.';
 $lang['account_msg'] = 'Konto opprettet.';
 $lang['ssl_cancelled_msg'] = 'SSL-sertifikatet ble slettet.';
+$lang['ssl_validated_msg'] = 'SSL-sertifikat validert, SSL vil snart være tilgjengelig.';

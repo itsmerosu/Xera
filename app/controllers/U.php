@@ -1709,6 +1709,41 @@ class U extends CI_Controller
 					redirect("ssl/view/$id");
 				}
 			}
+			elseif($this->input->get('validate'))
+			{
+				$ssl_type = $this->ssl->get_ssl_type($id);
+				$res = $this->acme->initilize($ssl_type);
+				if(!is_bool($res))
+				{
+					$this->session->set_flashdata('msg', json_encode([0, $res]));
+					redirect("ssl/view/$id");
+				}
+				elseif(is_bool($res) AND $res == true)
+				{
+				}
+				else
+				{
+					$this->session->set_flashdata('msg', json_encode([0, $this->base->text('error_occured', 'error')]));
+					redirect("ssl/view/$id");
+				}
+
+				$res = $this->acme->validateOrder($id);
+				if(!is_bool($res))
+				{
+					$this->session->set_flashdata('msg', json_encode([0, $res]));
+					redirect("ssl/view/$id");
+				}
+				elseif(is_bool($res) AND $res == true)
+				{
+					$this->session->set_flashdata('msg', json_encode([1, $this->base->text('ssl_validated_msg', 'success')]));
+					redirect("ssl/view/$id");
+				}
+				else
+				{
+					$this->session->set_flashdata('msg', json_encode([0, $this->base->text('error_occured', 'error')]));
+					redirect("ssl/view/$id");
+				}
+			}
 			else
 			{
 				if($this->ssl->is_active() || $this->acme->is_active())
@@ -1801,7 +1836,7 @@ class U extends CI_Controller
 					'host' => $this->base->text('host', 'table'),
 					'type' => $this->base->text('type', 'table'),
 					'ttl' => $this->base->text('ttl', 'table'),
-					'content' => $this->base->text('content', 'table')
+					'txt' => $this->base->text('content', 'table')
 				],
 				'MX' => [
 					'host' => $this->base->text('host', 'table'),

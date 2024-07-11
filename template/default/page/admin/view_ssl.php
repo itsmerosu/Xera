@@ -58,11 +58,11 @@
 					<div class="row align-items-center">
 						<span class="col">Status:</span>
 						<span class="col-auto ms-auto">
-							<?php if ($data['status'] == 'processing'): ?>
+							<?php if ($data['status'] == 'processing' || $item['status'] == 'pending'): ?>
 								<span class="badge bg-yellow">
 									<?= $data['status'] ?>
 								</span>
-							<?php elseif ($data['status'] == 'active'): ?>
+							<?php elseif ($data['status'] == 'active' || $item['status'] == 'ready'): ?>
 								<span class="badge bg-green">
 									<?= $data['status'] ?>
 								</span>

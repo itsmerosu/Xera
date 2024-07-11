@@ -115,16 +115,6 @@ class ComposerStaticInited609bd98e3b5c3e3d3186f232403dea
         ),
     );
 
-    public static $prefixesPsr0 = array (
-        'P' => 
-        array (
-            'PurplePixie' => 
-            array (
-                0 => __DIR__ . '/..' . '/purplepixie/phpdns/src',
-            ),
-        ),
-    );
-
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
     );
@@ -134,7 +124,6 @@ class ComposerStaticInited609bd98e3b5c3e3d3186f232403dea
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInited609bd98e3b5c3e3d3186f232403dea::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInited609bd98e3b5c3e3d3186f232403dea::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInited609bd98e3b5c3e3d3186f232403dea::$prefixesPsr0;
             $loader->classMap = ComposerStaticInited609bd98e3b5c3e3d3186f232403dea::$classMap;
 
         }, null, ClassLoader::class);

@@ -16,7 +16,6 @@ use AcmePhp\Ssl\CertificateRequest;
 use AcmePhp\Ssl\Signer\CertificateRequestSigner;
 use InfinityFree\AcmeCore\Protocol\ExternalAccount;
 use InfinityFree\AcmeCore\Protocol\CertificateOrder;
-use PurplePixie\PhpDns\DNSQuery;
 
 class acme extends CI_Model
 {
@@ -181,16 +180,34 @@ class acme extends CI_Model
             throw new Exception('DNS-01 challenge not found.');
         }
 
+        $digest = hash('sha256', $dnsChallenge->getPayload(), true);
+        $base64urlDigest = rtrim(strtr(base64_encode($digest), '+/', '-_'), '=');
+        $dnsContent = $base64urlDigest;
+
         $key = md5($this->base->get_hostname() . ':' . $this->user->get_email() . ':' . $certificateOrder->getOrderEndpoint() . ':' . time());
         $key = substr($key, 0, 20);
+
+        $this->load->library('cloudflareapi');
+        $cfCredentials = $this->get_cloudflare();
+        $cf_api = new CloudFlareAPI();
+        $cf_api->auth($cfCredentials['email'], $cfCredentials['api_key']);
+        $cf_api->setZone($cfCredentials['domain']);
+        $addResult = $cf_api->addDNSrecord('txt', $key, $dnsContent);
 
         $data = [
             'ssl_pid' => $certificateOrder->getOrderEndpoint(),
             'ssl_key' => $key,
             'ssl_for' => $this->user->get_key(),
             'ssl_type' => $autority,
-            'ssl_domain' => $domain
+            'ssl_status' => 'pending',
+            'ssl_domain' => $domain,
+            'ssl_dns' => $dnsContent,
+            'ssl_dnsid' => ''
         ];
+        if ($addResult['status']) {
+            $data['ssl_dns'] = $key.'.'.$cfCredentials['domain'];
+            $data['ssl_dnsid'] = $addResult['id'];
+        }
         $res = $this->db->insert('is_ssl', $data);
 
 		if($res !== false)
@@ -203,17 +220,86 @@ class acme extends CI_Model
 		return false;
     }
 
-    public function checkValidation($order, $privateKey)
+    public function checkValidation($key, $domain, $dnsContent)
     {
+        $dnsSettings = $this->get_dns();
+        $domain = '_acme-challenge.'.$domain;
+        $recordType = "CNAME";
+        $this->load->library('dnsquery');
+        $dnsRes = new DNSQuery();
+
+        if ($dnsSettings['resolver'] == '' || $dnsSettings['resolver'] == null) {
+            return false;
+        }
+
+        if ($dnsSettings['doh'] == 'active') {
+            $record = $dnsRes->queryDnsRecordHttp($dnsSettings['resolver'], $domain, $recordType);
+        } else {
+            $record = $dnsRes->queryDnsRecord($dnsSettings['resolver'], $domain, $recordType);
+        }
+
+        if ($record == false) {
+            return false;
+        }
+
+        if ($record == $dnsContent || $record == $dnsContent.'.') {
+            $res = $this->base->update(
+                ['status' => 'ready'],
+                ['key' => $key],
+                'is_ssl',
+                'ssl_'
+            );
+            if ($res != false) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function validateOrder($key) {
+        $res = $this->fetch(['key' => $key]);
+		if($res !== [] && $res[0]['ssl_status'] == 'ready') {
+            $orderId = $res[0]['ssl_pid'];
+            $domain = $res[0]['ssl_domain'];
+            $userKey = $res[0]['ssl_for'];
+            $dnsid = $res[0]['ssl_dnsid'];
+        } else {
+            return False;
+        }
+        $res2 = $this->base->fetch(
+			'is_user',
+			['key' => $userKey],
+			'user_'
+		);
+        if ($res2 == [] || $res2 == False) {
+            return False;
+        }
+
+        $privateDir = './acme-storage/'.$res2[0]['user_email'].'/certificates/'.$key.'.priv.pem';
+        if (file_exists($privateDir)) {
+            $privateKey = file_get_contents($privateDir);
+        }
+
+        $res_in = $this->initilize($res[0]['ssl_type'], $res[0]['ssl_key']);
+        if(!is_bool($res_in))
+		{
+			return 'Cant connect to CA autority.';
+		}
+		elseif(is_bool($res_in) AND $res_in == false)
+		{
+            return False;
+		}
+
+        $order = new CertificateOrder([], $orderId);
+        $order = $this->acme->reloadOrder($order);
+
         $privateKey = new PrivateKey($privateKey);
         $publicKey = $privateKey->getPublicKey();
         $domainKeyPair = new KeyPair($publicKey, $privateKey);
-        
-        $allChallenges = $order->getAuthorizationChallenges();
-        $domain = array_key_first($allChallenges);
 
+        $allChallenges = $order->getAuthorizationChallenges();
         $challenges = $allChallenges[$domain];
-        
+
         $dnsChallenge = null;
         foreach ($challenges as $challenge) {
             if ($challenge->getType() === 'dns-01') {
@@ -224,28 +310,29 @@ class acme extends CI_Model
         if (!$dnsChallenge) {
             return false;
         }
-	try
-	{
-        $query = new DNSQuery("8.8.8.8");
-        $digest = hash('sha256', $dnsChallenge->getPayload(), true);
-        $base64urlDigest = rtrim(strtr(base64_encode($digest), '+/', '-_'), '=');
-        $name = '_acme-challenge.'.$dnsChallenge->getDomain();
-        $dnsContent = $base64urlDigest;
-        $result = $query->query($name, \PurplePixie\PhpDns\DNSTypes::NAME_TXT);
 
-        if ($result->current()->getData() == $dnsContent) {
-            $challenge = $this->acme->challengeAuthorization($dnsChallenge);
-            if ($challenge->getStatus() == 'valid') {
-                $dn = new DistinguishedName($domain);
-                $csr = new CertificateRequest($dn, $domainKeyPair);
-                $this->acme->finalizeOrder($order, $csr, 180, false);
+        $challenge = $this->acme->challengeAuthorization($dnsChallenge);
+        if ($challenge->getStatus() == 'valid') {
+            $dn = new DistinguishedName($domain);
+            $csr = new CertificateRequest($dn, $domainKeyPair);
+            $this->acme->finalizeOrder($order, $csr, 180, false);
+
+            $this->load->library('cloudflareapi');
+            $cfCredentials = $this->get_cloudflare();
+            $cf_api = new CloudFlareAPI();
+            $cf_api->auth($cfCredentials['email'], $cfCredentials['api_key']);
+            $cf_api->setZone($cfCredentials['domain']);
+            $cf_api->deleteDNSrecord($dnsid);
+
+            $res = $this->base->update(
+                ['status' => 'processing'],
+                ['key' => $key],
+                'is_ssl',
+                'ssl_'
+            );
+            if ($res != false) {
                 return true;
             }
-        }
-	}
-	catch(Throwable $e)
-        {
-            return false;
         }
         return false;
     }
@@ -285,6 +372,8 @@ class acme extends CI_Model
             $status = $res[0]['ssl_status'];
             $domain = $res[0]['ssl_domain'];
             $userKey = $res[0]['ssl_for'];
+            $dnsContent = $res[0]['ssl_dns'];
+            $dnsid = $res[0]['ssl_dnsid'];
         } else {
             return False;
         }
@@ -400,74 +489,29 @@ class acme extends CI_Model
             $return['end_date'] = '---- -- --';
             $return['crt_code'] = '';
             $return['ca_code'] = '';
-        } else {
-            $res_in = $this->initilize($res[0]['ssl_type'], $res[0]['ssl_key']);
-
-            if(!is_bool($res_in))
-			{
-				return 'Cant connect to CA autority.';
-			}
-			elseif(is_bool($res_in) AND $res_in == false)
-			{
-                return False;
-			}
-
-            $order = new CertificateOrder([], $orderId);
-            $order = $this->acme->reloadOrder($order);
-
-            if ($order->getStatus()) {
-                switch ($order->getStatus()) {
-                    case 'invalid':
-                        $status = 'cancelled';
-                        break;
-                    case 'pending':
-                        $status = 'processing';
-                        if ($this->checkValidation($order, $privateKey)) {
-                            if ($order->getStatus() == 'valid') {
-                                $status = 'active';
-                            }
-                        }
-                        break;
-                    case 'ready':
-                        $status = 'processing';
-                        if ($this->checkValidation($order, $privateKey)) {
-                            if ($order->getStatus() == 'valid') {
-                                $status = 'active';
-                            }
-                        }
-                        break;
-                    case 'processing':
-                        $status = 'processing';
-                        break;
-                    case 'valid':
-                        $status = 'active';
-                        break;
-                    
-                }
-                $return['status'] = $status;
+        } elseif ($status == 'pending') {
+            $return['ready'] = false;
+            if ($this->checkValidation($key, $domain, $dnsContent)) {
+                $return['status'] = 'ready';
+                $return['ready'] = true;
             }
-            if ($status == 'processing') {
-                $allChallenges = $order->getAuthorizationChallenges();
-                $challenges = $allChallenges[$domain];
-
-                $dnsChallenge = null;
-                foreach ($challenges as $challenge) {
-                    if ($challenge->getType() === 'dns-01') {
-                        $dnsChallenge = $challenge;
-                        break;
-                    }
-                }
-                if (!$dnsChallenge) {
-                    return False;
-                }
-
-                $digest = hash('sha256', $dnsChallenge->getPayload(), true);
-                $base64urlDigest = rtrim(strtr(base64_encode($digest), '+/', '-_'), '=');
-                $dnsContent = $base64urlDigest;
-                $return['approver_method']['dns']['record'] = '_acme-challenge.'.$dnsChallenge->getDomain().' TXT '.$dnsContent;
-            } elseif ($this->getCertificate($orderId, $privateKey)) {
+            $return['approver_method']['dns']['record'] = '_acme-challenge.'.$domain.' TXT '.$dnsContent;
+            if ($dnsid != '' && $dnsid != null) {
+                $return['approver_method']['dns']['record'] = '_acme-challenge.'.$domain.' CNAME '.$dnsContent;
+            }
+        } elseif ($status == 'ready') {
+            $return['ready'] = true;
+            $return['approver_method']['dns']['record'] = '_acme-challenge.'.$domain.' TXT '.$dnsContent;
+            if ($dnsid != '' && $dnsid != null) {
+                $return['approver_method']['dns']['record'] = '_acme-challenge.'.$domain.' CNAME '.$dnsContent;
+            }
+        } elseif ($status == 'processing') {
+            $return['approver_method']['dns']['record'] = '_acme-challenge.'.$domain.' TXT '.$dnsContent;
+            $this->initilize($res[0]['ssl_type']);
+            if ($this->getCertificate($orderId, $privateKey)) {
+                $status = 'active';
                 $return['private_key'] = $privateKey;
-
+    
                 $certificateDir = './acme-storage/'.$res2[0]['user_email'].'/certificates/'.$key.'.pem';
                 $intermediateDir = './acme-storage/'.$res2[0]['user_email'].'/certificates/'.$key.'.ca.pem';
                 if (!file_exists($certificateDir) || !file_exists($intermediateDir)) {
@@ -481,18 +525,18 @@ class acme extends CI_Model
                     $certificate['certificate_code'] = file_get_contents($certificateDir);
                     $certificate['intermediate_code'] = file_get_contents($intermediateDir);
                 }
-
+    
                 $cert = openssl_x509_read($certificate['certificate_code']);
-
+    
                 $creationDate = openssl_x509_parse($cert)['validFrom_time_t'];
                 $expirynDate = openssl_x509_parse($cert)['validTo_time_t'];
                 $creationDate = new DateTime("@$creationDate");
                 $expirynDate = new DateTime("@$expirynDate");
-
+    
                 if (new DateTime() >= $expirynDate) {
                     $status = 'expired';
                 }
-
+    
                 $res = $this->base->update(
                     ['status' => $status],
                     ['key' => $key],
@@ -500,35 +544,24 @@ class acme extends CI_Model
                     'ssl_'
                 );
 
+                $return['status'] = $status;
                 $return['begin_date'] = $creationDate->format('Y-m-d');
                 $return['end_date'] = $expirynDate->format('Y-m-d');
                 $return['crt_code'] = $certificate['certificate_code'];
                 $return['ca_code'] = $certificate['intermediate_code'];
-            } else {
-                $res = $this->base->update(
-                    ['status' => $status],
-                    ['key' => $key],
-                    'is_ssl',
-                    'ssl_'
-                );
-
-                $return['private_key'] = $privateKey;
-                $return['begin_date'] = '---- -- --';
-                $return['end_date'] = '---- -- --';
-                $return['crt_code'] = '';
-                $return['ca_code'] = '';
             }
         }
         return $return;
     }
 
-    function getOrderStatus($orderId, $autority, $admin = false) {
+    function getOrderStatus($orderId) {
         $res = $this->fetch(['pid' => $orderId]);
 		if($res !== []) {
             $status = $res[0]['ssl_status'];
             $domain = $res[0]['ssl_domain'];
             $key = $res[0]['ssl_key'];
             $userKey = $res[0]['ssl_for'];
+            $dnsContent = $res[0]['ssl_dns'];
         }
 
         $res2 = $this->base->fetch(
@@ -555,60 +588,19 @@ class acme extends CI_Model
                 'status' => $status,
                 'domain' => $domain
             ];
-        } else {
-            if ($admin) {
-                $this->initilize($autority, $key);
-            } else {
-                $this->initilize($autority);
+        } elseif ($status == 'pending') {
+            if ($this->checkValidation($key, $domain, $dnsContent)) {
+                $status = 'ready';
             }
-            $order = new CertificateOrder([], $orderId);
-            $order = $this->acme->reloadOrder($order);
-            if ($order->getStatus()) {
-                switch ($order->getStatus()) {
-                    case 'invalid':
-                        $status = 'cancelled';
-                        $res = $this->base->update(
-                            ['status' => $status],
-                            ['key' => $key],
-                            'is_ssl',
-                            'ssl_'
-                        );
-                        break;
-                    case 'pending':
-                        $status = 'processing';
-                        if ($this->checkValidation($order, $privateKey)) {
-                            if ($order->getStatus() == 'valid') {
-                                $status = 'active';
-                            }
-                        }
-                        break;
-                    case 'ready':
-                        $status = 'processing';
-                        if ($this->checkValidation($order, $privateKey)) {
-                            if ($order->getStatus() == 'valid') {
-                                $status = 'active';
-                            }
-                        }
-                        break;
-                    case 'processing':
-                        $status = 'processing';
-                        break;
-                    case 'valid':
-                        $status = 'active';
-                        $res = $this->base->update(
-                            ['status' => $status],
-                            ['key' => $key],
-                            'is_ssl',
-                            'ssl_'
-                        );
-                        break;
-                    
-                }
-                return [
-                    'status' => $status,
-                    'domain' => $domain
-                ];
-            }
+            return [
+                'status' => $status,
+                'domain' => $domain
+            ];
+        } elseif ($status == 'ready') {
+            return [
+                'status' => $status,
+                'domain' => $domain
+            ];
         }
         return False;
     }
@@ -650,13 +642,13 @@ class acme extends CI_Model
                         $data = $this->getOrderStatus_goget($key['ssl_pid']);
                         $data['type'] = "GoGetSSL";
                     } elseif ($key['ssl_type'] == 'letsencrypt') {
-                        $data = $this->getOrderStatus($key['ssl_pid'], $key['ssl_type']);
+                        $data = $this->getOrderStatus($key['ssl_pid']);
                         $data['type'] = "Let's Encrypt";
                     } elseif ($key['ssl_type'] == 'zerossl') {
-                        $data = $this->getOrderStatus($key['ssl_pid'], $key['ssl_type']);
+                        $data = $this->getOrderStatus($key['ssl_pid']);
                         $data['type'] = "ZeroSSL";
                     } elseif ($key['ssl_type'] == 'googletrust') {
-                        $data = $this->getOrderStatus($key['ssl_pid'], $key['ssl_type']);
+                        $data = $this->getOrderStatus($key['ssl_pid']);
                         $data['type'] = "Google Trust Services";
                     }
 					$data['key'] = $key['ssl_key'];
@@ -682,13 +674,13 @@ class acme extends CI_Model
                         $data = $this->getOrderStatus_goget($key['ssl_pid']);
                         $data['type'] = "GoGetSSL";
                     } elseif ($key['ssl_type'] == 'letsencrypt') {
-                        $data = $this->getOrderStatus($key['ssl_pid'], $key['ssl_type'], true);
+                        $data = $this->getOrderStatus($key['ssl_pid']);
                         $data['type'] = "Let's Encrypt";
                     } elseif ($key['ssl_type'] == 'zerossl') {
-                        $data = $this->getOrderStatus($key['ssl_pid'], $key['ssl_type'], true);
+                        $data = $this->getOrderStatus($key['ssl_pid']);
                         $data['type'] = "ZeroSSL";
                     } elseif ($key['ssl_type'] == 'googletrust') {
-                        $data = $this->getOrderStatus($key['ssl_pid'], $key['ssl_type'], true);
+                        $data = $this->getOrderStatus($key['ssl_pid']);
                         $data['type'] = "Google Trust Services";
                     }
 					$data['key'] = $key['ssl_key'];
@@ -730,15 +722,15 @@ class acme extends CI_Model
                         $data['type'] = "GoGetSSL";
                     } elseif ($key['ssl_type'] == 'letsencrypt') {
                         $this->initilize($key['ssl_type']);
-                        $data = $this->getOrderStatus($key['ssl_pid'], $key['ssl_type']);
+                        $data = $this->getOrderStatus($key['ssl_pid']);
                         $data['type'] = "Let's Encrypt";
                     } elseif ($key['ssl_type'] == 'zerossl') {
                         $this->initilize($key['ssl_type']);
-                        $data = $this->getOrderStatus($key['ssl_pid'], $key['ssl_type']);
+                        $data = $this->getOrderStatus($key['ssl_pid']);
                         $data['type'] = "ZeroSSL";
                     } elseif ($key['ssl_type'] == 'googletrust') {
                         $this->initilize($key['ssl_type']);
-                        $data = $this->getOrderStatus($key['ssl_pid'], $key['ssl_type']);
+                        $data = $this->getOrderStatus($key['ssl_pid']);
                         $data['type'] = "Google Trust Services";
                     }
 					$data['key'] = $key['ssl_key'];
@@ -805,15 +797,38 @@ class acme extends CI_Model
 		$res = $this->fetch_base();
 		if($res !== false)
 		{
-            if ($res['acme_clouflare'] != 'not-set') {
-                $clouflare = json_decode($res['acme_clouflare'], true);
+            if ($res['acme_cloudflare'] != 'not-set') {
+                $cloudflare = json_decode($res['acme_cloudflare'], true);
                 $return = [
-                    'email' => $clouflare['email'],
-                    'api_key' => $clouflare['api_key']
+                    'email' => $cloudflare['email'],
+                    'api_key' => $cloudflare['api_key'],
+                    'domain' => $cloudflare['domain']
                 ];
 			    return $return;
             } else {
                 return 'not-set';
+            }
+		}
+		return false;
+	}
+
+    function get_dns()
+	{
+		$res = $this->fetch_base();
+		if($res !== false)
+		{
+            if ($res['acme_dns'] != '') {
+                $dnsSettings = json_decode($res['acme_dns'], true);
+                $return = [
+                    'doh' => $dnsSettings['doh'],
+                    'resolver' => $dnsSettings['resolver']
+                ];
+			    return $return;
+            } else {
+                return [
+                    'doh' => 'active',
+                    'resolver' => 'dns.google'
+                ];
             }
 		}
 		return false;
@@ -853,7 +868,7 @@ class acme extends CI_Model
         if ($cloudflare == 'not-set') {
             $res = $this->update('cloudflare', $cloudflare);
         } else {
-            if ($cloudflare['email'] == '' && $cloudflare['api_key'] == '') {
+            if ($cloudflare['email'] == '' && $cloudflare['api_key'] == '' && $cloudflare['domain'] == '') {
                 $cloudflare = 'not-set';
             } else {
                 $cloudflare = json_encode($cloudflare);
@@ -879,6 +894,17 @@ class acme extends CI_Model
             }
             $res = $this->update('googletrust', $googletrust);
         }
+		if($res)
+		{
+			return true;
+		}
+		return false;
+	}
+
+    function set_dns($dnsSetings)
+	{
+        $dnsSetings = json_encode($dnsSetings);
+        $res = $this->update('dns', $dnsSetings);
 		if($res)
 		{
 			return true;
