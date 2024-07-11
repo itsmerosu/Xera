@@ -43,3 +43,4 @@ $lang['target'] = 'Mērķis';
 $lang['content'] = 'Saturs';
 $lang['pri'] = 'Prioritāte';
 $lang['provider'] = 'Pakalpojumu sniedzējs';
+$lang['ready'] = 'Gatavs';

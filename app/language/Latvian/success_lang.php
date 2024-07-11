@@ -18,3 +18,4 @@ $lang['ssl_created_msg'] = 'SSL sertifikāts veiksmīgi pieprasīts.';
 $lang['ssl_deleted_msg'] = 'SSL sertifikāts veiksmīgi dzēsts.';
 $lang['account_msg'] = 'Konts veiksmīgi izveidots.';
 $lang['ssl_cancelled_msg'] = 'SSL sertifikāts veiksmīgi atcelts.';
+$lang['ssl_validated_msg'] = 'SSL sertifikāts veiksmīgi pārbaudīts, SSL drīz būs pieejams.';

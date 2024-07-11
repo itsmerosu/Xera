@@ -18,3 +18,4 @@ $lang['ssl_created_msg'] = 'Le certificat SSL a été demandé.';
 $lang['ssl_deleted_msg'] = 'Certificat SSL supprimé.';
 $lang['account_msg'] = 'Compte créé avec succès.';
 $lang['ssl_cancelled_msg'] = 'Certificat SSL supprimé avec succès.';
+$lang['ssl_validated_msg'] = 'Certificat SSL validé avec succès, SSL sera bientôt disponible.';

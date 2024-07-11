@@ -43,3 +43,4 @@ $lang['target'] = 'Target';
 $lang['content'] = 'Content';
 $lang['pri'] = 'Preference';
 $lang['provider'] = '提供者';
+$lang['ready'] = '準備好了';

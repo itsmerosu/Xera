@@ -18,3 +18,4 @@ $lang['ssl_created_msg'] = 'SSL 成功請求.';
 $lang['ssl_deleted_msg'] = 'SSL 成功刪除.';
 $lang['ssl_cancelled_msg'] = 'SSL 已被取消.';
 $lang['account_msg'] = '賬戶創建成功';
+$lang['ssl_validated_msg'] = 'SSL證書驗證成功，SSL將很快可用。';

@@ -43,3 +43,4 @@ $lang['target'] = 'Στόχος';
 $lang['content'] = 'Περιεχόμενο';
 $lang['pri'] = 'Προτίμηση';
 $lang['provider'] = 'Πάροχος';
+$lang['ready'] = 'Έτοιμο';

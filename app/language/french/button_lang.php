@@ -36,3 +36,4 @@ $lang['lookup'] = 'Lookup';
 $lang['redirect_now'] = 'Rediriger maintenant';
 $lang['github_signin'] = "S'identifier avec GitHub";
 $lang['close'] = 'Fermer';
+$lang['validate'] = 'Valider SSL';

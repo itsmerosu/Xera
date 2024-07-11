@@ -36,3 +36,4 @@ $lang['lookup'] = 'Αναζήτηση';
 $lang['redirect_now'] = 'Ανακατεύθυνση Τώρα';
 $lang['github_signin'] = 'Είσοδος με GitHub';
 $lang['close'] = 'Κλείσιμο';
+$lang['validate'] = 'Επαλήθευση SSL';
