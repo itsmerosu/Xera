@@ -337,6 +337,29 @@ class acme extends CI_Model
         return false;
     }
 
+    public function deleteRecord($key) {
+        $res = $this->fetch(['key' => $key]);
+		if($res !== [] && $res[0]['ssl_status'] == 'ready') {
+            $dnsid = $res[0]['ssl_dnsid'];
+        } else {
+            return False;
+        }
+        $status = $res[0]['ssl_status'];
+        if ($status == 'pending' || $status == 'ready') {
+            $this->load->library('cloudflareapi');
+            $cfCredentials = $this->get_cloudflare();
+            $cf_api = new CloudFlareAPI();
+            $cf_api->auth($cfCredentials['email'], $cfCredentials['api_key']);
+            $cf_api->setZone($cfCredentials['domain']);
+            if ($cf_api->deleteDNSrecord($dnsid)) {
+                return true;
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public function getCertificate($orderId, $privateKey)
     {
         $privateKey = new PrivateKey($privateKey);
