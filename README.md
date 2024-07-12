@@ -38,7 +38,7 @@ Xera is a hosting account and support management system especially designed to w
 
 ### 🚅 Requirements
 Your server needs to meet the following minimum requirements to run Xera:
-- PHP v7.4 or above.
+- PHP v8.1 or above.
 - MySQL v5.7 or above.
 - A valid, trusted SSL certificate.
 
