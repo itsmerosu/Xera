@@ -202,7 +202,7 @@ if (isset($_GET['step']) and $_GET['step'] == 1 and isset($_POST['submit'])) {
 
 		$sql = mysqli_query($mysqli, "DROP TABLE IF EXISTS `is_user`;");
 
-		$sql = mysqli_query($mysqli, "CREATE TABLE `is_user` (`user_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,`user_name` varchar(50) NOT NULL,`user_email` varchar(100) NOT NULL,`user_password` varchar(100) NOT NULL,`user_key` varchar(16) NOT NULL,`user_rec` varchar(32) NOT NULL,`user_status` varchar(8) NOT NULL,`user_date` varchar(20) NOT NULL, `user_oauth` varchar(10) NOT NULL DEFAULT 'disabled'
+		$sql = mysqli_query($mysqli, "CREATE TABLE `is_user` (`user_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,`user_name` varchar(100) NULL,`user_email` varchar(100) NOT NULL,`user_password` varchar(100) NOT NULL,`user_key` varchar(16) NOT NULL,`user_rec` varchar(32) NOT NULL,`user_status` varchar(8) NOT NULL,`user_date` varchar(20) NOT NULL, `user_oauth` varchar(10) NOT NULL DEFAULT 'disabled'
 		);");
 
 		$sql = mysqli_query($mysqli, "DROP TABLE IF EXISTS `is_admin`;");
