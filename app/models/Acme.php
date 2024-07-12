@@ -311,29 +311,47 @@ class acme extends CI_Model
         if (!$dnsChallenge) {
             return false;
         }
+        try {
+            $challenge = $this->acme->challengeAuthorization($dnsChallenge);
+            if ($challenge->getStatus() == 'valid') {
+                $dn = new DistinguishedName($domain);
+                $csr = new CertificateRequest($dn, $domainKeyPair);
+                $this->acme->finalizeOrder($order, $csr, 180, false);
 
-        $challenge = $this->acme->challengeAuthorization($dnsChallenge);
-        if ($challenge->getStatus() == 'valid') {
-            $dn = new DistinguishedName($domain);
-            $csr = new CertificateRequest($dn, $domainKeyPair);
-            $this->acme->finalizeOrder($order, $csr, 180, false);
+                $this->load->library('cloudflareapi');
+                $cfCredentials = $this->get_cloudflare();
+                $cf_api = new CloudFlareAPI();
+                $cf_api->auth($cfCredentials['email'], $cfCredentials['api_key']);
+                $cf_api->setZone($cfCredentials['domain']);
+                $cf_api->deleteDNSrecord($dnsid);
 
-            $this->load->library('cloudflareapi');
-            $cfCredentials = $this->get_cloudflare();
-            $cf_api = new CloudFlareAPI();
-            $cf_api->auth($cfCredentials['email'], $cfCredentials['api_key']);
-            $cf_api->setZone($cfCredentials['domain']);
-            $cf_api->deleteDNSrecord($dnsid);
-
-            $res = $this->base->update(
-                ['status' => 'processing'],
-                ['key' => $key],
-                'is_ssl',
-                'ssl_'
-            );
-            if ($res != false) {
-                return true;
+                $res = $this->base->update(
+                    ['status' => 'processing'],
+                    ['key' => $key],
+                    'is_ssl',
+                    'ssl_'
+                );
+                if ($res != false) {
+                    return true;
+                }
             }
+        } catch (Throwable $e) {
+            if (strpos($e->getMessage(), 'authorization must be pending') !== false) {
+                $this->load->library('cloudflareapi');
+                $cfCredentials = $this->get_cloudflare();
+                $cf_api = new CloudFlareAPI();
+                $cf_api->auth($cfCredentials['email'], $cfCredentials['api_key']);
+                $cf_api->setZone($cfCredentials['domain']);
+                $cf_api->deleteDNSrecord($dnsid);
+                
+                $res = $this->base->update(
+                    ['status' => 'cancelled'],
+                    ['key' => $key],
+                    'is_ssl',
+                    'ssl_'
+                );
+            }
+            return false;
         }
         return false;
     }
