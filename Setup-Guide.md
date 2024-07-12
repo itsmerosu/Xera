@@ -58,6 +58,7 @@ To manage SSL certificates through GoGetSSL, follow these steps:
 
 ## ACME SSL Configuration:
 Xera supports ACME SSL certificate provisioning from multiple providers. Configure them as follows:
+**Important:** CloudFlare API is mandatory to use ACME SSL because it is used to delegate the DNS CNAME records.
 
 ### Let's Encrypt:
 Refer to [Let's Encrypt Get Started Page](https://letsencrypt.org/getting-started/)
