@@ -136,7 +136,7 @@ DROP TABLE IF EXISTS `is_user`;
 
 CREATE TABLE `is_user` (
 	`user_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	`user_name` varchar(50) NOT NULL,
+	`user_name` varchar(100) NULL,
 	`user_email` varchar(100) NOT NULL,
 	`user_password` varchar(100) NOT NULL,
 	`user_key` varchar(16) NOT NULL,
