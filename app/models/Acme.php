@@ -339,7 +339,7 @@ class acme extends CI_Model
 
     public function deleteRecord($key) {
         $res = $this->fetch(['key' => $key]);
-		if($res !== [] && $res[0]['ssl_status'] == 'ready') {
+		if($res !== []) {
             $dnsid = $res[0]['ssl_dnsid'];
         } else {
             return False;
