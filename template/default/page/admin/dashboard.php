@@ -142,7 +142,7 @@
 								Documentation
 							</div>
 							<div class="text-muted">
-								<a href="#" class="text-muted" target="_blank">Not Available</a>
+								<a href="https://github.com/mahtab2003/Xera/blob/dev/Setup-Guide.md" class="text-muted" target="_blank">Setup Guide</a>
 							</div>
 						</div>
 					</div>
@@ -163,7 +163,7 @@
 								Need Help?
 							</div>
 							<div class="text-muted">
-								<a href="mailto:mehtab@nxtsdev.eu.org" class="text-muted" target="_blank">Email here.</a>
+								<a href="https://github.com/mahtab2003/Xera/issues" class="text-muted" target="_blank">Open an issue in GitHub.</a>
 							</div>
 						</div>
 					</div>
