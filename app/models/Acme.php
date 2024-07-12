@@ -1,6 +1,7 @@
 <?php 
 use AcmePhp\Ssl\Certificate;
 use AcmePhp\Ssl\Generator\KeyPairGenerator;
+use AcmePhp\Ssl\Generator\RsaKey\RsaKeyOption;
 use InfinityFree\AcmeCore\Http\Base64SafeEncoder;
 use InfinityFree\AcmeCore\Http\SecureHttpClientFactory;
 use InfinityFree\AcmeCore\Http\ServerErrorHandler;
@@ -163,7 +164,7 @@ class acme extends CI_Model
         }
 
         $keyPairGenerator = new KeyPairGenerator();
-        $domainKeyPair = $keyPairGenerator->generateKeyPair();
+        $domainKeyPair = $keyPairGenerator->generateKeyPair(new RsaKeyOption(2048));
 
         $certificateOrder = $this->acme->requestOrder([$domain]);
 
@@ -335,6 +336,29 @@ class acme extends CI_Model
             }
         }
         return false;
+    }
+
+    public function deleteRecord($key) {
+        $res = $this->fetch(['key' => $key]);
+		if($res !== []) {
+            $dnsid = $res[0]['ssl_dnsid'];
+        } else {
+            return False;
+        }
+        $status = $res[0]['ssl_status'];
+        if ($status == 'pending' || $status == 'ready') {
+            $this->load->library('cloudflareapi');
+            $cfCredentials = $this->get_cloudflare();
+            $cf_api = new CloudFlareAPI();
+            $cf_api->auth($cfCredentials['email'], $cfCredentials['api_key']);
+            $cf_api->setZone($cfCredentials['domain']);
+            if ($cf_api->deleteDNSrecord($dnsid)) {
+                return true;
+            }
+            return false;
+        } else {
+            return true;
+        }
     }
 
     public function getCertificate($orderId, $privateKey)

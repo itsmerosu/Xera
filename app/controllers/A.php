@@ -1637,6 +1637,14 @@ class A extends CI_Controller
 			$id = $this->security->xss_clean($id);
 			if($this->input->get('delete'))
 			{
+				if ($this->ssl->get_ssl_type($id) != 'gogetssl') {
+					$res = $this->acme->deleteRecord($id);
+					if($res !== true)
+					{
+						$this->session->set_flashdata('msg', json_encode([0, 'An error occured. Try again later.']));
+						redirect("ssl/view/$id");
+					}
+				}
 				$this->db->where(['ssl_key' => $id]);
 				$res = $this->db->delete('is_ssl');
 				if($res !== false)
