@@ -1,7 +1,7 @@
 <?php 
 use AcmePhp\Ssl\Certificate;
 use AcmePhp\Ssl\Generator\KeyPairGenerator;
-use AcmePhp\Ssl\Generator\KeyOption;
+use AcmePhp\Ssl\Generator\RsaKey\RsaKeyOption;
 use InfinityFree\AcmeCore\Http\Base64SafeEncoder;
 use InfinityFree\AcmeCore\Http\SecureHttpClientFactory;
 use InfinityFree\AcmeCore\Http\ServerErrorHandler;
@@ -164,7 +164,7 @@ class acme extends CI_Model
         }
 
         $keyPairGenerator = new KeyPairGenerator();
-        $domainKeyPair = $keyPairGenerator->generateKeyPair(new KeyOption(2048));
+        $domainKeyPair = $keyPairGenerator->generateKeyPair(new RsaKeyOption(2048));
 
         $certificateOrder = $this->acme->requestOrder([$domain]);
 
