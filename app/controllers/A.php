@@ -709,9 +709,9 @@ class A extends CI_Controller
 				$this->fv->set_rules('googletrust_url', 'Directory URL', ['trim']);
 				$this->fv->set_rules('googletrust_kid', 'EAB Key ID', ['trim']);
 				$this->fv->set_rules('googletrust_hmac', 'EAB HMAC Key', ['trim']);
-				$this->fv->set_rules('cloudflare_email', 'Account Email', ['trim']);
-				$this->fv->set_rules('cloudflare_key', 'Account API Key', ['trim']);
-				$this->fv->set_rules('cloudflare_domain', 'Domain Name Added in CloudFlare', ['trim']);
+				$this->fv->set_rules('cloudflare_email', 'Account Email', ['trim', 'required']);
+				$this->fv->set_rules('cloudflare_key', 'Account API Key', ['trim', 'required']);
+				$this->fv->set_rules('cloudflare_domain', 'Domain Name Added in CloudFlare', ['trim', 'required']);
 				$this->fv->set_rules('status', 'Status', ['trim', 'required']);
 				$this->fv->set_rules('dns_resolver', 'DNS Resolver', ['trim', 'required']);
 				$this->fv->set_rules('dns_doh', 'DNS over HTTPS', ['trim', 'required']);
