@@ -133,11 +133,12 @@ class User extends CI_Model
 					return true;
 				}
 				if ($this->validate_oauth_enable($email, $secret, $data['user_key'])) {
+				  $data = $this->fetch_where('email', $email);
 				  $json = json_encode([$data['user_rec'], time()]);
-					$gz = gzcompress($json);
-					$token = base64_encode($gz);
-					set_cookie('logged', true, $days * 86400);
-					set_cookie('token', $token, $days * 86400);
+				  $gz = gzcompress($json);
+				  $token = base64_encode($gz);
+				  set_cookie('logged', true, $days * 86400);
+				  set_cookie('token', $token, $days * 86400);
 				  return true;
 				}
 				return false;
