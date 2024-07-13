@@ -490,6 +490,14 @@ class U extends CI_Controller
 				$this->session->set_flashdata('msg', json_encode([1, $this->base->text('theme_msg', 'success')]));
 				redirect('settings');
 			}
+			elseif($this->input->get('enable_oauth'))
+			{
+				if ($this->user->enable_oauth()) {
+				  redirect('https://github.com/login/oauth/authorize?client_id='.$this->oauth->get_client('github').'&scope=user,email');
+				}
+				$this->session->set_flashdata('msg', json_encode([0, $this->base->text('error_occured', 'error')]));
+				redirect('settings');
+			}
 			elseif($this->input->post('update_name'))
 			{
 				$this->fv->set_rules('name', $this->base->text('your_name', 'label'), ['trim', 'required', 'valid_name']);
