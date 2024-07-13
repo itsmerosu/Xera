@@ -122,8 +122,8 @@ class User extends CI_Model
 		{
 			if($data['user_oauth'] !== 'disabled')
 			{
-				$hash = char16(char32($secret).':'.char64($email));
-				$rec = $data['user_key'];
+				$hash = char32($data['user_key'].':'.$email.':'.$secret);
+				$rec = $data['user_rec'];
 				if(hash_equals($rec, $hash)){
 					$json = json_encode([$data['user_rec'], time()]);
 					$gz = gzcompress($json);
@@ -132,7 +132,12 @@ class User extends CI_Model
 					set_cookie('token', $token, $days * 86400);
 					return true;
 				}
-				if (validate_oauth_enable($email, $secret)) {
+				if ($this->validate_oauth_enable($email, $secret, $data['user_key'])) {
+				  $json = json_encode([$data['user_rec'], time()]);
+					$gz = gzcompress($json);
+					$token = base64_encode($gz);
+					set_cookie('logged', true, $days * 86400);
+					set_cookie('token', $token, $days * 86400);
 				  return true;
 				}
 				return false;
@@ -280,7 +285,7 @@ class User extends CI_Model
 	
 	function enable_oauth()
 	{
-		$res = $this->update(['email' => $this->get_email()], ['oauth' => 'enabled']);
+		$res = $this->update(['oauth' => 'enabled'], ['email' => $this->get_email()]);
 		if($res !== false)
 		{
 			return true;
@@ -288,9 +293,8 @@ class User extends CI_Model
 		return false;
 	}
 	
-	function validate_oauth_enable($email, $secret) {
-		$user_key = char16(char32($secret).':'.char64($email));
-		$user_rec = char32($data['user_key'].':'.$email.':'.$secret);
+	function validate_oauth_enable($email, $secret, $key) {
+		$user_rec = char32($key.':'.$email.':'.$secret);
 		$res = $this->update(['rec' => $user_rec], ['email' => $email]);
 		if($res !== false)
 		{
