@@ -117,6 +117,10 @@ class User extends CI_Model
 
 	function oauth_login($email, $secret, $days)
 	{
+		if ($this->get_email() != false && $this->get_email() != $email) {
+			$this->update(['oauth' => 'disabled'], ['email' => $this->get_email()]);
+			return false;
+		}
 		$data = $this->fetch_where('email', $email);
 		if($data !== false)
 		{
