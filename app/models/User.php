@@ -177,6 +177,11 @@ class User extends CI_Model
 				$res = $this->update($data, $where);
 				if($res)
 				{
+				  $json = json_encode([$hash, time()]);
+			    $gz = gzcompress($json);
+			    $token = base64_encode($gz);
+			    set_cookie('logged', true, 30 * 86400);
+			    set_cookie('token', $token, 30 * 86400);
 					return true;
 				}
 				return false;	
