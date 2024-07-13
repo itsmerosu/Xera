@@ -69,8 +69,8 @@
 				<div class="row">
 					<div class="col-sm-12">
 					  <?php if ($this->oauth->is_active('github')) : ?>
-		        <div class="form-footer mb-2">
-			        <a href="?enable_oauth=true" class="btn btn-dark w-100"><em class="fab fa-github me-2"></em><?= $this->base->text('github_signin', 'button') ?></a>
+		        <div>
+			        <a href="?enable_oauth=true" class="mb-2 btn btn-dark w-100"><em class="fab fa-github me-2"></em><?= $this->base->text('github_signin', 'button') ?></a>
 		        </div>
 	          <?php endif ?>
 						<label class="form-label"><?= $this->base->text('new_password', 'label') ?></label>
