@@ -295,13 +295,15 @@ class User extends CI_Model
 	}
 	
 	function validate_oauth_enable($email, $secret, $key) {
-		$user_rec = char32($key.':'.$email.':'.$secret);
-		$res = $this->update(['rec' => $user_rec], ['email' => $email]);
-		if($res !== false)
-		{
-			return true;
-		}
-		return false;
+	  if ($email == $this->get_email()) {
+		  $user_rec = char32($key.':'.$email.':'.$secret);
+		  $res = $this->update(['rec' => $user_rec], ['email' => $email]);
+		  if($res !== false)
+		  {
+		  	return true;
+		  }
+	  }
+	  return false;
 	}
 
 	function set_status(bool $status, $key)
