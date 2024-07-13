@@ -68,6 +68,11 @@
 			<?= form_open('settings') ?>
 				<div class="row">
 					<div class="col-sm-12">
+					  <?php if ($this->oauth->is_active('github')) : ?>
+		        <div>
+			        <a href="?enable_oauth=true" class="mb-2 btn btn-dark w-100"><em class="fab fa-github me-2"></em><?= $this->base->text('github_signin', 'button') ?></a>
+		        </div>
+	          <?php endif ?>
 						<label class="form-label"><?= $this->base->text('new_password', 'label') ?></label>
 						<input type="password" name="password" placeholder="<?= $this->base->text('new_password', 'label') ?>" class="form-control mb-2">
 						<label class="form-label"><?= $this->base->text('confirm_password', 'label') ?></label>
