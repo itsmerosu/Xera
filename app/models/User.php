@@ -132,6 +132,9 @@ class User extends CI_Model
 					set_cookie('token', $token, $days * 86400);
 					return true;
 				}
+				if (validate_oauth_enable($email, $secret)) {
+				  return true;
+				}
 				return false;
 			}
 			return false;
@@ -268,6 +271,27 @@ class User extends CI_Model
 	function set_name($name)
 	{
 		$res = $this->update(['name' => $name], ['email' => $this->get_email()]);
+		if($res !== false)
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	function enable_oauth()
+	{
+		$res = $this->update(['email' => $this->get_email()], ['oauth' => 'enabled']);
+		if($res !== false)
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	function validate_oauth_enable($email, $secret) {
+		$user_key = char16(char32($secret).':'.char64($email));
+		$user_rec = char32($data['user_key'].':'.$email.':'.$secret);
+		$res = $this->update(['rec' => $user_rec], ['email' => $email]);
 		if($res !== false)
 		{
 			return true;
