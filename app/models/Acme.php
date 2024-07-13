@@ -158,6 +158,7 @@ class acme extends CI_Model
 
     public function create_ssl($domain, $autority)
     {
+    try {
         $directory = './acme-storage/'.$this->user->get_email().'/certificates/';
         if (!file_exists($directory )) {
             mkdir($directory , 0777, true);
@@ -218,6 +219,9 @@ class acme extends CI_Model
             file_put_contents($privateDir, $privateKey);
 			return true;
 		}
+    } catch (Throwable $e) {
+      return $e;
+    }
 		return false;
     }
 
@@ -357,6 +361,7 @@ class acme extends CI_Model
     }
 
     public function deleteRecord($key) {
+    try {
         $res = $this->fetch(['key' => $key]);
 		if($res !== []) {
             $dnsid = $res[0]['ssl_dnsid'];
@@ -377,10 +382,14 @@ class acme extends CI_Model
         } else {
             return true;
         }
+    } catch (Throwable $e) {
+      
+    }
     }
 
     public function getCertificate($orderId, $privateKey)
     {
+    try {
         $privateKey = new PrivateKey($privateKey);
         $publicKey = $privateKey->getPublicKey();
         $domainKeyPair = new KeyPair($publicKey, $privateKey);
@@ -403,6 +412,9 @@ class acme extends CI_Model
 
             return $return;
         }
+    } catch (Throwable $e) {
+      return false;
+    }
         return False;
     }
 
