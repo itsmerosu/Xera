@@ -190,22 +190,6 @@ class Mofh extends CI_Model
 				$res = $this->db->insert('is_account', $data);
 				if($res !== false)
 				{
-					if($this->mailer->is_active())
-					{
-						$param['account_username'] = $data['account_username'];
-						$param['account_password'] = $data['account_password'];
-						$param['account_domain'] = $data['account_domain'];
-						$param['cpanel_domain'] = $this->get_cpanel();
-						$param['main_domain'] = $data['account_main'];
-						$param['nameserver_1'] = str_replace('cpanel', 'ns1', $this->get_cpanel());
-						$param['nameserver_2'] = str_replace('cpanel', 'ns2', $this->get_cpanel());
-						$param['sql_server'] = str_replace('cpanel', 'sqlxxx', $this->get_cpanel());
-						$param['user_name'] = $this->user->get_name();
-						$param['user_email'] = $this->user->get_email();
-						$param['account_label'] = $data['account_label'];
-						$this->mailer->send('account_created', $this->user->get_email(), $param, 'user');
-						return true;
-					}
 					return true;
 				}
 				return false;
