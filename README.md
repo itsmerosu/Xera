@@ -27,6 +27,7 @@ Xera is a hosting account and support management system especially designed to w
 	- Google reCAPTCHA 
 	- CryptoLoot
 	- hCaptcha
+ - 	- Cloudflare Turnstile
 	- GoGetSSL
  	- ACMEv2 (Let's Encrypt, ZeroSSL and Google Trust)
 	- SitePro
@@ -50,7 +51,7 @@ The installation of Xera is much easier than you think!
 - Go to ```https://{your.domain}/{xera-directory}/install.php``` and click on the 'Get Started' button.
 - Set your website's ```Website URL```, ```Cookie Prefix```, enable ```CSRF Protection``` and hit the 'Next Step' button.
 - Edit the database credentials and click on the 'Next Step' button (this will automatically import tables and records to the database).
-- Register an admin account and login to your admin panel. 
+- Register an admin account and log in to your admin panel. 
 - Replace the logo and favicon located in ```assets/default/img/``` with your own.
 - Setup SMTP (see below for some services you can use).
 - Refer to [Setup Guide](Setup-Guide.md)
