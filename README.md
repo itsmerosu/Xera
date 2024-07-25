@@ -3,7 +3,8 @@
 </div>
 
 > **Note:**  
-> **This development of this build is live again.**  
+> **This development of this build is live again.**
+> A bugfix release is coming due the currently known errors.
 > Pull requests are welcome and will still be accepted. If you want to see a feature, feel free to contribute it.
 > Thanks to @greenreader9 for answering people's questions and solving their issues while i was gone.
 
