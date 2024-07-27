@@ -709,9 +709,6 @@ class A extends CI_Controller
 				$this->fv->set_rules('googletrust_url', 'Directory URL', ['trim']);
 				$this->fv->set_rules('googletrust_kid', 'EAB Key ID', ['trim']);
 				$this->fv->set_rules('googletrust_hmac', 'EAB HMAC Key', ['trim']);
-				$this->fv->set_rules('cloudflare_email', 'Account Email', ['trim', 'required']);
-				$this->fv->set_rules('cloudflare_key', 'Account API Key', ['trim', 'required']);
-				$this->fv->set_rules('cloudflare_domain', 'Domain Name Added in CloudFlare', ['trim', 'required']);
 				$this->fv->set_rules('status', 'Status', ['trim', 'required']);
 				$this->fv->set_rules('dns_resolver', 'DNS Resolver', ['trim', 'required']);
 				$this->fv->set_rules('dns_doh', 'DNS over HTTPS', ['trim', 'required']);
@@ -737,24 +734,15 @@ class A extends CI_Controller
 					if ($googletrust['url'] == '' && $googletrust['eab_kid'] == '' && $googletrust['eab_hmac_key'] == '') {
 						$googletrust = 'not-set';
 					}
-					$cloudflare = [
-						'email' => $this->input->post('cloudflare_email'),
-						'api_key' => $this->input->post('cloudflare_key'),
-						'domain' => $this->input->post('cloudflare_domain')
-					];
 					$dnsSettings = [
 						'doh' => $this->input->post('dns_doh'),
 						'resolver' => $this->input->post('dns_resolver')
 					];
-					if ($cloudflare['email'] == '' && $cloudflare['api_key'] == '' && $cloudflare['domain'] == '') {
-						$cloudflare = 'not-set';
-					}
 
 					$status = $this->input->post('status');
 					$res = $this->acme->set_letsencrypt($letsencrypt);
 					$res = $this->acme->set_zerossl($zerossl);
 					$res = $this->acme->set_googletrust($googletrust);
-					$res = $this->acme->set_cloudflare($cloudflare);
 					$res = $this->acme->set_dns($dnsSettings);
 					$res = $this->acme->set_status($status);
 					if($res !== false)
@@ -1638,12 +1626,6 @@ class A extends CI_Controller
 			if($this->input->get('delete'))
 			{
 				if ($this->ssl->get_ssl_type($id) != 'gogetssl') {
-					$res = $this->acme->deleteRecord($id);
-					if($res !== true)
-					{
-						$this->session->set_flashdata('msg', json_encode([0, 'An error occured. Try again later.']));
-						redirect("ssl/view/$id");
-					}
 				}
 				$this->db->where(['ssl_key' => $id]);
 				$res = $this->db->delete('is_ssl');
@@ -1720,11 +1702,11 @@ class A extends CI_Controller
 				elseif ($data['data'] == False)
 				{
 					$this->session->set_flashdata('msg', json_encode([0, 'An error occured. Try again later.']));
-					redirect("ssl/list");
+					redirect("admin/ssl/list");
 				} else
 				{
 					$this->session->set_flashdata('msg', json_encode([0, $data['data']]));
-					redirect("ssl/list");
+					redirect("admin/ssl/list");
 				}
 			}
 		}

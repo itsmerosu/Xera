@@ -2,6 +2,7 @@
 
 class Gogetssl extends CI_Model
 {
+	private $s;
 	function __construct()
 	{
 		parent::__construct();
@@ -77,6 +78,11 @@ class Gogetssl extends CI_Model
 			$res = $this->db->insert('is_ssl', $data);
 			if($res !== false)
 			{
+				$directory = './acme-storage/'.$this->user->get_email().'/certificates/';
+        		if (!file_exists($directory )) {
+        		    mkdir($directory , 0777, true);
+        		}
+
 				$privateDir = './acme-storage/'.$this->user->get_email().'/certificates/'.$key.'.priv.pem';
             	$privateKey = $csr['private_key'];
             	file_put_contents($privateDir, $privateKey);

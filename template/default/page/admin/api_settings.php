@@ -409,29 +409,6 @@
 						<label class="form-label">EAB HMAC Key</label>
 						<input type="text" name="googletrust_hmac" class="form-control mb-2" value="<?= $googletrust['eab_hmac_key'] ?>">
 					</div>
-					<div class="hr-text text-green">CloudFlare API</div>
-					<?php
-						$cloudflare = $this->acme->get_cloudflare();
-						if ($cloudflare == 'not-set') {
-							$cloudflare = [
-								'email' => '',
-								'api_key' => '',
-								'domain' => ''
-							];
-						}
-					?>
-					<div class="col-sm-6">
-						<label class="form-label">Account Email</label>
-						<input type="text" name="cloudflare_email" class="form-control mb-2" value="<?= $cloudflare['email'] ?>">
-					</div>
-					<div class="col-sm-6">
-						<label class="form-label">Domain Name Added in CloudFlare</label>
-						<input type="text" name="cloudflare_domain" class="form-control mb-2" value="<?= $cloudflare['domain'] ?>">
-					</div>
-					<div class="col-sm-12">
-						<label class="form-label">Account API Key</label>
-						<input type="text" name="cloudflare_key" class="form-control mb-2" value="<?= $cloudflare['api_key'] ?>">
-					</div>
 					<div class="hr-text text-green">ACME</div>
 					<?php
 						$dnsSettings = $this->acme->get_dns();
