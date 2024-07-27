@@ -191,7 +191,8 @@ class acme extends CI_Model
 
         $this->load->library('acmedns');
         $acmednsUrl = 'https://auth.acme-dns.io';
-        $acmedns = new Acmedns($acmednsUrl);
+        $acmedns = new Acmedns();
+        $acmedns->setProvider($acmednsUrl);
 
         $addResult = true;
         $registrationDetails = $acmedns->registerDomain();
@@ -199,6 +200,7 @@ class acme extends CI_Model
             $username = $registrationDetails['username'];
             $password = $registrationDetails['password'];
             $subdomain = $registrationDetails['subdomain'];
+            $cnameRecord = $registrationDetails['fulldomain'];
         
             if (!$acmedns->updateTxtRecord($username, $password, $subdomain, $dnsContent)) {
                 $addResult = false;
@@ -219,7 +221,7 @@ class acme extends CI_Model
             'ssl_dnsid' => ''
         ];
         if ($addResult) {
-            $data['ssl_dns'] = $subdomain;
+            $data['ssl_dns'] = $cnameRecord;
             $data['ssl_dnsid'] = $registrationDetails;
         }
         $res = $this->db->insert('is_ssl', $data);
@@ -232,7 +234,7 @@ class acme extends CI_Model
 			return true;
 		}
     } catch (Throwable $e) {
-      return $e;
+      return $e->getMessage();
     }
 		return false;
     }

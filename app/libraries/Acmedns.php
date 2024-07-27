@@ -2,7 +2,10 @@
 class Acmedns {
     private $apiBaseUrl;
 
-    public function __construct($apiBaseUrl) {
+    public function __construct() {
+    }
+
+    public function setProvider($apiBaseUrl) {
         $this->apiBaseUrl = rtrim($apiBaseUrl, '/');
     }
 
