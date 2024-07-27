@@ -59,8 +59,6 @@ To manage SSL certificates through GoGetSSL, follow these steps:
 ## ACME SSL Configuration:
 Xera supports ACME SSL certificate provisioning from multiple providers. Configure them as follows:
 
-**Important:** CloudFlare API is mandatory to use ACME SSL because it is used to delegate the DNS CNAME records.
-
 ### Let's Encrypt:
 Refer to [Let's Encrypt Get Started Page](https://letsencrypt.org/getting-started/)
 - **Directory URL:** Enter the directory URL provided by Let's Encrypt.
@@ -72,16 +70,11 @@ Refer to [ZeroSSL ACME Documentation](https://zerossl.com/documentation/acme/)
 - **EAB HMAC Key:** Enter your EAB HMAC Key from ZeroSSL.
 
 ### Google Trust:
+**Important:** Google Trust isn't supported on Xera due it's requirments and the way it works, so please dont use it. \
 Refer to [Public CA Tutorial](https://cloud.google.com/certificate-manager/docs/public-ca-tutorial)
 - **Directory URL:** Enter the directory URL provided by Google Trust Services.
 - **EAB Key ID:** Enter your EAB Key ID from Google Trust Services.
 - **EAB HMAC Key:** Enter your EAB HMAC Key from Google Trust Services.
-
-### Cloudflare API:
-Refer to [How to get CloudFlare API Key](https://developers.cloudflare.com/fundamentals/api/get-started/keys/)
-- **Account Email:** Enter the email address associated with your Cloudflare account.
-- **Domain Name Added in Cloudflare:** Enter the domain name you have added to Cloudflare.
-- **Account API Key:** Enter your Cloudflare account API key.
 
 ### ACME:
 - **DNS over HTTPS:** To avoid issues with free hosting, enable DNS over HTTPS.
