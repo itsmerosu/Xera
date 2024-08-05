@@ -712,7 +712,6 @@ class acme extends CI_Model
 					$data['key'] = $key['ssl_key'];
 					$arr[] = $data;
 				}
-				return $arr;
 			}
 			$list = [];
 			if($count != 0)
