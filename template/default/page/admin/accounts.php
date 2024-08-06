@@ -30,6 +30,7 @@
 						else :
 							$mcount = 1;
 						endif;
+						$count = $mcount;
 						?>
 						<?php foreach ($list as $item) : ?>
 							<tr>
