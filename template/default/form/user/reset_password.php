@@ -13,9 +13,9 @@
 		</div>
 	</div>
 	<div class="mb-3">
-		<label class="form-label"><?= $this->base->text('password', 'label') ?></label>
+		<label class="form-label"><?= $this->base->text('new_password', 'label') ?></label>
 		<div class="input-group input-group-flat">
-			<input type="password" class="form-control" id="password1" placeholder="<?= $this->base->text('password', 'label') ?>" name="password1">
+			<input type="password" class="form-control" id="password1" placeholder="<?= $this->base->text('new_password', 'label') ?>" name="password1">
 			<span class="input-group-text">
 				<a href="#" class="link-secondary trigger" id="toggle-btn" data-toggle="password1" title="Show password" data-bs-toggle="tooltip">
 					<em class="fa fa-eye"></em>
