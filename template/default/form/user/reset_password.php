@@ -2,9 +2,9 @@
 <div class="card-body">
 	<h2 class="card-title text-center mb-3"><?= $this->base->text('reset_password', 'heading') ?></h2>
 	<div class="mb-2">
-		<label class="form-label"><?= $this->base->text('password', 'label') ?></label>
+		<label class="form-label"><?= $this->base->text('new_password', 'label') ?></label>
 		<div class="input-group input-group-flat">
-			<input type="password" class="form-control" id="password" placeholder="<?= $this->base->text('password', 'label') ?>" name="password">
+			<input type="password" class="form-control" id="password" placeholder="<?= $this->base->text('new_password', 'label') ?>" name="password">
 			<span class="input-group-text">
 				<a href="#" class="link-secondary trigger" id="toggle-btn" data-toggle="password" title="Show password" data-bs-toggle="tooltip">
 					<em class="fa fa-eye"></em>
