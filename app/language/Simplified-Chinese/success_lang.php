@@ -1,21 +1,21 @@
-<?php 
+<?php
 
-$lang['login_msg'] = '成功登入';
-$lang['register_msg'] = '成功注册.';
-$lang['forget_msg'] = '你的重设密码已请求已送出,请查你的邮箱.';
-$lang['reset_msg'] = '成功重设密码.';
-$lang['logout_msg'] = '登入成功.';
-$lang['theme_msg'] = '已更换用户介面主题';
-$lang['name_msg'] = '已更新你的用户名.';
-$lang['user_pass_msg'] = '已更新你的密码';
-$lang['ticket_msg'] = '服务单成功被建立.';
-$lang['ticket_closed_msg'] = '服务单已被关闭.';
-$lang['ticket_opened_msg'] = '服务单已被开启';
-$lang['reply_msg'] = '成功回覆.';
-$lang['domain_selected_msg'] = '成功选择网域名.';
-$lang['label_updated_msg'] = '已成功更新帐户标签';
-$lang['ssl_created_msg'] = 'SSL 成功请求.';
-$lang['ssl_deleted_msg'] = 'SSL 成功删除.';
-$lang['ssl_cancelled_msg'] = 'SSL 已被取消.';
-$lang['account_msg'] = '账户创建成功';
+$lang['login_msg'] = '登录成功。';
+$lang['register_msg'] = '用户已成功注册。';
+$lang['forget_msg'] = '密码重设成功。请检查您的收件箱。';
+$lang['reset_msg'] = '密码重设成功。';
+$lang['logout_msg'] = '登出成功。';
+$lang['theme_msg'] = '界面设置已成功更改。';
+$lang['name_msg'] = '用户名已成功更新。';
+$lang['user_pass_msg'] = '用户密码已成功更新。';
+$lang['ticket_msg'] = '工单已成功创建。';
+$lang['ticket_closed_msg'] = '工单已成功关闭。';
+$lang['ticket_opened_msg'] = '工单已成功开启。';
+$lang['reply_msg'] = '工单回复已成功新增。';
+$lang['domain_selected_msg'] = '域名已成功选择。';
+$lang['label_updated_msg'] = '账号标签已成功更新。';
+$lang['ssl_created_msg'] = 'SSL证书申请成功。';
+$lang['ssl_deleted_msg'] = 'SSL证书已成功删除。';
+$lang['account_msg'] = '账号已成功创建。';
+$lang['ssl_cancelled_msg'] = 'SSL证书已成功取消。';
 $lang['ssl_validated_msg'] = 'SSL证书验证成功，SSL将很快可用。';
