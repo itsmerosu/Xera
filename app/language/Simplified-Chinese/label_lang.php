@@ -1,0 +1,31 @@
+<?php 
+
+$lang['email_address'] = '电子邮件地址';
+$lang['username'] = '用户名';
+$lang['password'] = '密码';
+$lang['old_password'] = '旧密码';
+$lang['new_password'] = '新密码';
+$lang['confirm_password'] = '确认密码';
+$lang['your_name'] = '您的名字';
+$lang['recaptcha'] = '验证码';
+$lang['language'] = '语言';
+$lang['subject'] = '主题';
+$lang['content'] = '内容';
+$lang['domain'] = '域名';
+$lang['theme'] = '主题';
+$lang['label'] = '标签';
+$lang['csr_code'] = 'CSR代码';
+$lang['private_key'] = '私钥';
+$lang['crt_code'] = 'CRT代码';
+$lang['ca_code'] = 'CA代码';
+$lang['reason'] = '原因';
+$lang['domain_name'] = '域名';
+$lang['account_label'] = '帐号标签';
+$lang['ok'] = '确定';
+$lang['error'] = '错误';
+$lang['redirecting'] = '正在重定向';
+$lang['or'] = '或';
+$lang['show_hide'] = '显示/隐藏';
+$lang['record_name'] = '记录名称';
+$lang['record_content'] = '记录内容';
+$lang['record_type'] = '记录类型';
