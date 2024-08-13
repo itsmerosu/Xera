@@ -307,7 +307,23 @@ if (isset($_GET['step']) and $_GET['step'] == 1 and isset($_POST['submit'])) {
 
 		$sql = mysqli_query($mysqli, "CREATE TABLE `is_oauth` (`oauth_id` varchar(20) NOT NULL, `oauth_client` varchar(100) NOT NULL, `oauth_secret` varchar(100) NOT NULL, `oauth_endpoint` varchar(100) NOT NULL, `oauth_status` varchar(8) NOT NULL);");
 		$sql = mysqli_query($mysqli, "INSERT INTO `is_oauth`(`oauth_id`, `oauth_client`, `oauth_secret`, `oauth_endpoint`, `oauth_status`) VALUES ('github', 'client key', 'client key', 'https://api.github.com/user', 'inactive');");
-
+                $sql = mysqli_query($mysqli, "ALTER DATABASE CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+                $sql = mysqli_query($mysqli, "ALTER TABLE is_ssl CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+                $sql = mysqli_query($mysqli, "ALTER TABLE is_oauth CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+                $sql = mysqli_query($mysqli, "ALTER TABLE is_email CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+                $sql = mysqli_query($mysqli, "ALTER TABLE is_base CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+                $sql = mysqli_query($mysqli, "ALTER TABLE is_account CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+                $sql = mysqli_query($mysqli, "ALTER TABLE is_acme CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+                $sql = mysqli_query($mysqli, "ALTER TABLE is_domain CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+                $sql = mysqli_query($mysqli, "ALTER TABLE is_builder CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+                $sql = mysqli_query($mysqli, "ALTER TABLE is_gogetssl CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+                $sql = mysqli_query($mysqli, "ALTER TABLE is_mofh CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+                $sql = mysqli_query($mysqli, "ALTER TABLE is_smtp CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+                $sql = mysqli_query($mysqli, "ALTER TABLE is_ticket CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+                $sql = mysqli_query($mysqli, "ALTER TABLE is_user CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+                $sql = mysqli_query($mysqli, "ALTER TABLE is_admin CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+                $sql = mysqli_query($mysqli, "ALTER TABLE is_recaptcha CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+                $sql = mysqli_query($mysqli, "ALTER TABLE is_reply CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
 		if ($sql) {
 			$file = file_get_contents('https://raw.githubusercontent.com/mahtab2003/Xera/dev/app/config/database.php');
 			$data = str_replace('DB_HOSTNAME', $hostname, $file);
