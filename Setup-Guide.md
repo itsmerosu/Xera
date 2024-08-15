@@ -1,6 +1,6 @@
 # Xera setup Documentation
 ## General Settings:
-Access your Xera admin section: `https://{your.domain}/{xera-directory}/a`.
+Access your Xera admin section: `https://{your.domain}/{xera-directory}/admin/`.
 - **Host Name:** Your hosting name.
 - **Forum URL:** URL of your forum, including https://.
 - **Alert Email:** Your hosting email to receive ticket replies and notifications of new tickets.
@@ -8,7 +8,7 @@ Access your Xera admin section: `https://{your.domain}/{xera-directory}/a`.
 - **Records per Page:** Number of records displayed per page for accounts, SSL certificates, tickets, or ticket replies. Recommended setting for free hosting is 5, based on your server's capacity.
 
 ## MyOwnFreeHost Integration (Important):
-1. Access your Xera admin section: `https://{your.domain}/{xera-directory}/a`.
+1. Access your Xera admin section: `https://{your.domain}/{xera-directory}/admin`.
 2. Navigate to `Settings` -> `API Settings` -> `MyOwnFreeHost`.
 
 ### Setting Up Your MOFH Account:
