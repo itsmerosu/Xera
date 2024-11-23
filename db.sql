@@ -492,7 +492,7 @@ INSERT INTO `is_acme` (
 	'not-set',
 	'not-set',
 	'inactive',
-	'{"doh":"active","resolver":"dns.google"}',
+	'{"doh":"active","resolver":"dns.google"}'
 );
 
 -- Create new table `is_ssl`
