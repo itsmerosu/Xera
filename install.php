@@ -166,7 +166,7 @@ if (isset($_GET['step']) and $_GET['step'] == 1 and isset($_POST['submit'])) {
 		$_SESSION['msg'] = json_encode(['danger', 'Database connect cannot be establised.']);
 		header('location: ' . $base_url . 'install.php?step=2');
 	} else {
-		$sql = mysqli_query($mysqli, "CREATE TABLE `is_base` (`base_id` varchar(89) NOT NULL DEFAULT 'xera_base',`base_name` varchar(20) NOT NULL,`base_email` varchar(100) NOT NULL,`base_template` varchar(100) NOT NULL DEFAULT 'default', `base_fourm` varchar(100) NOT NULL,`base_status` varchar(8) NOT NULL, `base_rpp` int(10) NOT NULL DEFAULT '1'
+		$sql = mysqli_query($mysqli, "CREATE TABLE `is_base` (`base_id` varchar(89) NOT NULL DEFAULT 'xera_base',`base_name` varchar(20) NOT NULL,`base_email` varchar(100) NOT NULL,`base_template` varchar(100) NOT NULL DEFAULT 'default', `base_fourm` varchar(100) NOT NULL,`base_status` varchar(8) NOT NULL, `base_rpp` int(10) NOT NULL DEFAULT '15'
 );");
 
 		$sql = mysqli_query($mysqli, "INSERT INTO `is_base` (`base_id`,`base_name`,`base_email`,`base_fourm`,`base_status`
