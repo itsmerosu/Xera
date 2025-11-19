@@ -44,3 +44,4 @@ $lang['content'] = 'Content';
 $lang['pri'] = 'Preference';
 $lang['provider'] = 'Fournisseur';
 $lang['ready'] = 'Prêt';
+$lang['expired'] = 'Expiré';
